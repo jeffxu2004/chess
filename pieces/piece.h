@@ -13,6 +13,7 @@ class Piece : public Subject {
 protected:	
 	int weight;
 	Colour side;
+	pair<char,int> coords;
 public:
 	Piece(int weight, Colour side); // ctor
 	virtual ~Piece() = default; // dtor
@@ -27,6 +28,10 @@ public:
 	virtual PieceType pieceType() const = 0;
 
 	virtual vector<pair<char, int>> getMove(Board &b) const = 0;
+
+	pair<char,int> getCoords() const;
+
+	void setCoords(pair<char,int> coords);
 
 	// Pieces must notify the king if they move in/out of the king's check-able squares.
 	// Each checkable square is setup upon board initialization and is changed when:
