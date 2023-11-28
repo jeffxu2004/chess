@@ -2,6 +2,8 @@
 #include <vector>
 #include <utility>
 
+using namespace std;
+
 class Board;
 
 class Pawn: public Piece {

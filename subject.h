@@ -7,7 +7,7 @@
 enum class PieceType { Pawn, Knight, Bishop, Rook, Queen, King, None };
 
 class Subject {
-private:
+protected:
 	std::vector<Observer*> observers;
 public:
     virtual void attach(Observer *observer) = 0;
