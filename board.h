@@ -1,4 +1,4 @@
-#ifdef BOARD_H
+#ifndef BOARD_H
 #define BOARD_H
 
 #include "subject.h"
@@ -39,6 +39,6 @@ public:
 
 	// returns true if the piece is a pawn and is promoting and false otherwise.
 	bool isPromoting(pair<char, int> start, pair<char, int> end);
-}
+};
 
 #endif
