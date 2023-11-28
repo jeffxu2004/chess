@@ -2,17 +2,21 @@
 #define PIECE_H
 
 #include "../subject.h"
+#include <vector>
+#include <utility>
+
+using namespace std;
 
 enum class Colour { White, Black, None};
 
 class Piece : public Subject {
+protected:	
 	int weight;
 	Colour side;
 public:
 	Piece(int weight, Colour side); // ctor
-	~Piece() = default; // dtor
+	virtual ~Piece() = default; // dtor
 	
-
 	int getWeight() const; // returns weight of piece
 	
 	// returns the value of the 'side' field
@@ -21,6 +25,8 @@ public:
 	// Pure virtual function to make Piece an abstract class.
 	// Each concrete subclass of Piece will return their corresponding pieceType value
 	virtual PieceType pieceType() const = 0;
+
+	virtual vector<pair<char, int>> getMove(Board &b) const = 0;
 
 	// Pieces must notify the king if they move in/out of the king's check-able squares.
 	// Each checkable square is setup upon board initialization and is changed when:
