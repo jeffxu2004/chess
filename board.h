@@ -53,17 +53,11 @@ public:
 	bool isPromoting(pair<char, int> start, pair<char, int> end);
 
 	
-    void attach(Observer* obs) override {
+    void attach(Observer* obs) override;
 
-    }
+    void detach(Observer* obs) override;
 
-    void detach(Observer* obs) override {
-
-    }
-
-    void notifyObservers() override {
-
-    }
+    void notifyObservers() override;
 };
 
 #endif
