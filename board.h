@@ -31,6 +31,9 @@ public:
 
 	// returns a pointer to the piece at the specified coordinate on the square.
 	Piece* getPiece(pair<char, int> loc);
+	
+	//Overloads the getPiece operator to return the coordinates of piece when passing in its address
+	pair<char,int> getPiece(Piece*);
 
 	// takes in a start coordinate which indicates which piece is being moved and moves it to the 
 	// end coordinate. This function is called in main once it is determined that the move is valid
