@@ -3,6 +3,7 @@ using namespace std;
 #include "board.h";
 
 
+
 Board::Board() {
     grid.resize(8, vector<unique_ptr<Piece>>(8, nullptr));
     state = Result::Continue;
@@ -15,6 +16,10 @@ Board::Board(int n) {
 
 Board::~Board() {
     grid.clear();
+}
+
+vector<vector<unique_ptr<Piece>>> Board::getGrid() {
+    return grid;
 }
 
 // can not return unique ptr by value so we use raw ptr
@@ -37,7 +42,7 @@ void Board::playMove(pair<char, int> start, pair<char, int> end) {
 }
 
 bool Board::isValidMove(Piece *piece, pair<char, int> dest) {
-    return true;
+
 }
 
 void Board::playMove(pair<char, int> start, pair<char, int> end, PieceType type) {
