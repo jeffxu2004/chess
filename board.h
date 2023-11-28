@@ -29,6 +29,9 @@ public:
 	// returns the state field
 	Result getState();
 
+	// returns the grid
+	vector<vector<unique_ptr<Piece>>> getGrid();
+
 	// returns a pointer to the piece at the specified coordinate on the square.
 	Piece* getPiece(pair<char, int> loc);
 	
