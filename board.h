@@ -52,6 +52,7 @@ public:
 	// returns true if the piece is a pawn and is promoting and false otherwise.
 	bool isPromoting(pair<char, int> start, pair<char, int> end);
 
+<<<<<<< Updated upstream
 	
     void attach(Observer* obs) override;
 
