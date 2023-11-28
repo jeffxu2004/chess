@@ -27,7 +27,7 @@ public:
 	// Each concrete subclass of Piece will return their corresponding pieceType value
 	virtual PieceType pieceType() const = 0;
 
-	virtual vector<pair<char, int>> getMove(Board &b) const = 0;
+	virtual vector<pair<char, int>> getMoves(Board &b) const = 0;
 
 	pair<char,int> getCoords() const;
 
