@@ -11,9 +11,10 @@ class King: public Piece, public Observer {
 	// tracks the subjects that the king is observing to make it easier to determine the
 	// legality of a move when the king is in check
 	bool check;
-	bool castle;
-	
-	<vector<Piece*>> subjects;
+	bool moved;
+	bool hasCastled;
+
+	vector<Subject*> subjects;
 	
 public:
 	King(int weight, Colour side); // ctor
@@ -26,21 +27,22 @@ public:
 
 
 	// Overrides from Observer:
-	Subscription getSubscription const();
+	Subscription getSubscription() const;
 	
 	void notify(const Subject *item) override;
 
 
 	// Accessors and Mutators
 	// returns a vector of the subjects that the king is observing	
-	vector<Piece*> getSubjects() const;
+	vector<Subject*> getSubjects() const;
 	
 	// appends a subject to the end of the vector
-	void addSubject(Subject *);
+	void addSubject(Subject* subject);
 
 	// removes subject from subjects
-	void dropSubject(Subject *);
+	void dropSubject(Subject* subject);
 
 	bool inCheck() const;
-	bool canCastle() const;
+	bool hasMoved() const;
+	bool justCastled() const;
 };
