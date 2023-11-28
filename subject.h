@@ -4,6 +4,8 @@
 #include <vector>
 #include "observer.h"
 
+enum class PieceType { Pawn, Knight, Bishop, Rook, Queen, King, None };
+
 class Subject {
 private:
 	std::vector<Observer*> observers;
