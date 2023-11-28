@@ -28,6 +28,6 @@ public:
 	//    * a piece moves into the check-able squares (resulting in some of the original squares to be blocked
 	//    * a pieces moves out of the check-able squares (resulting in new squares that are check-able)
 	void notifyKing();
-}
+};
 
 #endif

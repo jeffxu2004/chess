@@ -17,6 +17,6 @@ public:
 	Colour getSide() const;
 	string getPieceType() const;
 	void notifyObservers();
-}
+};
 
 #endif
