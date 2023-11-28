@@ -11,6 +11,7 @@ class Pawn: public Piece {
 	bool beEnPas = false;
 
 public:
+	Pawn(int weight, Colour side, pair<char,int> coords);
 	// Accessors (called in getMoves() before pawn move)
 	bool canMoveTwo() const; // for moveTwo
 	bool canBeEnPas() const; // for beEnPas
@@ -21,4 +22,10 @@ public:
 	
 	PieceType pieceType() const override;
 	vector<pair<char, int>> getMoves(Board &b);
+	int getWeight() const;
+	Colour getSide() const;
+	pair<char,int> getCoords() const;
+	void setCoords(pair<char,int> coords);
+	
+	void notifyKing();
 };

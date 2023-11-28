@@ -15,7 +15,7 @@ protected:
 	Colour side;
 	pair<char,int> coords;
 public:
-	Piece(int weight, Colour side); // ctor
+	Piece(int weight, Colour side, pair<char,int> coords); // ctor
 	virtual ~Piece() = default; // dtor
 	
 	int getWeight() const; // returns weight of piece

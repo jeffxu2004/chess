@@ -8,6 +8,12 @@ class Board;
 
 class Queen: public Piece {
 public:
+	Queen(int weight, Colour side, pair<char, int> coords);
 	vector<pair<char,int>> getMoves(Board &b) const override;
 	PieceType pieceType() const;
+    int getWeight() const;
+    Colour getSide() const;
+    pair<char, int> getCoords() const;
+    void setCoords(pair<char,int> coords);
+    void notifyKing();
 };
