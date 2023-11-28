@@ -38,19 +38,23 @@ public:
 	//Overloads the getPiece operator to return the coordinates of piece when passing in its address
 	pair<char,int> getPiece(Piece*);
 
-	// takes in a start coordinate which indicates which piece is being moved and moves it to the 
-	// end coordinate. This function is called in main once it is determined that the move is valid
-	// and it notifies observers (i.e. board and king if necessary)
-	void playMove(pair<char, int> start, pair<char, int> end);
+	// changes the square of coords loc to piecetype p of colour side
+	void changeSquare(pair<char, int> loc, PieceType p, Colour side);
 
-	// returns true if dest is a square that piece can legally move to and false otherwise.
+	// Takes in a start coordinate which indicates which piece is being moved and moves it to the end coordinate. 
+	// This function returns ture if it is valid move that does not place the king, and plays the move
+	// Otherwise the function returns false and the board remains logically unchanged
+	// This function may notify observers (i.e. board and king if necessary)
+	bool playMove(pair<char, int> start, pair<char, int> end);
+
+	// returns true if dest is a square that piece can functionally move to and false otherwise.
 	// This function calls the getMoves() function in piece to get a vector<pair> and checks
-	// whether dest is in the vector.
-	bool isValidMove(Piece *piece, pair<char, int> dest);
+	// whether dest is in the vector. This function does not check for checks
+	bool isPlayableMove(Piece *piece, pair<char, int> dest);
 
 	// playMove is overloarded for pawn promotion. If the pawn is promoting, the desired piece that
-	// it promotes into is passed into the function as an additional parameter.
-	void playMove(pair<char, int> start, pair<char, int> end, PieceType type);
+	// it promotes into is passed into the function as an additional parameter as well as the colour.
+	void playMove(pair<char, int> start, pair<char, int> end, PieceType type, Colour side);
 
 	// returns true if the piece is a pawn and is promoting and false otherwise.
 	bool isPromoting(pair<char, int> start, pair<char, int> end);
@@ -59,7 +63,11 @@ public:
 
     void detach(Observer* obs) override;
 
-    void notifyObservers() override;
+	// notifies ALL observers
+    void notifyAllObservers() override;
+
+	// notifies King Observers
+    void notifyKingObservers();	
 };
 
 #endif

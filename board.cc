@@ -2,7 +2,7 @@ using namespace std;
 
 #include "board.h";
 
-
+class Queen;
 
 Board::Board() {
     grid.resize(8, vector<unique_ptr<Piece>>(8, nullptr));
@@ -37,11 +37,35 @@ Piece* Board::getPiece(pair<char,int> loc) {
     }
 }
 
-void Board::playMove(pair<char, int> start, pair<char, int> end) {
-    // hehe 
+void Board::changeSquare(pair<char, int> loc, PieceType p, Colour Side) {
+    int col = loc.first - 'a';
+    int row = loc.second - 1;
+    // grid[row][col] = make_unique<Piece>() 
+    // Need this method in the future
+    
+
 }
 
-bool Board::isValidMove(Piece *piece, pair<char, int> dest) {
+bool Board::playMove(pair<char, int> start, pair<char, int> end) {
+    
+    bool p1 = false;
+    bool p2 = false;
+
+    for (auto &row : grid) {
+        for (auto &piece : row) {
+            if (piece->getCoords() == start || piece->getCoords() == end) {
+                //
+            }
+        }
+    }
+    
+
+    
+    
+
+}
+
+bool Board::isPlayableMove(Piece *piece, pair<char, int> dest) {
     auto moves = piece->getMoves(*this);
     for (const auto m : moves) {
         if (m == dest) {
@@ -52,7 +76,8 @@ bool Board::isValidMove(Piece *piece, pair<char, int> dest) {
     return false;
 }
 
-void Board::playMove(pair<char, int> start, pair<char, int> end, PieceType type) {
+
+void Board::playMove(pair<char, int> start, pair<char, int> end, PieceType type, Colour side) {
     // heheheha
 }
 
@@ -71,6 +96,10 @@ void Board::detach(Observer* obs) {
     }
 }
 
-void Board::notifyObservers() {
-    //fill
+void Board::notifyAllObservers() {
+  for (Observer *observer : observers) {
+      if (observer->getSubscription() == Subscription::All) { 
+          observer->notify(this);
+      }
+  }
 }
