@@ -2,7 +2,7 @@
 #define BOARD_H
 
 #include "subject.h"
-#include "piece.h"
+#include "../pieces/piece.h"
 #include <memory>
 #include <utility>
 #include <vector>
@@ -17,7 +17,7 @@ class Piece;
 class Board : public Subject {
 	vector<vector<unique_ptr<Piece>>> grid;
 	Result state;
-  	std::vector<Observer*> observers;
+  	vector<Observer*> observers;
 
 public:
 	Board(); // ctor

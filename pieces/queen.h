@@ -8,6 +8,6 @@ class Board;
 
 class Queen: public Piece {
 public:
-	<vector<pair<char, int>> getMoves(Board &b) const;
+	vector<pair<char,int>> getMoves(Board &b) const override;
 	PieceType pieceType() const;
 };

@@ -14,7 +14,7 @@ public:
 
 	void setCastle(bool castleState);
 
-	<vector<pair<char,int>> getMoves(Board &b) const;
+	vector<pair<char,int>> getMoves(Board &b) const override;
 
 	PieceType pieceType() const;
 };

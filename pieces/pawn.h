@@ -19,6 +19,6 @@ public:
 	void setMoveTwo(bool canMove) const; // for moveTwo
 	void setEnPas(bool canEnPas) const; // for beEnPas
 	
-	PieceType pieceType() override;
+	PieceType pieceType() const override;
 	vector<pair<char, int>> getMoves(Board &b);
 };

@@ -42,7 +42,14 @@ void Board::playMove(pair<char, int> start, pair<char, int> end) {
 }
 
 bool Board::isValidMove(Piece *piece, pair<char, int> dest) {
+    auto moves = piece->getMoves(*this);
+    for (const auto m : moves) {
+        if (m == dest) {
+            return true;
+        }
+    }
 
+    return false;
 }
 
 void Board::playMove(pair<char, int> start, pair<char, int> end, PieceType type) {
