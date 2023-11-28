@@ -5,7 +5,7 @@
 
 class Subject;
 
-enum class Subcription { All, King };
+enum class Subscription { All, King };
 
 class Observer {
 public:

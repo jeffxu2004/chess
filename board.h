@@ -2,8 +2,11 @@
 #define BOARD_H
 
 #include "subject.h"
+#include "piece.h"
+#include <memory>
 #include <utility>
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -12,11 +15,17 @@ enum Result { Win, Loss, Draw, Continue };
 class Piece;
 
 class Board : public Subject {
-	vector<vector<Piece*>> grid;
+	vector<vector<unique_ptr<Piece>>> grid;
 	Result state;
+  	std::vector<Observer*> observers;
+
 public:
 	Board(); // ctor
+
+	Board(int n); //ctor with gridsize n;
 	
+	~Board(); // dtor
+
 	// returns the state field
 	Result getState();
 
@@ -39,6 +48,19 @@ public:
 
 	// returns true if the piece is a pawn and is promoting and false otherwise.
 	bool isPromoting(pair<char, int> start, pair<char, int> end);
+
+	
+    void attach(Observer* obs) override {
+
+    }
+
+    void detach(Observer* obs) override {
+
+    }
+
+    void notifyObservers() override {
+
+    }
 };
 
 #endif
