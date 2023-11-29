@@ -2,6 +2,7 @@
 #define BOARD_H
 
 #include "subject.h"
+#include "piececreator.h"
 #include "../pieces/piece.h"
 #include <memory>
 #include <utility>
@@ -18,6 +19,7 @@ class Board : public Subject {
 	vector<vector<unique_ptr<Piece>>> grid;
 	Result state;
   	vector<Observer*> observers;
+	Colour turn; // colour of next player's turn
 
 public:
 	Board(); // ctor
@@ -28,6 +30,9 @@ public:
 
 	// returns the state field
 	Result getState();
+
+	// return the turn field 
+	Colour getTurn(); 
 
 	// returns the grid
 	vector<vector<unique_ptr<Piece>>> getGrid();
@@ -64,10 +69,8 @@ public:
     void detach(Observer* obs) override;
 
 	// notifies ALL observers
-    void notifyAllObservers() override;
+	void notifyAllObservers() override;
 
-	// notifies King Observers
-    void notifyKingObservers();	
 };
 
 #endif
