@@ -2,11 +2,11 @@ using namespace std;
 
 #include "board.h";
 
-class Queen;
 
 Board::Board() {
     grid.resize(8, vector<unique_ptr<Piece>>(8, nullptr));
     state = Result::Continue;
+    turn = Colour::White;
 }
 
 Board::Board(int n) {
@@ -18,6 +18,14 @@ Board::~Board() {
     grid.clear();
 }
 
+Result Board::getState() {
+    return state;
+}
+
+Colour Board::getTurn() {
+    return turn;
+}
+
 vector<vector<unique_ptr<Piece>>> Board::getGrid() {
     return grid;
 }
@@ -25,7 +33,7 @@ vector<vector<unique_ptr<Piece>>> Board::getGrid() {
 // can not return unique ptr by value so we use raw ptr
 Piece* Board::getPiece(pair<char,int> loc) {
     int col = loc.first - 'a';
-    int row = loc.second - 1;
+    int row = 8 - loc.second;
     
     // check if pair is within bounds
     // technically can check if its a valid pair in main to be consistent with other functions
@@ -37,32 +45,65 @@ Piece* Board::getPiece(pair<char,int> loc) {
     }
 }
 
-void Board::changeSquare(pair<char, int> loc, PieceType p, Colour Side) {
+void Board::changeSquare(pair<char, int> loc, PieceType p, Colour side) {
     int col = loc.first - 'a';
-    int row = loc.second - 1;
-    // grid[row][col] = make_unique<Piece>() 
-    // Need this method in the future
-    
-
+    int row = 8 - loc.second;
+    grid[row][col] = PieceCreator::createPiece(p, side, loc);
 }
 
-bool Board::playMove(pair<char, int> start, pair<char, int> end) {
-    
-    bool p1 = false;
-    bool p2 = false;
+// there is some functional redundancy between playmove and isplayablemove
+// might make some changes later
 
-    for (auto &row : grid) {
+bool Board::playMove(pair<char, int> start, pair<char, int> end) {
+    int col1 = start.first - 'a';
+    int row1 = 8 - start.second; 
+    int col2 = end.first - 'a';
+    int row2 = 8 - end.second;
+    King* ownKing;
+
+    
+    if(grid[row1][col1]->getSide() != turn) return false; //check if moving piece of own colour
+    if(grid[row2][col2]->getSide() == turn) return false; //check if capturing own piece
+    
+    auto temp = move(grid[row2][col2]); // store piece that is going to be captured 
+    grid[row2][col2] = move(grid[row1][col1]); // moves piece to the designated square
+
+    // changes original square to be a blank
+    grid[row1][col1] = PieceCreator::createPiece(PieceType::None, Colour::None, start);
+
+
+
+    // iterate through pieces to notify king
+    for(auto &row : grid) {
         for (auto &piece : row) {
-            if (piece->getCoords() == start || piece->getCoords() == end) {
-                //
+            if (piece->pieceType() == PieceType::King) { //if the piece is a king
+                King* k = dynamic_cast<King*>(piece.get());
+                auto subjects = k->getSubjects(); //obtain its observers
+                if (k->getSide() == turn) ownKing = k;
+                for(Piece* s : subjects) {
+                    // notify king if piece moved from starting square or to ending square
+                    if (s->getCoords() == start) grid[row1][col1]->notifyKing(); 
+                    if (s->getCoords() == end) grid[row2][col2]->notifyKing();                    
+                }
             }
         }
     }
-    
 
-    
-    
+    // THERE IS AN ISSUE: on reverting the notifyKing if the move is not valid
+    // currently WIP 
+    if (ownKing->inCheck()) {  // check if king is in check => not valid move
+        grid[row1][col1] = move(grid[row2][col2]);
+        grid[row2][col2] = move(temp);
+        return false;
+    }
 
+    // switches turns, can be better designed maybe
+    turn = turn == Colour::White ? Colour::Black : Colour::White;
+    
+    // Check checkmate
+    // Check Stalemate
+
+    return true;
 }
 
 bool Board::isPlayableMove(Piece *piece, pair<char, int> dest) {
