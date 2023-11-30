@@ -9,28 +9,28 @@ vector<pair<char, int>> Queen::getMoves(Board &b) const {
     vector<pair<char, int>> moves;
     vector<vector<unique_ptr<Piece>>> tempGrid = b.getGrid();
     
-	// Check horizontal span of queen (left and right)
+    // Check horizontal span of queen (left and right)
     for (int i = coords.first - 'a' - 1; i >= 0; i--) {
         // If empty square, add as possible move
-        if (tempGrid[i][coords.second - 1].PieceType() == PieceType::None) {
+        if (tempGrid[i][8 - coords.second].PieceType() == PieceType::None) {
             moves.push_back(make_pair(static_cast<char>(i+a), coords.second));
         } else {
             // Check if piece is opposing colour (can be taken)
-            if (tempGrid[i][coords.second - 1].getColour() != this->colour) moves.push_back(make_pair(i, coords.second));
+            if (tempGrid[i][8 - coords.second].getColour() != this->colour) moves.push_back(make_pair(i, coords.second));
             break;
         }
     }
     for (int i = coords.first - 'a' + 1; i < tempGrid.size(); i++) {
         if (tempGrid[i][coords.second - 1].PieceType() == PieceType::None) {
-            moves.push_back(make_pair(i, coords.second - 1));
+            moves.push_back(make_pair(i, 8 - coords.second));
         } else {
-            if (tempGrid[i][coords.second - 1].getColour() != this->colour) moves.push_back(make_pair(i, coords.second));
+            if (tempGrid[i][8 - coords.second].getColour() != this->colour) moves.push_back(make_pair(i, coords.second));
             break;
         }
     }
 
     // Check vertical span of queen (up and down)
-    for (int i = coords.second - 2; i >= 0; i--) {
+    for (int i = 7 - coords.second; i >= 0; i--) {
         if (tempGrid[coords.first - 'a'][i].PieceType() == PieceType::None) {
             moves.push_back(make_pair(coords.first, i));
         } else {
@@ -38,14 +38,14 @@ vector<pair<char, int>> Queen::getMoves(Board &b) const {
             break;
         }
     }
-    for (int i = coords.second; i < tempGrid.size(); i++) {
+    for (int i = 9 - coords.second; i < tempGrid.size(); i++) {
         if (tempGrid[coords.first - 'a'][i].PieceType() == PieceType::None) {
             moves.push_back(make_pair(coords.first, i));
         } else {
             if (tempGrid[coords.first - 'a'][i].getColour() != this->colour) moves.push_back(make_pair(coords.first, i));
             break;
         }
-    }
+    }	
 	
     // Booleans indicating if the search has encountered end of board/a piece
     bool topleft = true, topright = true, bottomleft = true, bottomright = true;
@@ -53,14 +53,14 @@ vector<pair<char, int>> Queen::getMoves(Board &b) const {
     for (int i = 1; i < tempGrid.size(); i++) {
         if (topleft) {
             // Check if out of bounds
-            if (coords.first - 'a' - i < 0 || coords.second - 1 - i < 0) {
+            if (coords.first - 'a' - i < 0 || 8 - coords.second - i < 0) {
                 topleft = false;
             // If blank square add and keep going
-            } else if (tempGrid[coords.first - 'a' - i][coords.second - 1 - i].PieceType() == PieceType::None) {
+            } else if (tempGrid[coords.first - 'a' - i][8 - coords.second - i].PieceType() == PieceType::None) {
                 moves.push_back(make_pair(coords.first - i, coords.second - i));
             // If opposing piece, add as possible move and stop iterating in this direction
-            } else if (tempGrid[coords.first - 'a' - i][coords.second - 1 - i].getColour() != this->colour) {
-                moves.push_back(make_pair(coords.first - i, coords.second - i));
+            } else if (tempGrid[coords.first - 'a' - i][8 - coords.second - i].getColour() != this->colour) {
+                moves.push_back(make_pair(coords.first - i, 8 - coords.second - i));
                 topleft = false;
             // Hit own piece, stop iterating
             } else {
@@ -68,11 +68,11 @@ vector<pair<char, int>> Queen::getMoves(Board &b) const {
             }
         }
         if (topright) {
-            if (coords.first - 'a' + i >= tempGrid.size() || coords.second - 1 - i < 0) {
+            if (coords.first - 'a' + i >= tempGrid.size() || 8 - coords.second - i < 0) {
                 topright = false;
-            } else if (tempGrid[coords.first - 'a' + i][coords.second - 1 - i].PieceType() == PieceType::None) {
+            } else if (tempGrid[coords.first - 'a' + i][8 - coords.second - i].PieceType() == PieceType::None) {
                 moves.push_back(make_pair(coords.first + i, coords.second - i));
-            } else if (tempGrid[coords.first - 'a' + i][coords.second - 1 - i].getColour() != this->colour) {
+            } else if (tempGrid[coords.first - 'a' + i][8 - coords.second - i].getColour() != this->colour) {
                 moves.push_back(make_pair(coords.first + i, coords.second - i));
                 topright = false;
             } else {
@@ -81,11 +81,11 @@ vector<pair<char, int>> Queen::getMoves(Board &b) const {
 
         }
         if (bottomleft) {
-            if (coords.first - 'a' - i < 0 || coords.second - 1 + i >= tempGrid.size()) {
+            if (coords.first - 'a' - i < 0 || 8 - coords.second + i >= tempGrid.size()) {
                 bottomleft = false;
-            } else if (tempGrid[coords.first - 'a' - i][coords.second - 1 + i].PieceType() == PieceType::None) {
+            } else if (tempGrid[coords.first - 'a' - i][8 - coords.second + i].PieceType() == PieceType::None) {
                 moves.push_back(make_pair(coords.first - i, coords.second + i));
-            } else if (tempGrid[coords.first - 'a' - i][coords.second - 1 + i].getColour() != this->colour) {
+            } else if (tempGrid[coords.first - 'a' - i][8 - coords.second + i].getColour() != this->colour) {
                 moves.push_back(make_pair(coords.first - i, coords.second + i));
                 bottomleft = false;
             } else {
@@ -93,20 +93,20 @@ vector<pair<char, int>> Queen::getMoves(Board &b) const {
             }
         }
         if (bottomright) {
-            if (coords.first - 'a' + i >= tempGrid.size() || coords.second - 1 + i >= tempGrid.size()) {
+            if (coords.first - 'a' + i >= tempGrid.size() || 8 - coords.second + i >= tempGrid.size()) {
                 bottomright= false;
-            } else if (tempGrid[coords.first - 'a' + i][coords.second - 1 + i].PieceType() == PieceType::None) {
+            } else if (tempGrid[coords.first - 'a' + i][8 - coords.second + i].PieceType() == PieceType::None) {
                 moves.push_back(make_pair(coords.first + i, coords.second + i));
-            } else if (tempGrid[coords.first - 'a' + i][coords.second - 1 + i].getColour() != this->colour) {
+            } else if (tempGrid[coords.first - 'a' + i][8 - coords.second + i].getColour() != this->colour) {
                 moves.push_back(make_pair(coords.first + i, coords.second + i));
                 bottomright = false;
             } else {
                 bottomright = false;
             }
         }
-    }
+	}
 
-    return moves;
+	return moves;
 }
 
 int Queen::getWeight() const { return this->weight(); }

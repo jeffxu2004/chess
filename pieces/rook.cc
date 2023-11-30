@@ -11,7 +11,6 @@ bool Rook::canMove() const {
 
 void Rook::setCastle(bool castleState) {
 	moved = true;
-	// Is moved supposed to be true by default in .h file?
 }
 
 vector<pair<char, int>> Rook::getMoves(Board &b) const {
@@ -20,25 +19,25 @@ vector<pair<char, int>> Rook::getMoves(Board &b) const {
 	// Check horizontal span of rook (left and right)
 	for (int i = coords.first - 'a' - 1; i >= 0; i--) {
 		// If empty square, add as possible move
-		if (tempGrid[i][coords.second - 1].PieceType() == PieceType::None) {
+		if (tempGrid[i][8 - coords.second].PieceType() == PieceType::None) {
 			moves.push_back(make_pair(static_cast<char>(i+a), coords.second));
 		} else {
 			// Check if piece is opposing colour (can be taken)
-            if (tempGrid[i][coords.second - 1].getColour() != this->colour) moves.push_back(make_pair(i, coords.second));
+            if (tempGrid[i][8 - coords.second].getColour() != this->colour) moves.push_back(make_pair(i, coords.second));
 			break;
 		}
 	}
 	for (int i = coords.first - 'a' + 1; i < tempGrid.size(); i++) {
 		if (tempGrid[i][coords.second - 1].PieceType() == PieceType::None) {
-			moves.push_back(make_pair(i, coords.second - 1));
+			moves.push_back(make_pair(i, 8 - coords.second));
 		} else {
-			if (tempGrid[i][coords.second - 1].getColour() != this->colour) moves.push_back(make_pair(i, coords.second));
+			if (tempGrid[i][8 - coords.second].getColour() != this->colour) moves.push_back(make_pair(i, coords.second));
 			break;
 		}
 	}
 
 	// Check vertical span of rook (up and down)
-	for (int i = coords.second - 2; i >= 0; i--) {
+	for (int i = 7 - coords.second; i >= 0; i--) {
 		if (tempGrid[coords.first - 'a'][i].PieceType() == PieceType::None) {
 			moves.push_back(make_pair(coords.first, i));
 		} else {
@@ -46,7 +45,7 @@ vector<pair<char, int>> Rook::getMoves(Board &b) const {
 			break;
 		}
 	}
-	for (int i = coords.second; i < tempGrid.size(); i++) {
+	for (int i = 9 - coords.second; i < tempGrid.size(); i++) {
 		if (tempGrid[coords.first - 'a'][i].PieceType() == PieceType::None) {
 			moves.push_back(make_pair(coords.first, i));
 		} else {
