@@ -66,6 +66,14 @@ public:
 	// does not check for whether moving the piece will make its own king in check
 	vector <pair <pair<char, int>, pair<char, int> >> getAllMoves(Colour c);
 
+	// returns true if the own king is not in check(legal move) after playing the move 
+	// otherwise return false
+	bool kingIsNotCheck(pair<char, int> start, pair<char, int> end);
+
+	// plays move and notifies observers given it that kingIsNotCheck is true
+	bool playLegalMove(pair<char, int> start, pair<char, int> end);
+
+
 	// returns true if the piece is a pawn and is promoting and false otherwise.
 	bool isPromoting(pair<char, int> start, pair<char, int> end);
 	
