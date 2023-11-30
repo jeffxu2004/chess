@@ -14,8 +14,8 @@ vector<pair<char,int>> Pawn::getMoves(Board &b) {
 	vector<pair<<char,int>> moves;
 	vector<vector<unique_ptr<Piece>>> tempGrid = b.getGrid();
 
-	// Set direction based on colour, black is positive, white is negative
-	int direction = colour==Colour::WHITE?-1:1;
+	// Set direction based on colour, black is negative, white is positive
+	int direction = colour==Colour::WHITE?1:-1;
 
 	// Move forward
 	if (tempGrid[coords.first - 'a'][coords.second - 1 + direction].pieceType() == PieceType::None) {
