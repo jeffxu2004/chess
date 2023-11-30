@@ -14,14 +14,14 @@ class King: public Piece, public Observer {
 	bool moved;
 	bool hasCastled;
 
-	vector<Subject*> subjects;
+	vector<Piece*> subjects;
 	
 public:
-	King(int weight, Colour side); // ctor
+	King(int weight, Colour side, pair<char,int> coords); // ctor
 	~King() override = default; // dtor
 	
 	// Overrides from Piece:	
-	vector<pair<char, int> getMoves(Board &b) const override;
+	vector<pair<char, int>> getMoves(Board &b) const override;
 
 	PieceType pieceType() const override;
 
@@ -34,7 +34,13 @@ public:
 
 	// Accessors and Mutators
 	// returns a vector of the subjects that the king is observing	
-	vector<Subject*> getSubjects() const;
+	vector<Piece*> getSubjects() const;
+
+	// sets a vector as the subject
+	void setSubjects(vector<Subject*>);
+
+	// clears the subjects vector in king
+	void clearSubjects();
 	
 	// appends a subject to the end of the vector
 	void addSubject(Subject* subject);
