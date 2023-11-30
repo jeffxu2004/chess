@@ -20,13 +20,13 @@ vector<pair<char, int>> Knight::getMoves(Board &b) const {
 
 	for (int i = 0; i < 8; i++) {
 		// Check if move would be out of bounds
-		int x = coords.first - 'a' possibleMoves[i][0];
-		int y = coords.second - 1 + possibleMoves[i][1];
+		int x = coords.first - 'a' + possibleMoves[i][0];
+		int y = 8 - coords.second - possibleMoves[i][1];
 		if (x < 0 || x >= tempGrid.size() || y < 0 || y >= tempGrid.size()) continue;
 		// Check if square is empty or opposing piece
-		Piece pieceAtLoc = tempGrid[coords.first - 'a' + possibleMoves[i][0]][coords.second - 1 + possibleMoves[i][1]];
+		Piece pieceAtLoc = tempGrid[coords.first - 'a' + possibleMoves[i][0]][8 - coords.second + possibleMoves[i][1]];
 		if (pieceAtLoc.PieceType() == PieceType::None || pieceAtLoc.getColour() != this->colour) {
-			moves.push_back(make_pair(static_cast<char>(x + 'a'), y + 1));
+			moves.push_back(make_pair(static_cast<char>(x + 'a'), 8 - y));
 		}
 	}
 	return moves;
