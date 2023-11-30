@@ -1,11 +1,12 @@
 #include "king.h"
+#include "rook.h"
 #include <vector>
 #include <utility>
 #include <memory>
 
 using namespace std;
 
-King::King(int weight, Colour side): Piece(weight, side) {}
+King::King(int weight, Colour side, pair<char,int> coords): Piece {weight, side, coords} {}
 
 vector<pair<char, int>> King::getMoves(Board &b) const{
 	pair<char,int> current = getCoords();
@@ -30,8 +31,9 @@ vector<pair<char, int>> King::getMoves(Board &b) const{
 	if (!hasMoved() && !inCheck()) {
 		if (getSide() == Colour::White){
 			for (Piece* piece:subjects) {
-				if (piece->pieceType == PieceType::Rook &&
-					!piece->hasMoved()) {
+				if (piece->pieceType() == PieceType::Rook) {
+					Rook* rook = dynamic_cast<Rook *>(piece);
+					if (!rook->hasMoved())
 					if (piece->getCoords().first == 'a')
 						moves.emplace_back(current.first+'a'-'c', current.second);
 					if (piece->getCoords().first == 'h')
@@ -40,7 +42,7 @@ vector<pair<char, int>> King::getMoves(Board &b) const{
 			}
 		} if (getSide() == Colour::Black) {
 			for (Piece* piece:subjects) {
-				if (piece->pieceType == PieceType::Rook &&
+				if (piece->pieceType() == PieceType::Rook &&
 					!piece->hasMoved()) {
 					if (piece->getCoords().first == 'a')
 						moves.emplace_back(current.first+'a'-'c', current.second);
@@ -72,6 +74,8 @@ Subscription getSubscription() const { return Subscription::King; }
 void King::notify(const Subject *item) {
 	
 }
+
+vector<Subject*> getSubjects() const { return subjects; }
 
 void King::addSubject(Piece* subject) { moves.push_back(subject); }
 
