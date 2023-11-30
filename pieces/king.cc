@@ -8,7 +8,7 @@ using namespace std;
 
 King::King(int weight, Colour side, pair<char,int> coords): Piece {weight, side, coords} {}
 
-vector<pair<char, int>> King::getMoves(Board &b) const{
+vector<pair<char, int>> King::getMoves(Board& b) const{
 	pair<char,int> current = getCoords();
 	vector<pair<char,int>> moves = {
 		// move left
@@ -33,7 +33,9 @@ vector<pair<char, int>> King::getMoves(Board &b) const{
 			for (Piece* piece:subjects) {
 				if (piece->pieceType() == PieceType::Rook) {
 					Rook* rook = dynamic_cast<Rook *>(piece);
-					if (!rook->hasMoved())
+					if (rook->hasMoved())
+						continue;
+
 					if (piece->getCoords().first == 'a')
 						moves.emplace_back(current.first+'a'-'c', current.second);
 					if (piece->getCoords().first == 'h')
@@ -42,8 +44,11 @@ vector<pair<char, int>> King::getMoves(Board &b) const{
 			}
 		} if (getSide() == Colour::Black) {
 			for (Piece* piece:subjects) {
-				if (piece->pieceType() == PieceType::Rook &&
-					!piece->hasMoved()) {
+				if (piece->pieceType() == PieceType::Rook) {
+					Rook* rook = dynamic_cast<Rook *>(piece);
+					if (rook->hasMoved())
+						continue;
+
 					if (piece->getCoords().first == 'a')
 						moves.emplace_back(current.first+'a'-'c', current.second);
 					if (piece->getCoords().first == 'h')
@@ -56,11 +61,11 @@ vector<pair<char, int>> King::getMoves(Board &b) const{
 	vector<vector<unique_ptr<Piece>>> grid = b.getGrid();
 	
 	for (auto it=moves.begin(); it !=moves.end(); ++it) {
-		if (it->first < 'a' || it->getCofirst > 'h')
+		if (it->first < 'a' || it->first > 'h')
 			moves.erase(it);
 		else if (it->second < 1 || it->second > 8)
 			moves.erase(it);
-		else if (grid[8-it->second][it->first-'a']->pieceType != PieceType::Blank)
+		else if (grid[8-it->second][it->first-'a']->pieceType() != PieceType::Blank)
 			moves.erase(it);
 	}
 
@@ -69,17 +74,24 @@ vector<pair<char, int>> King::getMoves(Board &b) const{
 
 PieceType King::pieceType() const { return PieceType::King; }
 
-Subscription getSubscription() const { return Subscription::King; }
+Subscription King::getSubscription() const { return Subscription::King; }
 
 void King::notify(const Subject *item) {
 	
 }
 
-vector<Subject*> getSubjects() const { return subjects; }
+vector<Piece*> King::getSubjects() const { return subjects; }
 
-void King::addSubject(Piece* subject) { moves.push_back(subject); }
+void King::addSubject(Piece* subject) { subjects.push_back(subject); }
 
-void King::dropSubject(Piece* subject) { moves.erase(subject); }
+void King::dropSubject(Piece* subject) { 
+	for (auto piece=subjects.begin(); piece != subjects.end(); ++piece) {
+		if (*piece == subject) {
+			subjects.erase(piece);
+			return;
+		}
+	}
+}
 
 bool King::inCheck() const { return check; }
 

@@ -4,7 +4,7 @@
 #include <vector>
 #include "observer.h"
 
-enum class PieceType { Pawn, Knight, Bishop, Rook, Queen, King, None };
+enum class PieceType { Pawn, Knight, Bishop, Rook, Queen, King, Blank };
 
 class Subject {
 protected:

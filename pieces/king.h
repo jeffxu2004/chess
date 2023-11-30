@@ -37,16 +37,16 @@ public:
 	vector<Piece*> getSubjects() const;
 
 	// sets a vector as the subject
-	void setSubjects(vector<Subject*>);
+	void setSubjects(vector<Piece*>);
 
 	// clears the subjects vector in king
 	void clearSubjects();
 	
 	// appends a subject to the end of the vector
-	void addSubject(Subject* subject);
+	void addSubject(Piece* subject);
 
 	// removes subject from subjects
-	void dropSubject(Subject* subject);
+	void dropSubject(Piece* subject);
 
 	bool inCheck() const;
 	bool hasMoved() const;
