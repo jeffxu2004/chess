@@ -30,16 +30,16 @@ public:
 	~Board(); // dtor
 
 	// returns the state field
-	Result getState();
+	Result getState() const;
 
 	// return the turn field 
-	Colour getTurn(); 
+	Colour getTurn() const; 
 
 	// returns promotion piece
-	PieceType getPromotionPiece();
+	PieceType getPromotionPiece() const;
 
 	// returns the grid
-	vector<vector<unique_ptr<Piece>>> getGrid();
+	vector<vector<unique_ptr<Piece>>> getGrid() const;
 
 	// returns a pointer to the piece at the specified coordinate on the square.
 	Piece* getPiece(pair<char, int> loc);
@@ -49,8 +49,6 @@ public:
 	
 	//Overloads the getPiece operator to return the coordinates of piece when passing in its address
 	pair<char,int> getPiece(Piece*);
-
-
 
 	// Initalizes the conventional chessboard with its respective pieces
 	void standardInit();

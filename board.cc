@@ -17,19 +17,19 @@ Board::~Board() {
     grid.clear();
 }
 
-PieceType Board::getPromotionPiece() {
+PieceType Board::getPromotionPiece() const {
     return promotionPiece;
 }
 
-Result Board::getState() {
+Result Board::getState() const {
     return state;
 }
 
-Colour Board::getTurn() {
+Colour Board::getTurn() const {
     return turn;
 }
 
-vector<vector<unique_ptr<Piece>>> Board::getGrid() {
+vector<vector<unique_ptr<Piece>>> Board::getGrid() const {
     return grid;
 }
 
