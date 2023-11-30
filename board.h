@@ -8,10 +8,11 @@
 #include <utility>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
-enum Result { Win, Loss, Draw, Continue };
+enum Result { Win, Draw, Continue };
 
 class Piece;
 
@@ -39,6 +40,9 @@ public:
 
 	// returns a pointer to the piece at the specified coordinate on the square.
 	Piece* getPiece(pair<char, int> loc);
+
+	// return a pointer of piece King of colour c
+	Piece* getKing(Colour c);
 	
 	//Overloads the getPiece operator to return the coordinates of piece when passing in its address
 	pair<char,int> getPiece(Piece*);
@@ -70,9 +74,9 @@ public:
 	// otherwise return false
 	bool kingIsNotCheck(pair<char, int> start, pair<char, int> end);
 
-	// plays move and notifies observers given it that kingIsNotCheck is true
+	// plays move and notifies king observers if kingIsNotCheck is true
+	// otherwise return false and does nothing
 	bool playLegalMove(pair<char, int> start, pair<char, int> end);
-
 
 	// returns true if the piece is a pawn and is promoting and false otherwise.
 	bool isPromoting(pair<char, int> start, pair<char, int> end);

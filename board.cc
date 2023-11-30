@@ -45,6 +45,16 @@ Piece* Board::getPiece(pair<char,int> loc) {
     }
 }
 
+Piece* Board::getKing(Colour c) {
+    for(auto &row : grid) {
+        for (auto &piece : row) {
+            if (piece->pieceType() == PieceType::King) { //finds king
+                return piece.get(); //returns raw ptr 
+            }
+        }
+    }
+}
+
 void Board::changeSquare(pair<char, int> loc, PieceType p, Colour side) {
     int col = loc.first - 'a';
     int row = 8 - loc.second;
@@ -55,53 +65,29 @@ void Board::changeSquare(pair<char, int> loc, PieceType p, Colour side) {
 // might make some changes later
 
 bool Board::playMove(pair<char, int> start, pair<char, int> end) {
-    int col1 = start.first - 'a';
-    int row1 = 8 - start.second; 
-    int col2 = end.first - 'a';
-    int row2 = 8 - end.second;
-    King* ownKing;
 
-    
-    if(grid[row1][col1]->getSide() != turn) return false; //check if moving piece of own colour
-    if(grid[row2][col2]->getSide() == turn) return false; //check if capturing own piece
-    
-    auto temp = move(grid[row2][col2]); // store piece that is going to be captured 
-    grid[row2][col2] = move(grid[row1][col1]); // moves piece to the designated square
+    bool legal = this->playLegalMove(start, end);
+    bool checkmate;
+    bool stalemate;
+    if (!legal) return false;
 
-    // changes original square to be a blank
-    grid[row1][col1] = PieceCreator::createPiece(PieceType::None, Colour::None, start);
+    turn = turn == Colour::White ? Colour::Black : Colour::White;
 
+    auto king =  dynamic_cast<King*>(getKing(turn)); //find king
+    bool isCheck = king->inCheck();  // check if king is in check
 
-
-    // iterate through pieces to notify king
-    for(auto &row : grid) {
-        for (auto &piece : row) {
-            if (piece->pieceType() == PieceType::King) { //if the piece is a king
-                King* k = dynamic_cast<King*>(piece.get());
-                auto subjects = k->getSubjects(); //obtain its observers
-                if (k->getSide() == turn) ownKing = k;
-                for(Piece* s : subjects) {
-                    // notify king if piece moved from starting square or to ending square
-                    if (s->getCoords() == start) grid[row1][col1]->notifyKing(); 
-                    if (s->getCoords() == end) grid[row2][col2]->notifyKing();                    
-                }
-            }
+    bool playableMove = false;
+    auto moves = getAllMoves(turn);
+    for (auto m : moves) { //iterates through possible moves next player can make
+        if(kingIsNotCheck(m.first, m.second)) { //checks if theres a single legal move
+            playableMove = true; 
+            break;
         }
     }
-
-    // THERE IS AN ISSUE: on reverting the notifyKing if the move is not valid
-    // currently WIP 
-    if (ownKing->inCheck()) {  // check if king is in check => not valid move
-        grid[row1][col1] = move(grid[row2][col2]);
-        grid[row2][col2] = move(temp);
-        return false;
+    if (playableMove == false) { // if there are no legal moves
+        if (isCheck == true) state = Result::Win; //if the king is in check other side wins
+        else state = Result::Draw; //otherwise its stalemate => draw
     }
-
-    // switches turns, can be better designed maybe
-    turn = turn == Colour::White ? Colour::Black : Colour::White;
-    
-    // Check checkmate
-    // Check Stalemate
 
     return true;
 }
@@ -117,9 +103,137 @@ bool Board::isPlayableMove(Piece *piece, pair<char, int> dest) {
     return false;
 }
 
+vector<pair<pair<char, int>,pair<char, int>>> Board::getAllMoves(Colour c) {
+    vector<pair<pair<char, int>,pair<char, int>>> list;
+    for(auto &row : grid) {
+        for (auto &piece : row) {
+            if (piece->getSide() == turn) {
+                auto moves = piece->getMoves(*this);
+                for(auto m : moves) {
+                    auto a = piece->getCoords();
+                    list.emplace_back(pair(a, m));
+                }
+            }
+        }
+    }
+}
+
+bool Board::kingIsNotCheck(pair<char, int> start, pair<char, int> end) {
+    int col1 = start.first - 'a';
+    int row1 = 8 - start.second; 
+    int col2 = end.first - 'a';
+    int row2 = 8 - end.second;
+    vector<Piece*> ownSubjects; //used to store original observers of white king
+    vector<Piece*> oppSubjects; //used to store original observers of black king
+    King* ownKing;
+    King* oppKing;
+    bool notCheck;
+
+    
+    if(grid[row1][col1]->getSide() != turn) return false; //check if moving piece of own colour
+    if(grid[row2][col2]->getSide() == turn) return false; //check if capturing own piece
+    
+    auto temp = move(grid[row2][col2]); // store piece that is going to be captured 
+    grid[row2][col2] = move(grid[row1][col1]); // moves piece to the designated square
+
+    // changes original square to be a blank
+    grid[row1][col1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, start);
+
+
+
+    // iterate through pieces to notify king
+    for(auto &row : grid) {
+        for (auto &piece : row) {
+            if (piece->pieceType() == PieceType::King) { //if the piece is a king
+
+                King* k = dynamic_cast<King*>(piece.get());
+                auto subjects = k->getSubjects(); //obtain its observers
+
+                if (k->getSide() == turn) ownKing = k; //store pointer of own king
+                if (k->getSide() != turn) oppKing = k;
+                if (k->getSide() == turn) ownSubjects = subjects; // store subjects for own king
+                if (k->getSide() != turn) ownSubjects = subjects; 
+
+                for(Piece* s : subjects) {
+                    // notify king if piece moved from starting square or to ending square
+                    if (s->getCoords() == start) grid[row1][col1]->notifyKing(); 
+                    if (s->getCoords() == end) grid[row2][col2]->notifyKing();        
+                }
+            }
+        }
+    }
+
+    notCheck = ownKing->inCheck() ? false : true;
+
+    ownKing->setSubjects(ownSubjects);
+    oppKing->setSubjects(oppSubjects);
+    
+    grid[row1][col1] = move(grid[row2][col2]);
+    grid[row2][col2] = move(temp);
+
+    return notCheck;
+
+}
+
+
+bool Board::playLegalMove(pair<char, int> start, pair<char, int> end){
+    int col1 = start.first - 'a';
+    int row1 = 8 - start.second; 
+    int col2 = end.first - 'a';
+    int row2 = 8 - end.second;
+    vector<Piece*> ownSubjects; //used to store original observers of white king
+    vector<Piece*> oppSubjects; //used to store original observers of black king
+    King* ownKing;
+    King* oppKing;
+    bool notCheck;
+
+    
+    if(grid[row1][col1]->getSide() != turn) return false; //check if moving piece of own colour
+    if(grid[row2][col2]->getSide() == turn) return false; //check if capturing own piece
+    
+    auto temp = move(grid[row2][col2]); // store piece that is going to be captured 
+    grid[row2][col2] = move(grid[row1][col1]); // moves piece to the designated square
+
+    // changes original square to be a blank
+    grid[row1][col1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, start);
+
+
+
+    // iterate through pieces to notify king
+    for(auto &row : grid) {
+        for (auto &piece : row) {
+            if (piece->pieceType() == PieceType::King) { //if the piece is a king
+
+                King* k = dynamic_cast<King*>(piece.get());
+                auto subjects = k->getSubjects(); //obtain its observers
+
+                if (k->getSide() == turn) ownKing = k; //store pointer of own king
+                if (k->getSide() != turn) oppKing = k;
+                if (k->getSide() == turn) ownSubjects = subjects; // store subjects for own king
+                if (k->getSide() != turn) ownSubjects = subjects; 
+
+                for(Piece* s : subjects) {
+                    // notify king if piece moved from starting square or to ending square
+                    if (s->getCoords() == start) grid[row1][col1]->notifyKing(); 
+                    if (s->getCoords() == end) grid[row2][col2]->notifyKing();        
+                }
+            }
+        }
+    }
+
+    if (ownKing->inCheck()) {
+        ownKing->setSubjects(ownSubjects);
+        oppKing->setSubjects(oppSubjects);
+        
+        grid[row1][col1] = move(grid[row2][col2]);
+        grid[row2][col2] = move(temp);
+        return false;
+    }
+    return true;
+}
 
 void Board::playMove(pair<char, int> start, pair<char, int> end, PieceType type, Colour side) {
-    // heheheha
+
 }
 
 bool Board::isPromoting(pair<char, int> start, pair<char, int> end) {
@@ -131,7 +245,7 @@ void Board::attach(Observer* obs) {
 }
 
 void Board::detach(Observer* obs) {
-    auto it = std::find(observers.begin(), observers.end(), obs);
+    auto it = find(observers.begin(), observers.end(), obs);
     if (it != observers.end()) {
         observers.erase(it);
     }
