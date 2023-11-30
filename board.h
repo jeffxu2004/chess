@@ -61,12 +61,18 @@ public:
 	// it promotes into is passed into the function as an additional parameter as well as the colour.
 	void playMove(pair<char, int> start, pair<char, int> end, PieceType type, Colour side);
 
+	// returns a list of possible moves that colour c is able to make in the current poistion
+	// where the first pair is where the piece is moving from, and the second pair is where the piece is moving to
+	// does not check for whether moving the piece will make its own king in check
+	vector <pair <pair<char, int>, pair<char, int> >> getAllMoves(Colour c);
+
 	// returns true if the piece is a pawn and is promoting and false otherwise.
 	bool isPromoting(pair<char, int> start, pair<char, int> end);
 	
     void attach(Observer* obs) override;
 
     void detach(Observer* obs) override;
+
 
 	// notifies ALL observers
 	void notifyAllObservers() override;
