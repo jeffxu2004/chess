@@ -12,6 +12,7 @@ protected:
 public:
     virtual void attach(Observer *observer) = 0;
     virtual void detach(Observer *observer) = 0;
+    int observerLength() { return observers.size(); }
     virtual void notifyAllObservers() = 0;
 	~Subject() = default;
 };

@@ -12,7 +12,7 @@ class Observer {
 public:
     virtual ~Observer() = default;
     virtual void notify(const Subject* item) = 0;
-    virtual void notify(const Subject* item, const Board &b) = 0;
+    virtual void notify(const Subject* item, const Board* b) = 0;
     virtual Subscription getSubscription() = 0;
 };
 

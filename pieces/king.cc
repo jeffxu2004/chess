@@ -6,7 +6,9 @@
 
 using namespace std;
 
-King::King(int weight, Colour side, pair<char,int> coords): Piece {weight, side, coords} {}
+King::King(int weight, Colour side, pair<char,int> coords): Piece {weight, side, coords} {
+
+}
 
 vector<pair<char, int>> King::getMoves(Board& b) const{
 	pair<char,int> current = getCoords();
@@ -76,7 +78,7 @@ PieceType King::pieceType() const { return PieceType::King; }
 
 Subscription King::getSubscription() const { return Subscription::King; }
 
-void King::notify(const Subject* item, const Board& b) {
+void King::notify(const Subject* item, const Board* b) {
 	char kingCol = int(getCoords().first - 'a');
 	int kingRow = 8 - getCoords().second;
 
@@ -92,7 +94,7 @@ void King::notify(const Subject* item, const Board& b) {
 	};
 
 	const Piece* piece = dynamic_cast<const Piece*> (item);
-	const vector<vector<unique_ptr<Piece>>> grid = b.getGrid();
+	const vector<vector<unique_ptr<Piece>>> grid = b->getGrid();
 	
 	int row = 8 - piece->getCoords().second;
 	int col = int(piece->getCoords().first - 'a');
@@ -375,8 +377,11 @@ void King::notify(const Subject* item, const Board& b) {
 			++inc;
 		}
 	}
-
+	// Check if the king is in check
 	for(auto subject:subjects) {
+		if (subject->observerLength() == 0)
+			subject->attach(this);
+
 		if (subject->pieceType() != PieceType::Blank && 
 			subject->getSide() != getSide()) {
 			int pieceCol = int(subject->getCoords().first-'a');
