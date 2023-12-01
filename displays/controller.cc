@@ -14,3 +14,7 @@ void Controller::notify(const Subject *item) {
     td->update(item);
     // gd->update(item);
 }
+
+TextDisplay& Controller::getTd() { return *td; }
+
+GraphicsDisplay& Controller::getGd() { return *gd; }

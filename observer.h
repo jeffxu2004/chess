@@ -2,9 +2,9 @@
 #define OBSERVER_H
 
 #include <vector>
-#include "board.h"
 
 class Subject;
+class Board;
 
 enum class Subscription { All, King };
 

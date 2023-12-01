@@ -10,4 +10,6 @@ public:
     Controller(int n);
     Subscription getSubscription() const override;
     void notify(const Subject *item) override;
+    TextDisplay& getTd();
+    GraphicsDisplay& getGd();
 };

@@ -37,7 +37,7 @@ void TextDisplay::update(const Subject* item) {
     display[row][col] = PieceCreator::createPiece(piece->pieceType(), piece->getSide(), isDark);
 }
 
-ostream& operator<<(ostream& out, const TextDisplay &td) {
+ostream& operator<<(ostream& out, const TextDisplay& td) {
     int width = td.gridSize;
 
     // print top border

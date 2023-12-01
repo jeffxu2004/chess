@@ -12,5 +12,5 @@ class TextDisplay {
 public:
     TextDisplay(int n);
     void update(const Subject* item);
-    friend ostream& operator<<(ostream& out, const TextDisplay &td);
+    friend ostream& operator<<(ostream& out, const TextDisplay& td);
 };
