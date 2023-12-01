@@ -1,9 +1,11 @@
 #include "chessbot.h"
+#include "../board.h"
+#include "../pieces/piece.h"
 #include <cstdlib>
 
 class LevelOne : ChessBot {
 public:
-	pair<char, int> getNextMove(Board &b) override {
+	pair<pair<char, int>, pair<char, int>> getNextMove(Board &b) override {
 		vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(this->colour);
 	
 		// getAllMoves does not consider if the move will place/leave the king in check,
@@ -24,13 +26,17 @@ public:
  	    	// Mod the number by the length of the array of moves
 			// so that the number represents a random index in the list of moves
     		int index = rand()%possibleMoves.size();
-			bool play = playLegalMove(possibleMoves[index]);
-
+			
 			// If pawn is promoting, pick random piece
 			if (b.isPromoting(possibleMoves[index].first, possibleMoves[index].second)) {
-				// Nothing yet
+				int r = rand()%4;
+				if (r == 0) setPromotionPiece(PieceType::Queen);
+				else if (r == 1) setPromotionPiece(PieceType::Rook);
+				else if (r == 2) setPromotionPiece(PieceType::Knight);
+				else if (r == 3) setPromotionPiece(PieceType::Bishop);
 			}
 
+			playLegalMove(possibleMoves[index].first, possibleMoves[index].second);
 			return possibleMoves[index];
     	} else {
     	   	// No valid moves, return a '0' instead of a letter from a to h to indicate this 
