@@ -1,7 +1,6 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "subject.h"
 #include "piececreator.h"
 #include "pieces/piece.h"
 #include <memory>
@@ -16,7 +15,7 @@ enum Result { Win, Draw, Continue };
 
 class Piece;
 
-class Board : public Subject {
+class Board {
 	vector<vector<unique_ptr<Piece>>> grid;
 	Result state = ::Result::Continue;
   	vector<Observer*> observers;
@@ -104,13 +103,13 @@ public:
 	bool isEnPas(pair<char, int> start, pair<char, int> end);
 
 	
-    void attach(Observer* obs) override;
+    void attach(Observer* obs);
 
-    void detach(Observer* obs) override;
+    void detach(Observer* obs);
 
 
 	// notifies ALL observers
-	void notifyAllObservers(Subject* p) override;
+	void notifyAllObservers(Piece* p);
 
 };
 

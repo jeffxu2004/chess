@@ -9,5 +9,6 @@ public:
 	int getWeight() const;
 	Colour getSide() const;
 	pair<char, int> getCoords() const;
+	vector<pair<char,int>> getMoves(const Board &) const override;
 	void setCoords(pair<char, int> coords);
 };

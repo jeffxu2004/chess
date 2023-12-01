@@ -3,8 +3,10 @@ using namespace std;
 #include "board.h"
 
 Board::Board(int n = 8) {
-    grid = vector<vector<unique_ptr<Piece>>> (n, vector<unique_ptr<Piece>> (n, 
-            PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair('a',1))));
+    unique_ptr<Piece> piece = make_unique<Piece>(0, Colour::None, make_pair('a',1));
+    vector<unique_ptr<Piece>> row (n, piece);
+    grid = vector<vector<unique_ptr<Piece>>> (n, row);
+
     size = n;
 
     for (char col = 'a'; col <= 'h'; col++) {
@@ -353,7 +355,7 @@ void Board::detach(Observer* obs) {
     }
 }
 
-void Board::notifyAllObservers(Subject* p) {
+void Board::notifyAllObservers(Piece* p) {
   for (Observer *observer : observers) {
       if (observer->getSubscription() == Subscription::All) { 
           observer->notify(p);

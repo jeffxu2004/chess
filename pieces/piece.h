@@ -1,15 +1,15 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-#include "../subject.h"
 #include <vector>
 #include <utility>
 
 using namespace std;
 
 enum class Colour { White, Black, None};
+enum class PieceType { Pawn, Knight, Bishop, Rook, Queen, King, Blank };
 
-class Piece : public Subject {
+class Piece {
 protected:	
 	int weight;
 	Colour side;

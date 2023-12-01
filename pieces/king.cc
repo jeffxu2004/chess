@@ -382,9 +382,6 @@ void King::notify(const Subject* item, const Board* b) {
 
 	// Check if the king is in check
 	for(auto subject:subjects) {
-		if (subject->observerLength() == 0)
-			subject->attach(this);
-
 		if (subject->pieceType() != PieceType::Blank && 
 			subject->getSide() != getSide()) {
 			int pieceCol = int(subject->getCoords().first-'a');
