@@ -236,6 +236,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     ownSubjects = subjects;
     for(Piece* s : subjects) {
         // notify king if piece moved from starting square or to ending square
+        // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
         if (s->getCoords() == start) grid[row1][col1]->notifyKing(); 
         if (s->getCoords() == end) grid[row2][col2]->notifyKing();        
     }
@@ -245,6 +246,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     oppSubjects = subjects;
     for(Piece* s : subjects) {
         // notify king if piece moved from starting square or to ending square
+        // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
         if (s->getCoords() == start) grid[row1][col1]->notifyKing(); 
         if (s->getCoords() == end) grid[row2][col2]->notifyKing();        
     }

@@ -29,7 +29,7 @@ public:
 	// Overrides from Observer:
 	Subscription getSubscription() const;
 	
-	void notify(const Subject* item, const Board& b) override;
+	void notify(const Subject* item, const Board* b) override;
 
 
 	// Accessors and Mutators

@@ -33,15 +33,8 @@ public:
 
 	void setCoords(pair<char,int> coords);
 
-	// Pieces must notify the king if they move in/out of the king's check-able squares.
-	// Each checkable square is setup upon board initialization and is changed when:
-	//    * the king moves
-	//    * a piece moves into the check-able squares (resulting in some of the original squares to be blocked
-	//    * a pieces moves out of the check-able squares (resulting in new squares that are check-able)
-	void notifyKing();
-
 	// operator overload to check if the piece is the same
-	bool operator==(Piece *other);
+	bool operator==(Piece* other);
 };
 
 #endif
