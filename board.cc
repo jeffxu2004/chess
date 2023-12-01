@@ -59,35 +59,39 @@ Piece* Board::getKing(Colour c) {
 }
 
 void Board::standardInit() {
-    for (int col = 1; col <= size; col++) {
-        grid[1][col - 1] = PieceCreator::createPiece(PieceType::Pawn, Colour::Black, std::pair<int, int>(col, 2));
-        grid[6][col - 1] = PieceCreator::createPiece(PieceType::Pawn, Colour::White, std::pair<int, int>(col, 7));
+    // Pawns
+    for (char col = 'a'; col <= 'h'; col++) {
+        grid[6][col - 'a'] = PieceCreator::createPiece(PieceType::Pawn, Colour::Black, make_pair(col, 2));
+        grid[1][col - 'a'] = PieceCreator::createPiece(PieceType::Pawn, Colour::White, make_pair(col, 7));
     }
 
-    grid[0][0] = PieceCreator::createPiece(PieceType::Rook, Colour::Black, pair(1, 1));
-    grid[0][7] = PieceCreator::createPiece(PieceType::Rook, Colour::Black, pair(8, 1));
-    grid[7][0] = PieceCreator::createPiece(PieceType::Rook, Colour::White, pair(1, 8));
-    grid[7][7] = PieceCreator::createPiece(PieceType::Rook, Colour::White, pair(8, 8));
+    // Rooks
+    grid[7][0] = PieceCreator::createPiece(PieceType::Rook, Colour::Black, make_pair('a', 8));
+    grid[7][7] = PieceCreator::createPiece(PieceType::Rook, Colour::Black, make_pair('h', 8));
+    grid[0][0] = PieceCreator::createPiece(PieceType::Rook, Colour::White, make_pair('a', 1));
+    grid[0][7] = PieceCreator::createPiece(PieceType::Rook, Colour::White, make_pair('h', 1));
 
-    grid[0][1] = PieceCreator::createPiece(PieceType::Knight, Colour::Black, pair(2, 1));
-    grid[0][6] = PieceCreator::createPiece(PieceType::Knight, Colour::Black, pair(7, 1));
-    grid[7][1] = PieceCreator::createPiece(PieceType::Knight, Colour::White, pair(2, 8));
-    grid[7][6] = PieceCreator::createPiece(PieceType::Knight, Colour::White, pair(7, 8));
+    // Knights
+    grid[7][1] = PieceCreator::createPiece(PieceType::Knight, Colour::Black, make_pair('b', 8));
+    grid[7][6] = PieceCreator::createPiece(PieceType::Knight, Colour::Black, make_pair('g', 8));
+    grid[0][1] = PieceCreator::createPiece(PieceType::Knight, Colour::White, make_pair('b', 1));
+    grid[0][6] = PieceCreator::createPiece(PieceType::Knight, Colour::White, make_pair('g', 1));
 
-    // Set up Bishops
-    grid[0][2] = PieceCreator::createPiece(PieceType::Bishop, Colour::Black, pair(3, 1));
-    grid[0][5] = PieceCreator::createPiece(PieceType::Bishop, Colour::Black, pair(6, 1));
-    grid[7][2] = PieceCreator::createPiece(PieceType::Bishop, Colour::White, pair(3, 8));
-    grid[7][5] = PieceCreator::createPiece(PieceType::Bishop, Colour::White, pair(6, 8));
+    // Bishops
+    grid[7][2] = PieceCreator::createPiece(PieceType::Bishop, Colour::Black, make_pair('c', 8));
+    grid[7][5] = PieceCreator::createPiece(PieceType::Bishop, Colour::Black, make_pair('f', 8));
+    grid[0][2] = PieceCreator::createPiece(PieceType::Bishop, Colour::White, make_pair('c', 1));
+    grid[0][5] = PieceCreator::createPiece(PieceType::Bishop, Colour::White, make_pair('f', 1));
 
-    // Set up Queens
-    grid[0][3] = PieceCreator::createPiece(PieceType::Queen, Colour::Black, pair(4, 1));
-    grid[7][3] = PieceCreator::createPiece(PieceType::Queen, Colour::White, pair(4, 8));
+    // Queens
+    grid[7][3] = PieceCreator::createPiece(PieceType::Queen, Colour::Black, make_pair('d', 8));
+    grid[0][3] = PieceCreator::createPiece(PieceType::Queen, Colour::White, make_pair('d', 1));
 
-    // Set up Kings
-    grid[0][4] = PieceCreator::createPiece(PieceType::King, Colour::Black, pair(5, 1));
-    grid[7][4] = PieceCreator::createPiece(PieceType::King, Colour::White, pair(5, 8));
+    // Kings
+    grid[7][4] = PieceCreator::createPiece(PieceType::King, Colour::Black, make_pair('e', 8));
+    grid[0][4] = PieceCreator::createPiece(PieceType::King, Colour::White, make_pair('e', 1));
 }
+
 
 bool Board::validSetup() {
     int countw = 0;
@@ -118,6 +122,10 @@ void Board::changeSquare(pair<char, int> loc, PieceType p, Colour side) {
 }
 
 bool Board::playMove(pair<char, int> start, pair<char, int> end) {
+    int col1 = start.first - 'a';
+    int row1 = size - start.second; 
+
+    if (isPlayableMove(grid[row1][col1].get(), end) == false) return false;
 
     bool legal = this->playLegalMove(start, end);
     bool checkmate;
@@ -165,7 +173,7 @@ vector<pair<pair<char, int>,pair<char, int>>> Board::getAllMoves(Colour c) {
                 auto moves = piece->getMoves(*this);
                 for(auto m : moves) { 
                     auto a = piece->getCoords();
-                    list.emplace_back(pair(a, m)); //adds all possible moves to a vector
+                    list.emplace_back(make_pair(a, m)); //adds all possible moves to a vector
                 }
             }
         }
@@ -214,13 +222,13 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         temp = move(grid[row2 + 1][col2]); // store pawn that is going to be captured 
         temp2 = move(grid[row1][col1]); // stores piece that is going to be moved        
         grid[row2][col2] = PieceCreator::createPiece(PieceType::Pawn, turn, end);
-        grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Pawn, turn, pair(col2 + 'a', row2 + 1));      
+        grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Pawn, turn, make_pair(col2 + 'a', row2 + 1));      
     } else if (castle) {
         temp = move(grid[row2][col2]); // store piece that is going to be captured 
         temp2 = move(grid[row1][col1]); // stores piece that is going to be moved
         grid[row2][col2] = PieceCreator::createPiece(PieceType::King, turn, end); 
-        if (col2 > col1) grid[row2][col2 - 1] = PieceCreator::createPiece(PieceType::Rook, turn, pair(col2 + 'a' - 1, row2));
-        else grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Rook, turn, pair(col2 + 'a' + 1, row2));
+        if (col2 > col1) grid[row2][col2 - 1] = PieceCreator::createPiece(PieceType::Rook, turn, make_pair(col2 + 'a' - 1, row2));
+        else grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Rook, turn, make_pair(col2 + 'a' + 1, row2));
     } else {
         temp = move(grid[row2][col2]); // store piece that is going to be captured 
         temp2 = move(grid[row1][col1]); // stores piece that is going to be moved
@@ -258,14 +266,14 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
             grid[row2+1][col1] = move(temp); //restore captured pawn
             grid[row2][col2] = PieceCreator::createPiece(PieceType::Pawn, Colour::None, end);
             // restores squares to blanks
-            grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::None, pair(col2 + 'a', row2 + 1));                 
+            grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col2 + 'a', row2 + 1));                 
         } else if (castle) {
             grid[row1][col1] = move(temp2); // restore orginal move
             grid[row2+1][col1] = move(temp); //restore captured pawn
             grid[row2][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::None, end); 
             // restores squares to blanks
-            if (col2 > col1) grid[row2][col2 - 1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, pair(col2 + 'a' - 1, row2));
-            else grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, pair(col2 + 'a' + 1, row2));
+            if (col2 > col1) grid[row2][col2 - 1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col2 + 'a' - 1, row2));
+            else grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col2 + 'a' + 1, row2));
         }
 
         if (revert) return !inCheck;

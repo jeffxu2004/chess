@@ -98,9 +98,7 @@ public:
 	bool isCastle(pair<char, int> start, pair<char, int> end);
 
 	// returns true if the current move is enpassent 
-	bool isEnPas(pair<char, int> start, pair<char, int> end) {
-
-	}
+	bool isEnPas(pair<char, int> start, pair<char, int> end);
 
 	
     void attach(Observer* obs) override;
