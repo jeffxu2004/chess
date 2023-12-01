@@ -21,6 +21,11 @@ class LevelThree : ChessBot {
                 weight += 2;
                 break;
             }
+			pair<char, int> coords = b.getPiece(move)->getCoords();
+			if (coords == make_pair('d', 4) || coords == make_pair('d', 5) ||
+				coords == make_pair('e', 4) || coords == make_pair('e', 5)) {
+				weight++;
+			}
         }
 
         return weight;
@@ -35,7 +40,7 @@ class LevelThree : ChessBot {
 		int opponent = 0;
 
 		if (b.playLegalMove(start, end)) {
-	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves((colour == Colour::White)?Colour::Black::Colour::White);
+	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves((colour == Colour::White)?Colour::Black:Colour::White);
 			
 			// Find the opponent move that would yield them the most points
         	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
@@ -55,7 +60,7 @@ public:
 
 		// For each possible move, do a simple check as to if the move immediately problematic
 		// Basically just checks small things such as whether trade will be a net positive for bot
-		pair<pair<pair<char, int>, pair<char, int>>, int> bestMove(make_pair(make_pair('0', 0), make_pair('0', 0)), -1);
+		pair<pair<pair<char, int>, pair<char, int>>, int> bestMove(make_pair(make_pair('0', 0), make_pair('0', 0)), INT_MIN);
 		
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
 			int value = valueOfMove(b, move.first, move.second);
@@ -63,10 +68,8 @@ public:
 		}
 
 		// If there is no moves that give any points, just pick the first move from possible moves (if that is empty return no valid moves)
-		if (!possibleMoves.empty()) {
-			if (bestMove.second != -1) {
-				bestMove.first = possibleMoves[0];
-			}
+		if (bestMove.second != INT_MIN) {
+			bestMove.first = possibleMoves[0];
 
 			// If promoting, always choose queen
             if (b.isPromoting(bestMove.first.first, bestMove.first.second)) {

@@ -5,26 +5,26 @@
 #include <limits>
 
 class LevelFour : ChessBot {
-    // Takes in the grid and a pair indicating the destination of the move in question
-    // This function returns zero if the destination is an empty square, otherwise it returns
-    // the weight of the piece taken.
-    // Checks have a weight of two. (If a move takes a piece and checks the enemy king, the weight is summed)
+    // Gives a weight to the move
     int weightOfMove(Board &b, pair<char, int> start, pair<char, int> dest) {
         int weight = b.getPiece(dest)->getWeight();
-        int check = 0;
 
         // Create a copy of my piece and check if this move will result in the piece checking the king
         Piece copy = *b.getPiece(start);
         copy.setCoords(dest);
         vector<pair<char, int>> moves = copy.getMoves();
         for (auto move : moves) {
-            if (b.getPiece(move)->PieceType == PieceType::King) {
-                check = 2;
-                break;
+            if (b.getPiece(move)->PieceType() == PieceType::King) {
+                weight += 2;
             }
+			pair<char, int> coords = b.getPiece(move)->getCoords();
+			if (coords == make_pair('d', 4) || coords == make_pair('d', 5) ||
+				coords == make_pair('e', 4) || coords == make_pair('e', 5)) {
+				weight++;
+			}
         }
 
-        return weight + check;
+        return weight;
     }
 
 	// Recursively reads depth moves ahead and returns an integer indicating the value of the move
@@ -38,7 +38,7 @@ class LevelFour : ChessBot {
 		int check = 0;
 		int opponent = 0;
 
-		col = (col == Colour::White)?Colour::Black::Colour::White;
+		col = (col == Colour::White)?Colour::Black:Colour::White;
 		if (b.playLegalMove(start, end)) {
 	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(col);
 			
