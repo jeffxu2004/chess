@@ -2,15 +2,15 @@
 #define PIECE_CREATOR_H
 
 #include <string>
-#include <piece.h>
+#include <pieces/piece.h>
 #include <memory>
-#include "blank.h"
-#include "pawn.h"
-#include "rook.h"
-#include "knight.h"
-#include "bishop.h"
-#include "queen.h"
-#include "king.h"
+#include "pieces/blank.h"
+#include "pieces/pawn.h"
+#include "pieces/rook.h"
+#include "pieces/knight.h"
+#include "pieces/bishop.h"
+#include "pieces/queen.h"
+#include "pieces/king.h"
 
 class PieceCreator {
 public:	

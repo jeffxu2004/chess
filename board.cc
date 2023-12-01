@@ -1,6 +1,6 @@
 using namespace std;
 
-#include "board.h";
+#include "board.h"
 
 Board::Board(int n = 8) {
     grid.resize(n, vector<unique_ptr<Piece>>(n, nullptr));
