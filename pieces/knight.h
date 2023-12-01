@@ -15,5 +15,4 @@ public:
 	Colour getSide() const;
 	pair<char, int> getCoords() const;
 	void setCoords(pair<char,int> coords);
-	void notifyKing();
 };

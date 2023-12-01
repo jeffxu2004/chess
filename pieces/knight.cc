@@ -1,7 +1,7 @@
 #include "knight.h"
 #include "board.h"
 
-Knight::Knight(int weight, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
+Knight::Knight(int weight = 3, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
 
 PieceType Knight::pieceType() const { return PieceType::Knight; }
 
@@ -24,7 +24,7 @@ vector<pair<char, int>> Knight::getMoves(const Board &b) const {
 		int y = 8 - coords.second - possibleMoves[i][1];
 		if (x < 0 || x >= (int)tempGrid.size() || y < 0 || y >= (int)tempGrid.size()) continue;
 		// Check if square is empty or opposing piece
-		Piece* pieceAtLoc = b.getPiece(make_pair(coords.first +  possibleMoves[i][0], coords.second - possibleMoves[i][1]));
+		Piece* pieceAtLoc = tempGrid[coords.first - 'a' + possibleMoves[i][0]][8 - coords.second + possibleMoves[i][1]];
 		if (pieceAtLoc->pieceType() == PieceType::Blank || pieceAtLoc->getSide() != this->side) {
 			moves.push_back(make_pair(static_cast<char>(x + 'a'), 8 - y));
 		}
@@ -36,7 +36,3 @@ int Knight::getWeight() const { return this->weight; }
 Colour Knight::getSide() const { return this->side; }
 pair<char, int> Knight::getCoords() const { return this->coords; }
 void Knight::setCoords(pair<char, int> coords) { this->coords = coords; }
-
-void Knight::notifyKing() {
-
-}

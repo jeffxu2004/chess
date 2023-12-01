@@ -17,8 +17,8 @@ public:
 	bool canBeEnPas() const; // for beEnPas
 	
 	// Mutators (called in getMoves() after the pawn is moved)
-	void setMoveTwo(bool canMove) const; // for moveTwo
-	void setEnPas(bool canEnPas) const; // for beEnPas
+	void setMoveTwo(bool canMove); // for moveTwo
+	void setEnPas(bool canEnPas); // for beEnPas
 	
 	PieceType pieceType() const override;
 	vector<pair<char, int>> getMoves(const Board &b) const override;
@@ -26,6 +26,4 @@ public:
 	Colour getSide() const;
 	pair<char,int> getCoords() const;
 	void setCoords(pair<char,int> coords);
-	
-	void notifyKing();
 };

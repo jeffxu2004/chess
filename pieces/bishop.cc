@@ -1,13 +1,13 @@
 #include "bishop.h"
 #include "board.h"
 
-Bishop::Bishop(int weight, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
+Bishop::Bishop(int weight = 3, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
 
 PieceType Bishop::pieceType() const { return PieceType::Bishop; }
 
 vector<pair<char, int>> Bishop::getMoves(const Board &b) const {
     vector<pair<char, int>> moves;
-    vector<vector<unique_ptr<Piece>>> tempGrid = b.getGrid();
+    vector<vector<Piece*>> tempGrid = b.getGrid();
     
 	// Booleans indicating if the search has encountered end of board/a piece
 	bool topleft = true, topright = true, bottomleft = true, bottomright = true;
@@ -75,7 +75,3 @@ int Bishop::getWeight() const { return this->weight; }
 Colour Bishop::getSide() const { return this->side; }
 pair<char, int> Bishop::getCoords() const { return this->coords; }
 void Bishop::setCoords(pair<char, int> coords) { this->coords = coords; }
-
-void Bishop::notifyKing() {
-
-}
