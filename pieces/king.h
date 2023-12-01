@@ -1,7 +1,7 @@
 #include <vector>
 #include <utility>
 #include "piece.h"
-#include "observer.h"
+#include "../observer.h"
 
 using namespace std;
 

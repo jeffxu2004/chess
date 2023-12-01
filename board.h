@@ -3,7 +3,7 @@
 
 #include "subject.h"
 #include "piececreator.h"
-#include "../pieces/piece.h"
+#include "pieces/piece.h"
 #include <memory>
 #include <utility>
 #include <vector>
