@@ -29,7 +29,7 @@ public:
 	// Overrides from Observer:
 	Subscription getSubscription() const;
 	
-	void notify(const Subject *item) override;
+	void notify(const Subject* item, const Board& b) override;
 
 
 	// Accessors and Mutators
@@ -37,7 +37,7 @@ public:
 	vector<Piece*> getSubjects() const;
 
 	// sets a vector as the subject
-	void setSubjects(vector<Piece*>);
+	void setSubjects(vector<Piece*> newSubjects);
 
 	// clears the subjects vector in king
 	void clearSubjects();
