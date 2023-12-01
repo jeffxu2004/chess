@@ -45,10 +45,13 @@ public:
 	Piece* getPiece(pair<char, int> loc);
 
 	// return a pointer of piece King of colour c
-	Piece* getKing(Colour c);
+	King* getKing(Colour c);
 	
 	//Overloads the getPiece operator to return the coordinates of piece when passing in its address
 	pair<char,int> getPiece(Piece*);
+
+	//set promotion piece
+	void setPromotionPiece(PieceType);
 
 	// Initalizes the conventional chessboard with its respective pieces
 	void standardInit();
