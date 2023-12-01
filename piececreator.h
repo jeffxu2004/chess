@@ -2,7 +2,7 @@
 #define PIECE_CREATOR_H
 
 #include <string>
-#include <pieces/piece.h>
+#include "pieces/piece.h"
 #include <memory>
 #include "pieces/blank.h"
 #include "pieces/pawn.h"
