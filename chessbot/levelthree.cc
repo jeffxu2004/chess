@@ -11,20 +11,19 @@ class LevelThree : ChessBot {
     // Checks have a weight of two. (If a move takes a piece and checks the enemy king, the weight is summed)
     int weightOfMove(Board &b, pair<char, int> start, pair<char, int> dest) {
         int weight = b.getPiece(dest)->getWeight();
-        int check = 0;
 
         // Create a copy of my piece and check if this move will result in the piece checking the king
         Piece copy = *b.getPiece(start);
         copy.setCoords(dest);
         vector<pair<char, int>> moves = copy.getMoves();
         for (auto move : moves) {
-            if (b.getPiece(move)->PieceType == PieceType::King) {
-                check = 2;
+            if (b.getPiece(move)->PieceType() == PieceType::King) {
+                weight += 2;
                 break;
             }
         }
 
-        return weight + check;
+        return weight;
     }
 
 	// Takes in a copy of the board and a pair indicating the destination of the move in question
