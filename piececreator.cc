@@ -21,4 +21,41 @@ public:
                 return make_unique<Blank>(side, location);
         }
     }
+
+    static char createPiece(PieceType type, Colour side, bool isDark) {
+        switch (type) {
+            case PieceType::Pawn:
+                if (side == Colour::Black)
+                    return 'p';
+                else if (side == Colour::White)
+                    return 'P';
+            case PieceType::Rook:
+                if (side == Colour::Black)
+                    return 'r';
+                else if (side == Colour::White)
+                    return 'R';
+            case PieceType::Knight:
+                if (side == Colour::Black)
+                    return 'n';
+                else if (side == Colour::White)
+                    return 'N';
+            case PieceType::Bishop:
+                if (side == Colour::Black)
+                    return 'b';
+                else if (side == Colour::White)
+                    return 'B';
+            case PieceType::Queen:
+                if (side == Colour::Black)
+                    return 'q';
+                else if (side == Colour::White)
+                    return 'Q';
+            case PieceType::King:
+                if (side == Colour::Black)
+                    return 'k';
+                else if (side == Colour::White)
+                    return 'K';
+            default:
+                return (isDark ? '_' : ' ');
+        }
+    }
 };

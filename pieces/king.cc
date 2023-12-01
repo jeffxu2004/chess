@@ -6,9 +6,7 @@
 
 using namespace std;
 
-King::King(int weight, Colour side, pair<char,int> coords): Piece {weight, side, coords} {
-
-}
+King::King(int weight, Colour side, pair<char,int> coords): Piece {weight, side, coords} {}
 
 vector<pair<char, int>> King::getMoves(Board& b) const{
 	pair<char,int> current = getCoords();
@@ -67,7 +65,7 @@ vector<pair<char, int>> King::getMoves(Board& b) const{
 			moves.erase(it);
 		else if (it->second < 1 || it->second > 8)
 			moves.erase(it);
-		else if (grid[8-it->second][int(it->first-'a')]->pieceType() != PieceType::Blank)
+		else if (grid[8-it->second][int(it->first-'a')]->getSide() == getSide())
 			moves.erase(it);
 	}
 
@@ -377,6 +375,9 @@ void King::notify(const Subject* item, const Board* b) {
 			++inc;
 		}
 	}
+	
+	check = false;
+
 	// Check if the king is in check
 	for(auto subject:subjects) {
 		if (subject->observerLength() == 0)

@@ -15,6 +15,7 @@
 class PieceCreator {
 public:	
 	static std::unique_ptr<Piece> createPiece(PieceType type, Colour side, pair<char, int> location);
+	static char createPiece(PieceType type, Colour side, bool isDark);
 };
 
 #endif
