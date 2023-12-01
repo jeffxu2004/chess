@@ -6,7 +6,7 @@ using namespace std;
 
 int main () {
     string input;
-    Board chessBoard;
+    Board chessBoard();
 
     while (true) {
         string cmd;

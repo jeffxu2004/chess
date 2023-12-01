@@ -18,25 +18,28 @@ class Piece;
 
 class Board : public Subject {
 	vector<vector<unique_ptr<Piece>>> grid;
-	Result state;
+	Result state = ::Result::Continue;
   	vector<Observer*> observers;
 	Colour turn; // colour of next player's turn
+	PieceType promotionPiece = PieceType::Queen;
+	int size;
 
 public:
-	Board(); // ctor
-
 	Board(int n); //ctor with gridsize n;
 	
 	~Board(); // dtor
 
 	// returns the state field
-	Result getState();
+	Result getState() const;
 
 	// return the turn field 
-	Colour getTurn(); 
+	Colour getTurn() const; 
+
+	// returns promotion piece
+	PieceType getPromotionPiece() const;
 
 	// returns the grid
-	vector<vector<unique_ptr<Piece>>> getGrid();
+	vector<vector<unique_ptr<Piece>>> getGrid() const;
 
 	// returns a pointer to the piece at the specified coordinate on the square.
 	Piece* getPiece(pair<char, int> loc);
@@ -46,6 +49,12 @@ public:
 	
 	//Overloads the getPiece operator to return the coordinates of piece when passing in its address
 	pair<char,int> getPiece(Piece*);
+
+	// Initalizes the conventional chessboard with its respective pieces
+	void standardInit();
+
+	// Prints true if the custom setup is valid
+	bool validSetup();
 
 	// changes the square of coords loc to piecetype p of colour side
 	void changeSquare(pair<char, int> loc, PieceType p, Colour side);
@@ -71,15 +80,28 @@ public:
 	vector <pair <pair<char, int>, pair<char, int> >> getAllMoves(Colour c);
 
 	// returns true if the own king is not in check(legal move) after playing the move 
-	// otherwise return false
+	// i.e. calls checKmove(start, end, true);
 	bool kingIsNotCheck(pair<char, int> start, pair<char, int> end);
 
 	// plays move and notifies king observers if kingIsNotCheck is true
 	// otherwise return false and does nothing
 	bool playLegalMove(pair<char, int> start, pair<char, int> end);
 
+	// returns true if the move is legal, i.e. doesn't put the king in check
+	// plays the move if revert is false, otherwise doesnt change the board
+	bool checkLegalMove(pair<char, int> start, pair<char, int> end, bool revert);
+
 	// returns true if the piece is a pawn and is promoting and false otherwise.
 	bool isPromoting(pair<char, int> start, pair<char, int> end);
+
+	// returns true if the piece is a king and is castling
+	bool isCastle(pair<char, int> start, pair<char, int> end);
+
+	// returns true if the current move is enpassent 
+	bool isEnPas(pair<char, int> start, pair<char, int> end) {
+
+	}
+
 	
     void attach(Observer* obs) override;
 

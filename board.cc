@@ -2,38 +2,41 @@ using namespace std;
 
 #include "board.h";
 
-
-Board::Board() {
-    grid.resize(8, vector<unique_ptr<Piece>>(8, nullptr));
-    state = Result::Continue;
-    turn = Colour::White;
-}
-
-Board::Board(int n) {
+Board::Board(int n = 8) {
     grid.resize(n, vector<unique_ptr<Piece>>(n, nullptr));
-    state = Result::Continue;
+    size = n;
+
+    for (char col = 'a'; col <= 'h'; col++) {
+        for (int row = 1; row <= n; row++) {
+            grid[row - 1][col - 'a'] = PieceCreator::createPiece(PieceType::Blank, Colour::None, pair(col, row));
+        }
+    }
 }
 
 Board::~Board() {
     grid.clear();
 }
 
-Result Board::getState() {
+PieceType Board::getPromotionPiece() const {
+    return promotionPiece;
+}
+
+Result Board::getState() const {
     return state;
 }
 
-Colour Board::getTurn() {
+Colour Board::getTurn() const {
     return turn;
 }
 
-vector<vector<unique_ptr<Piece>>> Board::getGrid() {
+vector<vector<unique_ptr<Piece>>> Board::getGrid() const {
     return grid;
 }
 
 // can not return unique ptr by value so we use raw ptr
 Piece* Board::getPiece(pair<char,int> loc) {
     int col = loc.first - 'a';
-    int row = 8 - loc.second;
+    int row = size - loc.second;
     
     // check if pair is within bounds
     // technically can check if its a valid pair in main to be consistent with other functions
@@ -55,14 +58,64 @@ Piece* Board::getKing(Colour c) {
     }
 }
 
-void Board::changeSquare(pair<char, int> loc, PieceType p, Colour side) {
-    int col = loc.first - 'a';
-    int row = 8 - loc.second;
-    grid[row][col] = PieceCreator::createPiece(p, side, loc);
+void Board::standardInit() {
+    for (int col = 1; col <= size; col++) {
+        grid[1][col - 1] = PieceCreator::createPiece(PieceType::Pawn, Colour::Black, std::pair<int, int>(col, 2));
+        grid[6][col - 1] = PieceCreator::createPiece(PieceType::Pawn, Colour::White, std::pair<int, int>(col, 7));
+    }
+
+    grid[0][0] = PieceCreator::createPiece(PieceType::Rook, Colour::Black, pair(1, 1));
+    grid[0][7] = PieceCreator::createPiece(PieceType::Rook, Colour::Black, pair(8, 1));
+    grid[7][0] = PieceCreator::createPiece(PieceType::Rook, Colour::White, pair(1, 8));
+    grid[7][7] = PieceCreator::createPiece(PieceType::Rook, Colour::White, pair(8, 8));
+
+    grid[0][1] = PieceCreator::createPiece(PieceType::Knight, Colour::Black, pair(2, 1));
+    grid[0][6] = PieceCreator::createPiece(PieceType::Knight, Colour::Black, pair(7, 1));
+    grid[7][1] = PieceCreator::createPiece(PieceType::Knight, Colour::White, pair(2, 8));
+    grid[7][6] = PieceCreator::createPiece(PieceType::Knight, Colour::White, pair(7, 8));
+
+    // Set up Bishops
+    grid[0][2] = PieceCreator::createPiece(PieceType::Bishop, Colour::Black, pair(3, 1));
+    grid[0][5] = PieceCreator::createPiece(PieceType::Bishop, Colour::Black, pair(6, 1));
+    grid[7][2] = PieceCreator::createPiece(PieceType::Bishop, Colour::White, pair(3, 8));
+    grid[7][5] = PieceCreator::createPiece(PieceType::Bishop, Colour::White, pair(6, 8));
+
+    // Set up Queens
+    grid[0][3] = PieceCreator::createPiece(PieceType::Queen, Colour::Black, pair(4, 1));
+    grid[7][3] = PieceCreator::createPiece(PieceType::Queen, Colour::White, pair(4, 8));
+
+    // Set up Kings
+    grid[0][4] = PieceCreator::createPiece(PieceType::King, Colour::Black, pair(5, 1));
+    grid[7][4] = PieceCreator::createPiece(PieceType::King, Colour::White, pair(5, 8));
 }
 
-// there is some functional redundancy between playmove and isplayablemove
-// might make some changes later
+bool Board::validSetup() {
+    int countw = 0;
+    int countb = 0;
+    for(auto &row : grid) {
+        for (auto &piece : row) {
+            if (piece->pieceType() == PieceType::King) { //finds king
+                if (piece->getSide() == Colour::White) countw++;
+                else if (piece->getSide() == Colour::Black) countb++;                
+            }
+        }
+    }
+    if (countw != 1 || countb != 1) return false; //checks only 1 king of each colour
+
+    for(int i = 0; i <= size; i++) {
+        if (grid[0][i]->pieceType() == PieceType::Pawn) return false; 
+        if (grid[size - 1][i]->pieceType() == PieceType::Pawn) return false;        
+    }
+
+    // check if two kings are in check
+
+}
+
+void Board::changeSquare(pair<char, int> loc, PieceType p, Colour side) {
+    int col = loc.first - 'a';
+    int row = size - loc.second;
+    grid[row][col] = PieceCreator::createPiece(p, side, loc);
+}
 
 bool Board::playMove(pair<char, int> start, pair<char, int> end) {
 
@@ -93,8 +146,9 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
 }
 
 bool Board::isPlayableMove(Piece *piece, pair<char, int> dest) {
+    if (piece->getSide() != turn) return false;
     auto moves = piece->getMoves(*this);
-    for (const auto m : moves) {
+    for (const auto m : moves) { //checks if dest is an element of the getMoves
         if (m == dest) {
             return true;
         }
@@ -106,12 +160,12 @@ bool Board::isPlayableMove(Piece *piece, pair<char, int> dest) {
 vector<pair<pair<char, int>,pair<char, int>>> Board::getAllMoves(Colour c) {
     vector<pair<pair<char, int>,pair<char, int>>> list;
     for(auto &row : grid) {
-        for (auto &piece : row) {
-            if (piece->getSide() == turn) {
+        for (auto &piece : row) { //iterates through each piece 
+            if (piece->getSide() == turn) {  //checks for pieces of own colour
                 auto moves = piece->getMoves(*this);
-                for(auto m : moves) {
+                for(auto m : moves) { 
                     auto a = piece->getCoords();
-                    list.emplace_back(pair(a, m));
+                    list.emplace_back(pair(a, m)); //adds all possible moves to a vector
                 }
             }
         }
@@ -119,125 +173,145 @@ vector<pair<pair<char, int>,pair<char, int>>> Board::getAllMoves(Colour c) {
 }
 
 bool Board::kingIsNotCheck(pair<char, int> start, pair<char, int> end) {
-    int col1 = start.first - 'a';
-    int row1 = 8 - start.second; 
-    int col2 = end.first - 'a';
-    int row2 = 8 - end.second;
-    vector<Piece*> ownSubjects; //used to store original observers of white king
-    vector<Piece*> oppSubjects; //used to store original observers of black king
-    King* ownKing;
-    King* oppKing;
-    bool notCheck;
-
-    
-    if(grid[row1][col1]->getSide() != turn) return false; //check if moving piece of own colour
-    if(grid[row2][col2]->getSide() == turn) return false; //check if capturing own piece
-    
-    auto temp = move(grid[row2][col2]); // store piece that is going to be captured 
-    grid[row2][col2] = move(grid[row1][col1]); // moves piece to the designated square
-
-    // changes original square to be a blank
-    grid[row1][col1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, start);
-
-
-
-    // iterate through pieces to notify king
-    for(auto &row : grid) {
-        for (auto &piece : row) {
-            if (piece->pieceType() == PieceType::King) { //if the piece is a king
-
-                King* k = dynamic_cast<King*>(piece.get());
-                auto subjects = k->getSubjects(); //obtain its observers
-
-                if (k->getSide() == turn) ownKing = k; //store pointer of own king
-                if (k->getSide() != turn) oppKing = k;
-                if (k->getSide() == turn) ownSubjects = subjects; // store subjects for own king
-                if (k->getSide() != turn) ownSubjects = subjects; 
-
-                for(Piece* s : subjects) {
-                    // notify king if piece moved from starting square or to ending square
-                    if (s->getCoords() == start) grid[row1][col1]->notifyKing(); 
-                    if (s->getCoords() == end) grid[row2][col2]->notifyKing();        
-                }
-            }
-        }
-    }
-
-    notCheck = ownKing->inCheck() ? false : true;
-
-    ownKing->setSubjects(ownSubjects);
-    oppKing->setSubjects(oppSubjects);
-    
-    grid[row1][col1] = move(grid[row2][col2]);
-    grid[row2][col2] = move(temp);
-
-    return notCheck;
-
+    return checkLegalMove(start, end, true);
 }
 
 
 bool Board::playLegalMove(pair<char, int> start, pair<char, int> end){
+    return checkLegalMove(start, end, false);    
+}
+
+bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool revert) {
     int col1 = start.first - 'a';
-    int row1 = 8 - start.second; 
+    int row1 = size - start.second; 
     int col2 = end.first - 'a';
-    int row2 = 8 - end.second;
+    int row2 = size - end.second;
     vector<Piece*> ownSubjects; //used to store original observers of white king
     vector<Piece*> oppSubjects; //used to store original observers of black king
-    King* ownKing;
-    King* oppKing;
-    bool notCheck;
+    King* ownKing = dynamic_cast<King*> (getKing(turn));
+    King* oppKing = dynamic_cast<King*> (getKing(turn == Colour::White ? Colour::Black : Colour::White));
+    bool inCheck;
+    unique_ptr<Piece> temp; //used to hold pieces in case revert 
+    unique_ptr<Piece> temp2; 
+    bool promotes = false;
+    bool enpas = false;
+    bool castle = false;
 
-    
     if(grid[row1][col1]->getSide() != turn) return false; //check if moving piece of own colour
     if(grid[row2][col2]->getSide() == turn) return false; //check if capturing own piece
-    
-    auto temp = move(grid[row2][col2]); // store piece that is going to be captured 
-    grid[row2][col2] = move(grid[row1][col1]); // moves piece to the designated square
+
+    // checks for promotion, en passant, castling
+    promotes = isPromoting(start, end);
+    enpas = isEnPas(start, end);
+    castle = isCastle(start, end);
+
+
+    if(promotes) {
+        temp = move(grid[row2][col2]); // stores piece on back rank
+        temp2 = move(grid[row1][col1]); // stores old pawn
+        grid[row2][col2] = PieceCreator::createPiece(promotionPiece, turn, end);
+    } else if (enpas) {
+        temp = move(grid[row2 + 1][col2]); // store pawn that is going to be captured 
+        temp2 = move(grid[row1][col1]); // stores piece that is going to be moved        
+        grid[row2][col2] = PieceCreator::createPiece(PieceType::Pawn, turn, end);
+        grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Pawn, turn, pair(col2 + 'a', row2 + 1));      
+    } else if (castle) {
+        temp = move(grid[row2][col2]); // store piece that is going to be captured 
+        temp2 = move(grid[row1][col1]); // stores piece that is going to be moved
+        grid[row2][col2] = PieceCreator::createPiece(PieceType::King, turn, end); 
+        if (col2 > col1) grid[row2][col2 - 1] = PieceCreator::createPiece(PieceType::Rook, turn, pair(col2 + 'a' - 1, row2));
+        else grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Rook, turn, pair(col2 + 'a' + 1, row2));
+    } else {
+        temp = move(grid[row2][col2]); // store piece that is going to be captured 
+        temp2 = move(grid[row1][col1]); // stores piece that is going to be moved
+        grid[row2][col2] = PieceCreator::createPiece(grid[row1][col1]->pieceType(), turn, end);
+    }
 
     // changes original square to be a blank
     grid[row1][col1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, start);
 
+    
+    //notify king observers for own king
+    auto subjects = ownKing->getSubjects();
+    ownSubjects = subjects;
+    for(Piece* s : subjects) {
+        // notify king if piece moved from starting square or to ending square
+        if (s->getCoords() == start) grid[row1][col1]->notifyKing(); 
+        if (s->getCoords() == end) grid[row2][col2]->notifyKing();        
+    }
 
+    //notify king observrs for enemy king
+    subjects = oppKing->getSubjects();
+    oppSubjects = subjects;
+    for(Piece* s : subjects) {
+        // notify king if piece moved from starting square or to ending square
+        if (s->getCoords() == start) grid[row1][col1]->notifyKing(); 
+        if (s->getCoords() == end) grid[row2][col2]->notifyKing();        
+    }
 
-    // iterate through pieces to notify king
-    for(auto &row : grid) {
-        for (auto &piece : row) {
-            if (piece->pieceType() == PieceType::King) { //if the piece is a king
-
-                King* k = dynamic_cast<King*>(piece.get());
-                auto subjects = k->getSubjects(); //obtain its observers
-
-                if (k->getSide() == turn) ownKing = k; //store pointer of own king
-                if (k->getSide() != turn) oppKing = k;
-                if (k->getSide() == turn) ownSubjects = subjects; // store subjects for own king
-                if (k->getSide() != turn) ownSubjects = subjects; 
-
-                for(Piece* s : subjects) {
-                    // notify king if piece moved from starting square or to ending square
-                    if (s->getCoords() == start) grid[row1][col1]->notifyKing(); 
-                    if (s->getCoords() == end) grid[row2][col2]->notifyKing();        
-                }
-            }
+    inCheck = ownKing->inCheck() ? true : false;
+    if (revert || inCheck) { // if reverts or the king is still in check
+        grid[row2][col2] = move(temp); // stores piece on back rank
+        grid[row1][col1] = move(temp2);
+        if (enpas) {
+            grid[row1][col1] = move(temp2); // restore orginal move
+            grid[row2+1][col1] = move(temp); //restore captured pawn
+            grid[row2][col2] = PieceCreator::createPiece(PieceType::Pawn, Colour::None, end);
+            // restores squares to blanks
+            grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::None, pair(col2 + 'a', row2 + 1));                 
+        } else if (castle) {
+            grid[row1][col1] = move(temp2); // restore orginal move
+            grid[row2+1][col1] = move(temp); //restore captured pawn
+            grid[row2][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::None, end); 
+            // restores squares to blanks
+            if (col2 > col1) grid[row2][col2 - 1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, pair(col2 + 'a' - 1, row2));
+            else grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, pair(col2 + 'a' + 1, row2));
         }
-    }
 
-    if (ownKing->inCheck()) {
-        ownKing->setSubjects(ownSubjects);
-        oppKing->setSubjects(oppSubjects);
-        
-        grid[row1][col1] = move(grid[row2][col2]);
-        grid[row2][col2] = move(temp);
-        return false;
+        if (revert) return !inCheck;
+        else return false;
     }
-    return true;
-}
-
-void Board::playMove(pair<char, int> start, pair<char, int> end, PieceType type, Colour side) {
+    return true; //if reverting the board is not requested and that its a legal move return true
 
 }
 
 bool Board::isPromoting(pair<char, int> start, pair<char, int> end) {
-    return true;
+    int col1 = start.first - 'a';
+    int row1 = size - start.second;
+    
+
+    if (grid[row1][col1]->pieceType() == PieceType::Pawn) {
+        if (grid[row1][col1]->getSide() == Colour::White && row1 == 1) return true;
+        if (grid[row1][col1]->getSide() == Colour::Black && row1 == 7) return true;
+    }
+    return false;
+}
+
+bool Board::isCastle(pair<char, int> start, pair<char, int> end) {
+    int col1 = start.first - 'a';
+    int row1 = size - start.second; 
+    int col2 = end.first - 'a';
+    int row2 = size - end.second;
+
+    if (grid[row1][col1]->pieceType() == PieceType::King) {
+        if ( col1 + 2 == col2 || col1 - 2 == col2) return true; //checks if king is making castling move
+    }
+    return false;
+}
+
+bool Board::isEnPas(pair<char, int> start, pair<char, int> end) {
+    int col1 = start.first - 'a';
+    int row1 = size - start.second; 
+    int col2 = end.first - 'a';
+    int row2 = size - end.second;
+
+    if (grid[row1][col1]->pieceType() == PieceType::Pawn) {
+        if ( col1 + 1 == col2 || col1 - 1 == col2) { //checks if pawn is capturing a piece 
+            // "capturing" empty square => enpas
+            if (grid[row2][col2]->pieceType() == PieceType::Blank) return true;
+        } 
+    }
+    return false;
 }
 
 void Board::attach(Observer* obs) {
