@@ -48,14 +48,18 @@ Piece* Board::getPiece(pair<char,int> loc) {
     }
 }
 
-Piece* Board::getKing(Colour c) {
+King* Board::getKing(Colour c) {
     for(auto &row : grid) {
         for (auto &piece : row) {
             if (piece->pieceType() == PieceType::King) { //finds king
-                return piece.get(); //returns raw ptr 
+                return dynamic_cast<King*>(piece.get()); //returns raw ptr 
             }
         }
     }
+}
+
+void Board::setPromotionPiece(PieceType p) {
+    promotionPiece = p;
 }
 
 void Board::standardInit() {
@@ -110,9 +114,12 @@ bool Board::validSetup() {
         if (grid[0][i]->pieceType() == PieceType::Pawn) return false; 
         if (grid[size - 1][i]->pieceType() == PieceType::Pawn) return false;        
     }
-
-    // check if two kings are in check
-
+    auto kingw = getKing(Colour::White);
+    auto kingb = getKing(Colour::Black);
+    kingw->notify(kingw, this);
+    kingb->notify(kingb, this);   
+    if (kingw->inCheck() || kingb->inCheck()) return false;
+    return true;
 }
 
 void Board::changeSquare(pair<char, int> loc, PieceType p, Colour side) {
@@ -245,18 +252,19 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     for(Piece* s : subjects) {
         // notify king if piece moved from starting square or to ending square
         // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
-        if (s->getCoords() == start) grid[row1][col1]->notifyKing(); 
-        if (s->getCoords() == end) grid[row2][col2]->notifyKing();        
+        if (s->getCoords() == start) ownKing->notify(grid[row1][col1].get(), this);
+        if (s->getCoords() == end) ownKing->notify(grid[row2][col2].get(), this);
     }
 
+    // en paessent 
     //notify king observrs for enemy king
     subjects = oppKing->getSubjects();
     oppSubjects = subjects;
     for(Piece* s : subjects) {
         // notify king if piece moved from starting square or to ending square
         // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
-        if (s->getCoords() == start) grid[row1][col1]->notifyKing(); 
-        if (s->getCoords() == end) grid[row2][col2]->notifyKing();        
+        if (s->getCoords() == start) oppKing->notify(grid[row1][col1].get(), this);
+        if (s->getCoords() == end) oppKing->notify(grid[row2][col2].get(), this);      
     }
 
     inCheck = ownKing->inCheck() ? true : false;

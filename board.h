@@ -51,7 +51,7 @@ public:
 	pair<char,int> getPiece(Piece*);
 
 	//set promotion piece
-	void setPromotionPiece(PieceType);
+	void setPromotionPiece(PieceType p);
 
 	// Initalizes the conventional chessboard with its respective pieces
 	void standardInit();
