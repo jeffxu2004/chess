@@ -41,7 +41,7 @@ Piece* Board::getPiece(pair<char,int> loc) {
     // check if pair is within bounds
     // technically can check if its a valid pair in main to be consistent with other functions
     // easy change to make however
-    if (row >= 0 && row < grid.size() && col >= 0 && col < grid[row].size()) {
+    if (row >= 0 && row < size && col >= 0 && col < size) {
         return grid[row][col].get(); //returns raw ptr
     } else {
         return nullptr;
