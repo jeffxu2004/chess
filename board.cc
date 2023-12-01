@@ -3,14 +3,14 @@ using namespace std;
 #include "board.h"
 
 Board::Board(int n = 8) {
-    grid = vector<vector<unique_ptr<Piece>>> (n, vector<unique_ptr<Piece>>(n, nullptr));
-
     size = n;
 
     for (char col = 'a'; col <= 'h'; col++) {
+        vector<unique_ptr<Piece>> line;
         for (int row = 1; row <= n; row++) {
-            grid[row - 1][col - 'a'] = PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col, row));
+            line.push_back(PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col, row)));
         }
+        grid.push_back(line);
     }
 }
 
