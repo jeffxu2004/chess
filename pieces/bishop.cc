@@ -1,7 +1,7 @@
 #include "bishop.h"
 #include "board.h"
 
-Bishop::Bishop(int weight = 3, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
+Bishop::Bishop(int weight, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
 
 PieceType Bishop::pieceType() const { return PieceType::Bishop; }
 

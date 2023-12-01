@@ -1,7 +1,7 @@
 #include "queen.h"
 #include "board.h"
 
-Queen::Queen(int weight = 3, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
+Queen::Queen(int weight, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
 
 PieceType Queen::pieceType() const { return PieceType::Queen; }
 

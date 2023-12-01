@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "../subject.h"
 
 using namespace std;
 
@@ -11,6 +10,6 @@ class TextDisplay {
     
 public:
     TextDisplay(int n);
-    void update(const Subject* item);
+    void update(const Piece* item);
     friend ostream& operator<<(ostream& out, const TextDisplay& td);
 };

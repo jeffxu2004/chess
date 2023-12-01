@@ -1,7 +1,7 @@
 #include "pawn.h"
 #include "board.h"
 
-Pawn::Pawn(int weight = 1, Colour side, pair<char,int> coords) : Piece{weight, side, coords} {};
+Pawn::Pawn(int weight, Colour side, pair<char,int> coords) : Piece{weight, side, coords} {};
 
 bool Pawn::canMoveTwo() const {	return moveTwo; }
 bool Pawn::canBeEnPas() const { return beEnPas; }
@@ -34,7 +34,7 @@ vector<pair<char,int>> Pawn::getMoves(const Board &b) const {
 		}
 		// En passant
 		piece = tempGrid[coords.first - 'a' + i][8 - coords.second];
-		if (piece->pieceType() == PieceType::Pawn && piece->getSide() != side && dynamic_cast<Pawn>(piece)->canBeEnPas()) {
+		if (piece->pieceType() == PieceType::Pawn && piece->getSide() != side && dynamic_cast<Pawn*>(piece)->canBeEnPas()) {
 			moves.push_back(make_pair(static_cast<char>(coords.first + i), coords.second - direction));
 		}
 	}

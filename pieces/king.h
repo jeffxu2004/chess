@@ -21,7 +21,7 @@ public:
 	~King() override = default; // dtor
 	
 	// Overrides from Piece:	
-	vector<pair<char, int>> getMoves(const Board &b) const override;
+	vector<pair<char, int>> getMoves(const Board& b) const override;
 
 	PieceType pieceType() const override;
 
@@ -29,8 +29,8 @@ public:
 	// Overrides from Observer:
 	Subscription getSubscription() const;
 	
-	void notify(const Subject* item, const Board* b) override;
-
+	void notify(const Piece* item, const Board* b) override;
+	void notify(const Piece* item) override;
 
 	// Accessors and Mutators
 	// returns a vector of the subjects that the king is observing	

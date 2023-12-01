@@ -1,8 +1,8 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "piececreator.h"
 #include "pieces/piece.h"
+#include "piececreator.h"
 #include <memory>
 #include <utility>
 #include <vector>
@@ -44,7 +44,7 @@ public:
 	Piece* getPiece(pair<char, int> loc);
 
 	// return a pointer of piece King of colour c
-	King* getKing(Colour c);
+	Piece* getKing(Colour c);
 	
 	//Overloads the getPiece operator to return the coordinates of piece when passing in its address
 	pair<char,int> getPiece(Piece*);

@@ -10,7 +10,7 @@ Controller::Controller(int n) {
 
 Subscription Controller::getSubscription() const { return Subscription::All; }
 
-void Controller::notify(const Subject *item) {
+void Controller::notify(const Piece *item) {
     td->update(item);
     // gd->update(item);
 }

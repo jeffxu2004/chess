@@ -1,4 +1,4 @@
-#include "observer.h"
+#include "../observer.h"
 #include "textdisplay.h"
 #include "graphicsdisplay.h"
 #include <memory>
@@ -9,8 +9,8 @@ class Controller: public Observer {
 public:
     Controller(int n);
     Subscription getSubscription() const override;
-    void notify(const Subject *item) override;
-    void notify(const Subject *item, const Board* b) override;
+    void notify(const Piece *item) override;
+    void notify(const Piece *item, const Board* b) override;
     TextDisplay& getTd();
     GraphicsDisplay& getGd();
 };

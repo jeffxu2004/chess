@@ -6,6 +6,8 @@
 
 using namespace std;
 
+class Board;
+
 enum class Colour { White, Black, None};
 enum class PieceType { Pawn, Knight, Bishop, Rook, Queen, King, Blank };
 
@@ -27,7 +29,7 @@ public:
 	// Each concrete subclass of Piece will return their corresponding pieceType value
 	virtual PieceType pieceType() const = 0;
 
-	virtual vector<pair<char, int>> getMoves(const Board &b) const = 0;
+	virtual vector<pair<char, int>> getMoves(const Board& b) const = 0;
 
 	pair<char,int> getCoords() const;
 

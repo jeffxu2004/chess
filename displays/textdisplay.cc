@@ -26,7 +26,7 @@ TextDisplay::TextDisplay(int n): gridSize{n} {
     }
 }
 
-void TextDisplay::update(const Subject* item) {
+void TextDisplay::update(const Piece* item) {
     const Piece* piece = dynamic_cast<const Piece*>(item);
 
     int row = 8 - piece->getCoords().second;

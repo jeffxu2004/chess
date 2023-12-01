@@ -1,7 +1,7 @@
 #include "knight.h"
 #include "board.h"
 
-Knight::Knight(int weight = 3, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
+Knight::Knight(int weight, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
 
 PieceType Knight::pieceType() const { return PieceType::Knight; }
 

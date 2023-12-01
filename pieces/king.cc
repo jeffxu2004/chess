@@ -78,7 +78,7 @@ PieceType King::pieceType() const { return PieceType::King; }
 
 Subscription King::getSubscription() const { return Subscription::King; }
 
-void King::notify(const Subject* item, const Board* b) {
+void King::notify(const Piece* item, const Board* b) {
 	char kingCol = int(getCoords().first - 'a');
 	int kingRow = 8 - getCoords().second;
 

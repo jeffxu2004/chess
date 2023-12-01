@@ -3,15 +3,12 @@ using namespace std;
 #include "board.h"
 
 Board::Board(int n = 8) {
-    unique_ptr<Piece> piece = make_unique<Piece>(0, Colour::None, make_pair('a',1));
-    vector<unique_ptr<Piece>> row (n, piece);
-    grid = vector<vector<unique_ptr<Piece>>> (n, row);
-
     size = n;
 
     for (char col = 'a'; col <= 'h'; col++) {
+        grid.push_back(vector<unique_ptr<Piece>>());
         for (int row = 1; row <= n; row++) {
-            grid[row-1][col-'a']->setCoords(make_pair(col, row));
+            grid[row-1].push_back(make_unique<Blank>(0, Colour::None, make_pair('a',1)));
         }
     }
 }
@@ -57,14 +54,15 @@ Piece* Board::getPiece(pair<char,int> loc) {
     }
 }
 
-King* Board::getKing(Colour c) {
+Piece* Board::getKing(Colour c) {
     for(auto &row : grid) {
         for (auto &piece : row) {
             if (piece->pieceType() == PieceType::King) { //finds king
-                return dynamic_cast<King*>(piece.get()); //returns raw ptr 
+                return piece.get(); //returns raw ptr 
             }
         }
     }
+    return nullptr;
 }
 
 void Board::setPromotionPiece(PieceType p) {
@@ -123,8 +121,8 @@ bool Board::validSetup() {
         if (grid[0][i]->pieceType() == PieceType::Pawn) return false; 
         if (grid[size - 1][i]->pieceType() == PieceType::Pawn) return false;        
     }
-    auto kingw = getKing(Colour::White);
-    auto kingb = getKing(Colour::Black);
+    auto kingw = dynamic_cast<King*>(getKing(Colour::White));
+    auto kingb = dynamic_cast<King*>(getKing(Colour::Black));
     kingw->notify(kingw, this);
     kingb->notify(kingb, this);   
     if (kingw->inCheck() || kingb->inCheck()) return false;
@@ -144,8 +142,6 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     if (isPlayableMove(grid[row1][col1].get(), end) == false) return false;
 
     bool legal = this->playLegalMove(start, end);
-    bool checkmate;
-    bool stalemate;
     if (!legal) return false;
 
     notifyAllObservers(getPiece(start));
@@ -321,7 +317,6 @@ bool Board::isCastle(pair<char, int> start, pair<char, int> end) {
     int col1 = start.first - 'a';
     int row1 = size - start.second; 
     int col2 = end.first - 'a';
-    int row2 = size - end.second;
 
     if (grid[row1][col1]->pieceType() == PieceType::King) {
         if ( col1 + 2 == col2 || col1 - 2 == col2) return true; //checks if king is making castling move

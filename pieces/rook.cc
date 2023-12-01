@@ -1,7 +1,7 @@
 #include "rook.h"
 #include "board.h"
 
-Rook::Rook(int weight = 5, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
+Rook::Rook(int weight, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
 
 PieceType Rook::pieceType() const { return PieceType::Rook; }
 
