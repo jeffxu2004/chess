@@ -18,10 +18,10 @@ vector<pair<char, int>> Bishop::getMoves(Board &b) const {
 			if (coords.first - 'a' - i < 0 || 8 - coords.second - i < 0) {
 				topleft = false;
 			// If blank square add and keep going
-			} else if (tempGrid[coords.first - 'a' - i][8 - coords.second - i].PieceType() == PieceType::None) {
+			} else if (tempGrid[coords.first - 'a' - i][8 - coords.second - i]->PieceType() == PieceType::None) {
 				moves.push_back(make_pair(coords.first - i, 8 - coords.second - i));
 			// If opposing piece, add as possible move and stop iterating in this direction
-			} else if (tempGrid[coords.first - 'a' - i][8 - coords.second - i].getColour() != this->colour) {
+			} else if (tempGrid[coords.first - 'a' - i][8 - coords.second - i]->getColour() != this->colour) {
 				moves.push_back(make_pair(coords.first - i, 8 - coords.second - i));
 				topleft = false;
 			// Hit own piece, stop iterating
@@ -32,9 +32,9 @@ vector<pair<char, int>> Bishop::getMoves(Board &b) const {
 		if (topright) {
             if (coords.first - 'a' + i >= tempGrid.size() || 8 - coords.second - i < 0) {
                 topright = false;
-            } else if (tempGrid[coords.first - 'a' + i][8 - coords.second - i].PieceType() == PieceType::None) {
+            } else if (tempGrid[coords.first - 'a' + i][8 - coords.second - i]->PieceType() == PieceType::None) {
                 moves.push_back(make_pair(coords.first + i, coords.second - i));
-            } else if (tempGrid[coords.first - 'a' + i][8 - coords.second - i].getColour() != this->colour) {
+            } else if (tempGrid[coords.first - 'a' + i][8 - coords.second - i]->getColour() != this->colour) {
                 moves.push_back(make_pair(coords.first + i, coords.second - i));
                 topright = false;
             } else {
@@ -45,9 +45,9 @@ vector<pair<char, int>> Bishop::getMoves(Board &b) const {
 		if (bottomleft) {
             if (coords.first - 'a' - i < 0 || 8 - coords.second + i >= tempGrid.size()) {
                 bottomleft = false;
-            } else if (tempGrid[coords.first - 'a' - i][8 - coords.second + i].PieceType() == PieceType::None) {
+            } else if (tempGrid[coords.first - 'a' - i][8 - coords.second + i]->PieceType() == PieceType::None) {
                 moves.push_back(make_pair(coords.first - i, coords.second + i));
-            } else if (tempGrid[coords.first - 'a' - i][8 - coords.second + i].getColour() != this->colour) {
+            } else if (tempGrid[coords.first - 'a' - i][8 - coords.second + i]->getColour() != this->colour) {
                 moves.push_back(make_pair(coords.first - i, coords.second + i));
                 bottomleft = false;
             } else {
@@ -57,9 +57,9 @@ vector<pair<char, int>> Bishop::getMoves(Board &b) const {
 		if (bottomright) {
             if (coords.first - 'a' + i >= tempGrid.size() || 8 - coords.second + i >= tempGrid.size()) {
                 bottomright= false;
-            } else if (tempGrid[coords.first - 'a' + i][8 - coords.second + i].PieceType() == PieceType::None) {
+            } else if (tempGrid[coords.first - 'a' + i][8 - coords.second + i]->PieceType() == PieceType::None) {
                 moves.push_back(make_pair(coords.first + i, coords.second + i));
-            } else if (tempGrid[coords.first - 'a' + i][8 - coords.second + i].getColour() != this->colour) {
+            } else if (tempGrid[coords.first - 'a' + i][8 - coords.second + i]->getColour() != this->colour) {
                 moves.push_back(make_pair(coords.first + i, coords.second + i));
                 bottomright = false;
             } else {
