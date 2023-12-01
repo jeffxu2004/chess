@@ -6,7 +6,7 @@ class LevelTwo : ChessBot {
 	// This function returns zero if the destination is an empty square, otherwise it returns
 	// the weight of the piece taken.
 	// Checks have a weight of two. (If a move takes a piece and checks the enemy king, the weight is summed)
-	int weightOfMove(vector<vector<unique_ptr<Piece>>> g, pair<char, int> dest) {
+	int weightOfMove(vector<vector<unique_ptr<Piece>>> &g, pair<char, int> dest) {
 		int weight = g[dest.first - 'a'][8 - dest.second].getWeight();
 		int check = 0;
 		return weight + check;
@@ -20,7 +20,7 @@ public:
 		// getAllMoves does not consider if the move will place/leave the king in check,
 		// as a result we must filter out those moves
         for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
-            if (kingIsNotCheck(move.first, move.second) {
+            if (b.kingIsNotCheck(move.first, move.second) {
                 possibleMoves.erase(move);
             } else {
                 move++;
@@ -31,12 +31,8 @@ public:
 		// Most valuable move calculated by what gives most points
 		pair<pair<pair<char, int>, pair<char, int>>, int> bestMove(make_pair(make_pair('0', 0), make_pair('0', 0)), -1);
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-			if (move == possibleMoves.begin()) {
-				bestMove = make_pair(move, weightOfMove(cpuGrid, move.second);
-			} else {
-				int moveWeight = weightOfMove(cpuGrid, move.second);
-				if (moveWeight > bestMove.second) bestMove = make_pair(move, moveWeight);
-			}
+			int moveWeight = weightOfMove(cpuGrid, move.second);
+			if (moveWeight > bestMove.second) bestMove = make_pair(move, moveWeight);
 		}
 
 		// If there is no moves that give any points, just pick the first move from possible moves (if that is empty return no valid moves)
