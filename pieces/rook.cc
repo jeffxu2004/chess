@@ -13,7 +13,7 @@ void Rook::setCastle(bool castleState) {
 	moved = true;
 }
 
-vector<pair<char, int>> Rook::getMoves(Board &b) const {
+vector<pair<char, int>> Rook::getMoves(const Board &b) const {
 	vector<pair<char, int>> moves;
 	vector<vector<unique_ptr<Piece>>> tempGrid = b.getGrid();
 	// Check horizontal span of rook (left and right)

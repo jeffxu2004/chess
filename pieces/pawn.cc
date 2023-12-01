@@ -10,7 +10,7 @@ void Pawn::setEnPas(bool canEnPas) { beEnPas = canEnPas; }
 
 PieceType Pawn::pieceType() const { return PieceType::Pawn; }
 
-vector<pair<char,int>> Pawn::getMoves(Board &b) {
+vector<pair<char,int>> Pawn::getMoves(const Board &b) const {
 	vector<pair<<char,int>> moves;
 	vector<vector<unique_ptr<Piece>>> tempGrid = b.getGrid();
 

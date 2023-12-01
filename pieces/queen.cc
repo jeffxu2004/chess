@@ -5,7 +5,7 @@ Queen::Queen(int weight, Colour side. pair<char, int> coords) : weight{weight}, 
 
 PieceType Queen::pieceType() const { return PieceType::Queen; }
 
-vector<pair<char, int>> Queen::getMoves(Board &b) const {	
+vector<pair<char, int>> Queen::getMoves(const Board &b) const {	
     vector<pair<char, int>> moves;
     vector<vector<unique_ptr<Piece>>> tempGrid = b.getGrid();
     
