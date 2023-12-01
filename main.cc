@@ -26,7 +26,7 @@ int main () {
         Board board(8);
         string cmd;
         cout << "Enter a command: ";
-        Controller c(8);
+        Controller c (8);
         getline(cin, input);
         istringstream iss{input};
         iss >> cmd;
@@ -36,7 +36,7 @@ int main () {
             string whiteSide, blackSide; 
             iss >> whiteSide >> blackSide;
             board.standardInit();
-            board.attach(c);
+            board.attach(&c);
             cout << c.getTd();
 
             
