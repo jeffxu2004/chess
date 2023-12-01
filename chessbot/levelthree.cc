@@ -2,7 +2,7 @@
 #include "../board.h"
 #include "../pieces/piece.h"
 #include <cstdlib>
-#include <limits>
+#include <climits>
 
 class LevelThree : ChessBot {
     // Takes in the grid and a pair indicating the destination of the move in question
@@ -13,11 +13,11 @@ class LevelThree : ChessBot {
         int weight = b.getPiece(dest)->getWeight();
 
         // Create a copy of my piece and check if this move will result in the piece checking the king
-        Piece copy = *b.getPiece(start);
-        copy.setCoords(dest);
-        vector<pair<char, int>> moves = copy.getMoves();
+        Piece *copy = b.getPiece(start);
+        copy->setCoords(dest);
+        vector<pair<char, int>> moves = copy->getMoves(b);
         for (auto move : moves) {
-            if (b.getPiece(move)->PieceType() == PieceType::King) {
+            if (b.getPiece(move)->pieceType() == PieceType::King) {
                 weight += 2;
                 break;
             }
@@ -44,7 +44,7 @@ class LevelThree : ChessBot {
 			
 			// Find the opponent move that would yield them the most points
         	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-            	int value = weightOfMove(b, move.first, move.second);
+            	int value = weightOfMove(b, move->first, move->second);
             	if (value > opponent) opponent = value;
 	        }
 
@@ -63,8 +63,8 @@ public:
 		pair<pair<pair<char, int>, pair<char, int>>, int> bestMove(make_pair(make_pair('0', 0), make_pair('0', 0)), INT_MIN);
 		
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-			int value = valueOfMove(b, move.first, move.second);
-			if (value > bestMove.second) bestMove = make_pair(move, value);
+			int value = valueOfMove(b, move->first, move->second);
+			if (value > bestMove.second) bestMove = make_pair(*move, value);
 		}
 
 		// If there is no moves that give any points, just pick the first move from possible moves (if that is empty return no valid moves)
@@ -73,15 +73,15 @@ public:
 
 			// If promoting, always choose queen
             if (b.isPromoting(bestMove.first.first, bestMove.first.second)) {
-                b.setPromotingPiece(PieceType::Queen);
+                b.setPromotionPiece(PieceType::Queen);
             }
 			
-			playLegalMove(bestMove.first.first, bestMove.first.second);
+			b.playLegalMove(bestMove.first.first, bestMove.first.second);
 
 			return bestMove.first;
     	} else {
     	   	// No valid moves, return a '0' instead of a letter from a to h to indicate this 
-        	return {'0', 0};
+        	return bestMove.first;
 		}
 	}
-}
+};

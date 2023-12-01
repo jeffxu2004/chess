@@ -13,11 +13,11 @@ class LevelTwo : ChessBot {
 		int check = 0;
 
 		// Create a copy of my piece and check if this move will result in the piece checking the king
-		Piece copy = *b.getPiece(start);
-		copy.setCoords(dest);
-		vector<pair<char, int>> moves = copy.getMoves();
+		Piece *copy = b.getPiece(start);
+		copy->setCoords(dest);
+		vector<pair<char, int>> moves = copy->getMoves(b);
 		for (auto move : moves) {
-			if (b.getPiece(move).PieceType == PieceType::King) {
+			if (b.getPiece(move)->pieceType() == PieceType::King) {
 				check = 2;
 				break;
 			}
@@ -32,7 +32,7 @@ public:
 		// getAllMoves does not consider if the move will place/leave the king in check,
 		// as a result we must filter out those moves
         for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
-            if (b.kingIsNotCheck(move.first, move.second) {
+            if (b.kingIsNotCheck(move->first, move->second)) {
                 possibleMoves.erase(move);
             } else {
                 move++;
@@ -43,24 +43,22 @@ public:
 		// Most valuable move calculated by what gives most points
 		pair<pair<pair<char, int>, pair<char, int>>, int> bestMove(make_pair(make_pair('0', 0), make_pair('0', 0)), -1);
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-			int moveWeight = weightOfMove(b, move.first, move.second);
-			if (moveWeight > bestMove.second) bestMove = make_pair(move, moveWeight);
+			int moveWeight = weightOfMove(b, move->first, move->second);
+			if (moveWeight > bestMove.second) bestMove = make_pair(*move, moveWeight);
 		}
 
-		// If there is no moves that give any points, just pick the first move from possible moves (if that is empty return no valid moves)
-		if (!possibleMoves.empty()) {
-			if (bestMove.second != -1) {
-				bestMove.first = possibleMoves[0];
-			}
+		// If there is no moves that give any points, just pick the first move from possible moves (if that is empty return no valid moves)	
+		if (bestMove.second != -1) {
+			bestMove.first = possibleMoves[0];
 
 			if (b.isPromoting(bestMove.first.first, bestMove.first.second)) {
-				b.setPromotingPiece(PieceType::Queen);
+				b.setPromotionPiece(PieceType::Queen);
 			}
-			b.playLegalMove(bestMove.first.first, bestMove.first.second)
+			b.playLegalMove(bestMove.first.first, bestMove.first.second);
 			return bestMove.first;
     	} else {
     	   	// No valid moves, return a '0' instead of a letter from a to h to indicate this 
-        	return {'0', 0};
+        	return bestMove.first;
 		}
 	}
-}
+};
