@@ -1,5 +1,5 @@
 #include <board.h>
-#include <../displays/controller.h>
+#include "displays/controller.h"
 #include <iostream>
 #include <sstream>
 
@@ -32,10 +32,13 @@ int main () {
         iss >> cmd;
 
         //currently ignores error-handeling to accomadate for enhancements format
-        if (cmd == "game") { 
-            string whiteSide, blackSide;
+        if (cmd == "game") {  // call "game p p" for testing
+            string whiteSide, blackSide; 
             iss >> whiteSide >> blackSide;
             board.standardInit();
+            board.attach(c);
+            cout << c.getTd();
+
             
             while (true) {
                 string start, end;
@@ -64,9 +67,9 @@ int main () {
                     cout << "stalemate" << endl;
                     break;
                 }
+                cout << c.getTd();
             }
         } else if (cmd == "set up") {
-            
         }
         else {
             cout << "Invalid input";

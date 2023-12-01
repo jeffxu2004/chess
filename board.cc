@@ -139,6 +139,9 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     bool stalemate;
     if (!legal) return false;
 
+    notifyAllObservers(getPiece(start));
+    notifyAllObservers(getPiece(end)); 
+
     turn = turn == Colour::White ? Colour::Black : Colour::White;
 
     auto king =  dynamic_cast<King*>(getKing(turn)); //find king
@@ -343,10 +346,10 @@ void Board::detach(Observer* obs) {
     }
 }
 
-void Board::notifyAllObservers() {
+void Board::notifyAllObservers(Subject* p) {
   for (Observer *observer : observers) {
       if (observer->getSubscription() == Subscription::All) { 
-          observer->notify(this);
+          observer->notify(p);
       }
   }
 }

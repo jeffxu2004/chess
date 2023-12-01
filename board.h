@@ -110,7 +110,7 @@ public:
 
 
 	// notifies ALL observers
-	void notifyAllObservers() override;
+	void notifyAllObservers(Subject* p) override;
 
 };
 
