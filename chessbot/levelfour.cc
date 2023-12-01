@@ -10,11 +10,11 @@ class LevelFour : ChessBot {
         int weight = b.getPiece(dest)->getWeight();
 
         // Create a copy of my piece and check if this move will result in the piece checking the king
-        Piece copy = *b.getPiece(start);
-        copy.setCoords(dest);
-        vector<pair<char, int>> moves = copy.getMoves();
+        Piece* copy = b.getPiece(start);
+        copy->setCoords(dest);
+        vector<pair<char, int>> moves = copy->getMoves(b);
         for (auto move : moves) {
-            if (b.getPiece(move)->PieceType() == PieceType::King) {
+            if (b.getPiece(move)->pieceType() == PieceType::King) {
                 weight += 2;
             }
 			pair<char, int> coords = b.getPiece(move)->getCoords();
@@ -44,8 +44,8 @@ class LevelFour : ChessBot {
 			
 			// Find the opponent move that would yield them the most points
         	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-            	int value = weightOfMove(b, move.first, move.second);
-				int recurse = valueOfBoard(b, );
+            	int value = weightOfMove(b, move->first, move->second);
+				//int recurse = valueOfBoard();
             	if (col == this->colour) {
 					value = value - 
 				} else {
@@ -54,7 +54,7 @@ class LevelFour : ChessBot {
 	        }
 
 			} else {
-				return weight + check - opponent + valueOfMove(b, );
+				//return weight + check - opponent + valueOfMove(b, );
 			}
 		} else {
 			return INT_MIN;
