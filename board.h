@@ -39,7 +39,7 @@ public:
 	PieceType getPromotionPiece() const;
 
 	// returns the grid
-	vector<vector<unique_ptr<Piece>>> getGrid() const;
+	vector<vector<Piece *>> getGrid() const;
 
 	// returns a pointer to the piece at the specified coordinate on the square.
 	Piece* getPiece(pair<char, int> loc);

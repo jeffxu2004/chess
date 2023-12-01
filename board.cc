@@ -3,14 +3,14 @@ using namespace std;
 #include "board.h"
 
 Board::Board(int n = 8) {
+    grid = vector<vector<unique_ptr<Piece>>> (n, vector<unique_ptr<Piece>> (n, 
+            PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair('a',1))));
     size = n;
 
     for (char col = 'a'; col <= 'h'; col++) {
-        vector<unique_ptr<Piece>> line;
         for (int row = 1; row <= n; row++) {
-            line.push_back(PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col, row)));
+            grid[row-1][col-'a']->setCoords(make_pair(col, row));
         }
-        grid.push_back(line);
     }
 }
 
@@ -30,8 +30,14 @@ Colour Board::getTurn() const {
     return turn;
 }
 
-vector<vector<unique_ptr<Piece>>> Board::getGrid() const {
-    return grid;
+vector<vector<Piece *>> Board::getGrid() const {
+    vector<vector<Piece*>> retGrid (size, vector<Piece*> (size, nullptr));
+    for (int i=0; i<size; ++i) {
+        for (int j=0; j<size; ++j) {
+            retGrid[i][j] = grid[i][j].get();
+        }
+    }
+    return retGrid;
 }
 
 // can not return unique ptr by value so we use raw ptr

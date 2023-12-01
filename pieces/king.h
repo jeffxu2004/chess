@@ -21,7 +21,7 @@ public:
 	~King() override = default; // dtor
 	
 	// Overrides from Piece:	
-	vector<pair<char, int>> getMoves(Board &b) const override;
+	vector<pair<char, int>> getMoves(const Board &b) const override;
 
 	PieceType pieceType() const override;
 
