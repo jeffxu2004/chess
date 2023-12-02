@@ -1,5 +1,5 @@
 #include "knight.h"
-#include "board.h"
+#include "../board.h"
 
 Knight::Knight(int weight, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
 

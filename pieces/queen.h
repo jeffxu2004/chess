@@ -1,3 +1,6 @@
+#ifndef QUEEN_H
+#define QUEEN_H
+
 #include "piece.h"
 #include <vector>
 #include <utility>
@@ -16,3 +19,5 @@ public:
     pair<char, int> getCoords() const;
     void setCoords(pair<char,int> coords);
 };
+
+#endif 

@@ -1,7 +1,10 @@
+#ifndef KING_H
+#define KING_H
 #include <vector>
 #include <utility>
 #include "piece.h"
 #include "../observer.h"
+#include "rook.h"
 
 using namespace std;
 
@@ -30,7 +33,7 @@ public:
 	Subscription getSubscription() const;
 	
 	void notify(const Piece* item, const Board* b) override;
-	void notify(const Piece* item) override;
+	void notify(const Piece* item) override {};
 
 	// Accessors and Mutators
 	// returns a vector of the subjects that the king is observing	
@@ -52,3 +55,5 @@ public:
 	bool hasMoved() const;
 	bool justCastled() const;
 };
+
+#endif

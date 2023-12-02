@@ -1,5 +1,5 @@
 #include "pawn.h"
-#include "board.h"
+#include "../board.h"
 
 Pawn::Pawn(int weight, Colour side, pair<char,int> coords) : Piece{weight, side, coords} {};
 

@@ -8,7 +8,7 @@ Board::Board(int n = 8) {
     for (char col = 'a'; col <= 'h'; col++) {
         grid.push_back(vector<unique_ptr<Piece>>());
         for (int row = 1; row <= n; row++) {
-            grid[row-1].push_back(make_unique<Blank>(0, Colour::None, make_pair('a',1)));
+            grid[row-1].push_back(PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col,row)));
         }
     }
 }
@@ -111,7 +111,7 @@ bool Board::validSetup() {
         for (auto &piece : row) {
             if (piece->pieceType() == PieceType::King) { //finds king
                 if (piece->getSide() == Colour::White) countw++;
-                else if (piece->getSide() == Colour::Black) countb++;                
+               else if (piece->getSide() == Colour::Black) countb++;                
             }
         }
     }

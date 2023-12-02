@@ -1,5 +1,5 @@
 #include "rook.h"
-#include "board.h"
+#include "../board.h"
 
 Rook::Rook(int weight, Colour side, pair<char, int> coords) : Piece{weight, side, coords} {}
 

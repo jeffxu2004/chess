@@ -3,7 +3,6 @@
 #include <utility>
 #include <memory>
 #include "../board.h"
-#include "rook.h"
 
 using namespace std;
 
