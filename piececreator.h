@@ -11,6 +11,7 @@
 #include "pieces/bishop.h"
 #include "pieces/queen.h"
 #include "pieces/king.h"
+#include "enumClasses.h"
 
 using namespace std;
 

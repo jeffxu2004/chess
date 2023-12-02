@@ -60,11 +60,11 @@ int main () {
                     }
                 }
 
-                if (board.getState() == Win) {
+                if (board.getState() == Result::Win) {
                     cout << "checkmate" << endl;
                     break;
                 } 
-                else if (board.getState() == Draw) {
+                else if (board.getState() == Result::Draw) {
                     cout << "stalemate" << endl;
                     break;
                 }
