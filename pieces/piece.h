@@ -3,13 +3,11 @@
 
 #include <vector>
 #include <utility>
+#include <../enumClasses.h>
 
 using namespace std;
 
 class Board;
-
-enum class Colour { White, Black, None};
-enum class PieceType { Pawn, Knight, Bishop, Rook, Queen, King, Blank };
 
 class Piece {
 protected:	

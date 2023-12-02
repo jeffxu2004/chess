@@ -3,6 +3,7 @@
 
 #include "pieces/piece.h"
 #include "piececreator.h"
+#include "enumClasses.h"
 #include <memory>
 #include <utility>
 #include <vector>
@@ -11,7 +12,6 @@
 
 using namespace std;
 
-enum Result { Win, Draw, Continue };
 
 class Piece;
 class Board {
