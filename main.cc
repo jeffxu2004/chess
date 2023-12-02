@@ -74,7 +74,7 @@ int main () {
             while (true) {
                 string piece, move;
                 cin >> piece >> move;
-                //board.changeSquare()
+                board.changeSquare(piece[0] , make_pair(move[0],move[1] - '0'));
             }   
             cout << c.getTd();
         }

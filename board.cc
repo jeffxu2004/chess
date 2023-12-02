@@ -142,6 +142,14 @@ void Board::changeSquare(pair<char, int> loc, PieceType p, Colour side) {
     int col = loc.first - 'a';
     int row = size - loc.second;
     grid[row][col] = PieceCreator::createPiece(p, side, loc);
+    notifyAllObservers(getPiece(loc));
+}
+
+void Board::changeSquare(char c, pair<char, int> loc) {
+    int col = loc.first - 'a';
+    int row = size - loc.second;
+    grid[row][col] = PieceCreator::setPiece(c, loc);   
+    notifyAllObservers(getPiece(loc));   
 }
 
 bool Board::playMove(pair<char, int> start, pair<char, int> end) {

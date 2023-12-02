@@ -61,6 +61,8 @@ public:
 	// changes the square of coords loc to piecetype p of colour side
 	void changeSquare(pair<char, int> loc, PieceType p, Colour side);
 
+	void changeSquare(char c, pair<char,int> location);
+
 	// Takes in a start coordinate which indicates which piece is being moved and moves it to the end coordinate. 
 	// This function returns ture if it is valid move that does not place the king, and plays the move
 	// Otherwise the function returns false and the board remains logically unchanged
