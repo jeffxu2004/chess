@@ -10,7 +10,7 @@ bool Rook::hasMoved() const {
 }
 
 void Rook::setCastle(bool castleState) {
-	moved = true;
+	moved = castleState;
 }
 
 vector<pair<char, int>> Rook::getMoves(const Board &b) const {

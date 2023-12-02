@@ -1,17 +1,15 @@
 using namespace std;
 
 #include "board.h"
-#include <iostream>
 
 using namespace std;
 
 Board::Board(int n = 8) {
     size = n;
-
-    for (char col = 'a'; col <= 'h'; col++) {
+    for (int row = 1; row <= n; row++) {
         grid.push_back(vector<unique_ptr<Piece>>());
-        for (int row = 1; row <= n; row++) {
-            grid[int(col-'a')].push_back(PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col,row)));
+        for (char col = 'a'; col <= 'h'; col++) {
+            grid[row-1].push_back(PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col,row)));
         }
     }
 }
@@ -146,7 +144,7 @@ void Board::changeSquare(pair<char, int> loc, PieceType p, Colour side) {
 }
 
 void Board::changeSquare(char c, pair<char, int> loc) {
-    int col = loc.first - 'a';
+    int col = int(loc.first - 'a');
     int row = size - loc.second;
     grid[row][col] = PieceCreator::setPiece(c, loc);   
     notifyAllObservers(getPiece(loc));   
@@ -155,13 +153,11 @@ void Board::changeSquare(char c, pair<char, int> loc) {
 bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     int col1 = start.first - 'a';
     int row1 = size - start.second; 
-
     if (isPlayableMove(grid[row1][col1].get(), end) == false) return false;
-
     bool legal = this->playLegalMove(start, end);
     if (!legal) return false;
 
-    notifyAllObservers(getPiece(start));
+    notifyAllObservers(getPiece(start));   
     notifyAllObservers(getPiece(end)); 
 
     turn = turn == Colour::White ? Colour::Black : Colour::White;
@@ -203,7 +199,7 @@ vector<pair<pair<char, int>,pair<char, int>>> Board::getAllMoves(Colour c) {
         for (auto &piece : row) { //iterates through each piece 
             if (piece->getSide() == turn) {  //checks for pieces of own colour
                 auto moves = piece->getMoves(*this);
-                for(auto m : moves) { 
+                for(auto m : moves) {
                     auto a = piece->getCoords();
                     list.emplace_back(make_pair(a, m)); //adds all possible moves to a vector
                 }
@@ -236,7 +232,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     bool promotes = false;
     bool enpas = false;
     bool castle = false;
-
     if(grid[row1][col1]->getSide() != turn) return false; //check if moving piece of own colour
     if(grid[row2][col2]->getSide() == turn) return false; //check if capturing own piece
 
@@ -244,7 +239,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     promotes = isPromoting(start, end);
     enpas = isEnPas(start, end);
     castle = isCastle(start, end);
-
 
     if(promotes) {
         temp = move(grid[row2][col2]); // stores piece on back rank
@@ -264,23 +258,20 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     } else {
         temp = move(grid[row2][col2]); // store piece that is going to be captured 
         temp2 = move(grid[row1][col1]); // stores piece that is going to be moved
-        grid[row2][col2] = PieceCreator::createPiece(grid[row1][col1]->pieceType(), turn, end);
+        grid[row2][col2] = PieceCreator::createPiece(temp2->pieceType(), turn, end);
     }
 
     // changes original square to be a blank
     grid[row1][col1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, start);
-
-    
     //notify king observers for own king
     auto subjects = ownKing->getSubjects();
     ownSubjects = subjects;
     for(Piece* s : subjects) {
         // notify king if piece moved from starting square or to ending square
         // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
-        if (s->getCoords() == start) ownKing->notify(grid[row1][col1].get(), this);
-        if (s->getCoords() == end) ownKing->notify(grid[row2][col2].get(), this);
+        if (s->getCoords() == start) ownKing->notify(temp2.get(), this);
+        if (s->getCoords() == end) ownKing->notify(temp.get(), this);
     }
-
     // en paessent 
     //notify king observrs for enemy king
     subjects = oppKing->getSubjects();
@@ -288,11 +279,10 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     for(Piece* s : subjects) {
         // notify king if piece moved from starting square or to ending square
         // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
-        if (s->getCoords() == start) oppKing->notify(grid[row1][col1].get(), this);
-        if (s->getCoords() == end) oppKing->notify(grid[row2][col2].get(), this);      
+        if (s->getCoords() == start) oppKing->notify(temp2.get(), this);
+        if (s->getCoords() == end) oppKing->notify(temp.get(), this);      
     }
-
-    inCheck = ownKing->inCheck() ? true : false;
+    inCheck = ownKing->inCheck();
     if (revert || inCheck) { // if reverts or the king is still in check
         grid[row2][col2] = move(temp); // stores piece on back rank
         grid[row1][col1] = move(temp2);

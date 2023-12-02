@@ -43,7 +43,8 @@ int main () {
             while (true) {
                 string start, end;
                 getline(cin, input);
-                iss >> cmd >> start >> end;
+                istringstream newIss {input};
+                newIss >> cmd >> start >> end;
                 if(board.getTurn() == Colour::White) {
                     if (whiteSide == "p") {
                         bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
@@ -69,12 +70,12 @@ int main () {
                 }
                 cout << c.getTd();
             }
-        } else if (cmd == "set up") {
+        } else if (cmd == "setup") {
             while (true) { //format is K e8
                 string piece, move;
                 cin >> piece >> move;
                 board.changeSquare(piece[0] , make_pair(move[0],move[1] - '0'));
-            }   
+            }
             cout << c.getTd();
         }
         else {

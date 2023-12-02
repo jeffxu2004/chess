@@ -431,6 +431,12 @@ void King::dropSubject(Piece* subject) {
 
 bool King::inCheck() const { return check; }
 
+void King::setCheck(bool check) { this->check = check; }
+
 bool King::hasMoved() const { return moved; }
 
+void King::setMoved(bool move) { moved = move; }
+
 bool King::justCastled() const { return hasCastled; }
+
+void King::setCastled(bool castle) { hasCastled = castle; }

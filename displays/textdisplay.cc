@@ -1,5 +1,6 @@
 #include "textdisplay.h"
 #include "../piececreator.h"
+#include <string>
 
 TextDisplay::TextDisplay(int n): gridSize{n} {
     vector<vector<char>> board;
@@ -24,6 +25,7 @@ TextDisplay::TextDisplay(int n): gridSize{n} {
         board.push_back(row);
         row.clear();
     }
+    display = board;
 }
 
 void TextDisplay::update(const Piece* item) {
@@ -32,17 +34,15 @@ void TextDisplay::update(const Piece* item) {
     int row = 8 - piece->getCoords().second;
     int col = int(piece->getCoords().first - 'a');
 
-    bool isDark = (row % 2 == 0) && (col % 2 == 1);
-
+    bool isDark = ((row % 2 == 0) && (col % 2 == 1)) || ((row % 2 == 1) && (col % 2 == 0));
     display[row][col] = PieceCreator::createPiece(piece->pieceType(), piece->getSide(), isDark);
 }
 
 ostream& operator<<(ostream& out, const TextDisplay& td) {
     int width = td.gridSize;
-
     // print top border
     out << "  ";
-    for (int i=0; i<width; ++i) {
+    for (int i=0; i<width+2; ++i) {
         out << "-";
     }
 
@@ -50,9 +50,9 @@ ostream& operator<<(ostream& out, const TextDisplay& td) {
 
     // print rows
     for (int i=0; i<width; ++i) {
-        out << i << " |";
+        out << 8-i << " |";
         for (int j=0; j<width; ++j) {
-            //out << td.display[i][j];
+            out << td.display[i][j];
         }
         out << "|";
         out << endl;
@@ -60,16 +60,21 @@ ostream& operator<<(ostream& out, const TextDisplay& td) {
 
     // print bottom border
     out << "  ";
-    for (int i=0; i<width; ++i) {
+    for (int i=0; i<width+2; ++i) {
         out << "-";
     }
     out << endl;
 
     // print column labels
-    for (int i=0; i<width; ++i) {
-        out << ('a' + i) << endl;
+    out << "   ";
+    for (char i='a'; i<'i'; ++i) {
+        out << string {i};
     }
 
+    out << endl;
     return out;
+}
 
+vector<vector<char>> TextDisplay::getDisplay() const {
+    return display;
 }

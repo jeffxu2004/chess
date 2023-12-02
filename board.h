@@ -14,12 +14,11 @@ using namespace std;
 enum Result { Win, Draw, Continue };
 
 class Piece;
-
 class Board {
 	vector<vector<unique_ptr<Piece>>> grid;
 	Result state = ::Result::Continue;
   	vector<Observer*> observers;
-	Colour turn; // colour of next player's turn
+	Colour turn = Colour::White; // colour of next player's turn
 	PieceType promotionPiece = PieceType::Queen;
 	int size;
 

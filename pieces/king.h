@@ -52,8 +52,11 @@ public:
 	void dropSubject(Piece* subject);
 
 	bool inCheck() const;
+	void setCheck(bool check);
 	bool hasMoved() const;
+	void setMoved(bool moved);
 	bool justCastled() const;
+	void setCastled(bool castled);
 };
 
 #endif

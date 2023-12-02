@@ -94,7 +94,7 @@ public:
                 else if (side == Colour::White)
                     return 'N';
             case PieceType::Bishop:
-                if (side == Colour::Black)
+                if (side == Colour::Black) 
                     return 'b';
                 else if (side == Colour::White)
                     return 'B';

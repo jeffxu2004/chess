@@ -15,6 +15,7 @@ class TextDisplay {
 public:
     TextDisplay(int n);
     void update(const Piece* item);
+    vector<vector<char>> getDisplay() const;
     friend ostream& operator<<(ostream& out, const TextDisplay& td);
 };
 

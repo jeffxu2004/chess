@@ -19,8 +19,10 @@ vector<pair<char,int>> Pawn::getMoves(const Board &b) const {
 
 	// Move forward
 	if (tempGrid[coords.first - 'a'][8 - coords.second + direction]->pieceType() == PieceType::Blank) {
-		moves.push_back(make_pair(coords.first, coords.second + direction));
+		moves.push_back(make_pair(coords.first, coords.second - direction));
 		// Check if piece can move two squares on first move
+		char c = coords.first - 'a';
+		int n = 8-coords.second + 2*direction;
 		if (moveTwo && tempGrid[coords.first - 'a'][8 - coords.second + 2*direction]->pieceType() == PieceType::Blank) {
 			moves.push_back(make_pair(coords.first, coords.second - 2*direction));
 		}
@@ -28,6 +30,9 @@ vector<pair<char,int>> Pawn::getMoves(const Board &b) const {
 	
 	// Take pieces
 	for (int i = -1; i < 1; i+=2) {
+		int x = int(coords.first - 'a' + i);
+		int y = 8 - coords.second + direction;
+		if (x < 0 || x > 7 || y < 0 || y > 7) continue;
 		Piece* piece = tempGrid[coords.first - 'a' + i][8 - coords.second + direction];
 		if (piece->pieceType() != PieceType::Blank && piece->getSide() != side) {
 			moves.push_back(make_pair(static_cast<char>(coords.first + i), coords.second - direction));
