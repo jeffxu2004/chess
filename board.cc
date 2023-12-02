@@ -75,35 +75,41 @@ void Board::setPromotionPiece(PieceType p) {
 void Board::standardInit() {
     // Pawns
     for (char col = 'a'; col <= 'h'; col++) {
-        grid[6][col - 'a'] = PieceCreator::createPiece(PieceType::Pawn, Colour::Black, make_pair(col, 2));
-        grid[1][col - 'a'] = PieceCreator::createPiece(PieceType::Pawn, Colour::White, make_pair(col, 7));
+        grid[1][col - 'a'] = PieceCreator::createPiece(PieceType::Pawn, Colour::Black, make_pair(col, 7));
+        grid[6][col - 'a'] = PieceCreator::createPiece(PieceType::Pawn, Colour::White, make_pair(col, 2));
     }
 
     // Rooks
-    grid[7][0] = PieceCreator::createPiece(PieceType::Rook, Colour::Black, make_pair('a', 8));
-    grid[7][7] = PieceCreator::createPiece(PieceType::Rook, Colour::Black, make_pair('h', 8));
-    grid[0][0] = PieceCreator::createPiece(PieceType::Rook, Colour::White, make_pair('a', 1));
-    grid[0][7] = PieceCreator::createPiece(PieceType::Rook, Colour::White, make_pair('h', 1));
+    grid[7][0] = PieceCreator::createPiece(PieceType::Rook, Colour::White, make_pair('a', 1));
+    grid[7][7] = PieceCreator::createPiece(PieceType::Rook, Colour::White, make_pair('h', 1));
+    grid[0][0] = PieceCreator::createPiece(PieceType::Rook, Colour::Black, make_pair('a', 8));
+    grid[0][7] = PieceCreator::createPiece(PieceType::Rook, Colour::Black, make_pair('h', 8));
 
     // Knights
-    grid[7][1] = PieceCreator::createPiece(PieceType::Knight, Colour::Black, make_pair('b', 8));
-    grid[7][6] = PieceCreator::createPiece(PieceType::Knight, Colour::Black, make_pair('g', 8));
-    grid[0][1] = PieceCreator::createPiece(PieceType::Knight, Colour::White, make_pair('b', 1));
-    grid[0][6] = PieceCreator::createPiece(PieceType::Knight, Colour::White, make_pair('g', 1));
+    grid[0][1] = PieceCreator::createPiece(PieceType::Knight, Colour::Black, make_pair('b', 8));
+    grid[0][6] = PieceCreator::createPiece(PieceType::Knight, Colour::Black, make_pair('g', 8));
+    grid[7][1] = PieceCreator::createPiece(PieceType::Knight, Colour::White, make_pair('b', 1));
+    grid[7][6] = PieceCreator::createPiece(PieceType::Knight, Colour::White, make_pair('g', 1));
 
     // Bishops
-    grid[7][2] = PieceCreator::createPiece(PieceType::Bishop, Colour::Black, make_pair('c', 8));
-    grid[7][5] = PieceCreator::createPiece(PieceType::Bishop, Colour::Black, make_pair('f', 8));
-    grid[0][2] = PieceCreator::createPiece(PieceType::Bishop, Colour::White, make_pair('c', 1));
-    grid[0][5] = PieceCreator::createPiece(PieceType::Bishop, Colour::White, make_pair('f', 1));
+    grid[0][2] = PieceCreator::createPiece(PieceType::Bishop, Colour::Black, make_pair('c', 8));
+    grid[0][5] = PieceCreator::createPiece(PieceType::Bishop, Colour::Black, make_pair('f', 8));
+    grid[7][2] = PieceCreator::createPiece(PieceType::Bishop, Colour::White, make_pair('c', 1));
+    grid[7][5] = PieceCreator::createPiece(PieceType::Bishop, Colour::White, make_pair('f', 1));
 
     // Queens
-    grid[7][3] = PieceCreator::createPiece(PieceType::Queen, Colour::Black, make_pair('d', 8));
-    grid[0][3] = PieceCreator::createPiece(PieceType::Queen, Colour::White, make_pair('d', 1));
+    grid[0][3] = PieceCreator::createPiece(PieceType::Queen, Colour::Black, make_pair('d', 8));
+    grid[7][3] = PieceCreator::createPiece(PieceType::Queen, Colour::White, make_pair('d', 1));
 
     // Kings
-    grid[7][4] = PieceCreator::createPiece(PieceType::King, Colour::Black, make_pair('e', 8));
-    grid[0][4] = PieceCreator::createPiece(PieceType::King, Colour::White, make_pair('e', 1));
+    grid[0][4] = PieceCreator::createPiece(PieceType::King, Colour::Black, make_pair('e', 8));
+    grid[7][4] = PieceCreator::createPiece(PieceType::King, Colour::White, make_pair('e', 1));
+
+    for(auto &row : grid) {
+        for (auto &piece : row) {
+            notifyAllObservers(piece.get());
+        }
+    }
 }
 
 

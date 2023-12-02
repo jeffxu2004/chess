@@ -35,8 +35,8 @@ int main () {
         if (cmd == "game") {  // call "game p p" for testing
             string whiteSide, blackSide; 
             iss >> whiteSide >> blackSide;
-            board.standardInit();
             board.attach(&c);
+            board.standardInit();
             cout << c.getTd();
 
             
@@ -70,6 +70,13 @@ int main () {
                 cout << c.getTd();
             }
         } else if (cmd == "set up") {
+            board.attach(&c);
+            while (true) {
+                string piece, move;
+                cin >> piece >> move;
+                //board.changeSquare()
+            }   
+            cout << c.getTd();
         }
         else {
             cout << "Invalid input";
