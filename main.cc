@@ -27,6 +27,7 @@ int main () {
         string cmd;
         cout << "Enter a command: ";
         Controller c (8);
+        board.attach(&c);
         getline(cin, input);
         istringstream iss{input};
         iss >> cmd;
@@ -35,7 +36,6 @@ int main () {
         if (cmd == "game") {  // call "game p p" for testing
             string whiteSide, blackSide; 
             iss >> whiteSide >> blackSide;
-            board.attach(&c);
             board.standardInit();
             cout << c.getTd();
 
@@ -70,8 +70,7 @@ int main () {
                 cout << c.getTd();
             }
         } else if (cmd == "set up") {
-            board.attach(&c);
-            while (true) {
+            while (true) { //format is K e8
                 string piece, move;
                 cin >> piece >> move;
                 board.changeSquare(piece[0] , make_pair(move[0],move[1] - '0'));
