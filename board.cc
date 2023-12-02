@@ -1,6 +1,9 @@
 using namespace std;
 
 #include "board.h"
+#include <iostream>
+
+using namespace std;
 
 Board::Board(int n = 8) {
     size = n;
@@ -8,7 +11,7 @@ Board::Board(int n = 8) {
     for (char col = 'a'; col <= 'h'; col++) {
         grid.push_back(vector<unique_ptr<Piece>>());
         for (int row = 1; row <= n; row++) {
-            grid[row-1].push_back(PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col,row)));
+            grid[int(col-'a')].push_back(PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col,row)));
         }
     }
 }

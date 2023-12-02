@@ -45,13 +45,14 @@ ostream& operator<<(ostream& out, const TextDisplay& td) {
     for (int i=0; i<width; ++i) {
         out << "-";
     }
+
     out << endl;
 
     // print rows
     for (int i=0; i<width; ++i) {
         out << i << " |";
         for (int j=0; j<width; ++j) {
-            out << td.display[i][j];
+            //out << td.display[i][j];
         }
         out << "|";
         out << endl;
