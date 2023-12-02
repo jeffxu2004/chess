@@ -9,7 +9,7 @@ Board::Board(int n = 8) {
     for (int row = 1; row <= n; row++) {
         grid.push_back(vector<unique_ptr<Piece>>());
         for (char col = 'a'; col <= 'h'; col++) {
-            grid[row-1].push_back(PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col,row)));
+            grid[row-1].push_back(PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col,8-row+1)));
         }
     }
 }
@@ -196,7 +196,7 @@ bool Board::isPlayableMove(Piece *piece, pair<char, int> dest) {
 vector<pair<pair<char, int>,pair<char, int>>> Board::getAllMoves(Colour c) {
     vector<pair<pair<char, int>,pair<char, int>>> list;
     for(auto &row : grid) {
-        for (auto &piece : row) { //iterates through each piece 
+        for (auto &piece : row) { //iterates through each piece
             if (piece->getSide() == turn) {  //checks for pieces of own colour
                 auto moves = piece->getMoves(*this);
                 for(auto m : moves) {
@@ -206,6 +206,8 @@ vector<pair<pair<char, int>,pair<char, int>>> Board::getAllMoves(Colour c) {
             }
         }
     }
+    
+    return list;
 }
 
 bool Board::kingIsNotCheck(pair<char, int> start, pair<char, int> end) {
@@ -232,6 +234,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     bool promotes = false;
     bool enpas = false;
     bool castle = false;
+
     if(grid[row1][col1]->getSide() != turn) return false; //check if moving piece of own colour
     if(grid[row2][col2]->getSide() == turn) return false; //check if capturing own piece
 

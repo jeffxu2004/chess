@@ -61,13 +61,15 @@ vector<pair<char, int>> King::getMoves(const Board& b) const{
 
 	vector<vector<Piece *>> grid = b.getGrid();
 	
-	for (auto it=moves.begin(); it !=moves.end(); ++it) {
+	for (auto it=moves.begin(); it !=moves.end();) {
 		if (it->first < 'a' || it->first > 'h')
 			moves.erase(it);
 		else if (it->second < 1 || it->second > 8)
 			moves.erase(it);
 		else if (grid[8-it->second][int(it->first-'a')]->getSide() == getSide())
 			moves.erase(it);
+		else
+			++it;
 	}
 
 	return moves;

@@ -6,8 +6,6 @@ Bishop::Bishop(int weight, Colour side, pair<char, int> coords) : Piece{weight, 
 PieceType Bishop::pieceType() const { return PieceType::Bishop; }
 
 vector<pair<char, int>> Bishop::getMoves(const Board &b) const {
-    cout << endl;
-    cout << "Bishop" << endl;
     vector<pair<char, int>> moves;
     vector<vector<Piece*>> tempGrid = b.getGrid();
     
@@ -15,7 +13,6 @@ vector<pair<char, int>> Bishop::getMoves(const Board &b) const {
 	bool topleft = true, topright = true, bottomleft = true, bottomright = true;
 	// Branch out and search the 4 diagonals like a breadth first search
 	for (int i = 1; i < tempGrid.size(); i++) {
-        cout << "Topleft: " << topleft << " Topright: " << topright << " Bottom left: " << bottomleft << " Bottom right: " << bottomright << endl;
 		if (topleft) {
 			// Check if out of bounds
 			if (coords.first - 'a' - i < 0 || 8 - coords.second - i < 0) {

@@ -6,7 +6,6 @@ Knight::Knight(int weight, Colour side, pair<char, int> coords) : Piece{weight, 
 PieceType Knight::pieceType() const { return PieceType::Knight; }
 
 vector<pair<char, int>> Knight::getMoves(const Board &b) const {
-	
 	// Iterating through the possible moves for a knight is a bit annoying
 	// so we use an array storing the possible ways a knight can move
 	int possibleMoves[8][2] = {
