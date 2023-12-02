@@ -100,7 +100,7 @@ public:
 
 			return bestMove.first;
     	} else {
-    	   	// No valid moves, return a '0' instead of a letter from a to h to indicate this 
+			// No valid moves
         	return bestMove.first;
 		}
 	}
