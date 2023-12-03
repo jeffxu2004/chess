@@ -80,10 +80,10 @@ PieceType King::pieceType() const { return PieceType::King; }
 Subscription King::getSubscription() const { return Subscription::King; }
 
 void King::notify(const Piece* item, const Board* b) {
-	cout << getSide() << " King notified" << endl;
-	for (auto s:subjects) {
+	//cout << getSide() << " King notified" << endl;
+	/*for (auto s:subjects) {
 		cout << s->getCoords() << endl;
-	}
+	}*/
 	char kingCol = int(getCoords().first - 'a');
 	int kingRow = 8 - getCoords().second;
 
@@ -185,7 +185,7 @@ void King::notify(const Piece* item, const Board* b) {
 				} while (row > 0 && col > 0 && grid[row-1][col-1]->pieceType() == PieceType::Blank);
 			}
 		}	
-	} else if (piece != this) { // if the square calling notify is a piece moving into it and that piece is not the king itself
+	} else if (piece->pieceType() != PieceType::King || piece->getSide() != getSide()) { // if the square calling notify is a piece moving into it and that piece is not the king itself
 		cout << "Others" << endl;
 		if (kingCol == col) {
 			cout << "   Same column" << endl;
@@ -282,6 +282,23 @@ void King::notify(const Piece* item, const Board* b) {
 		}
 	} else { // if the king move
 		cout << "King" << endl;
+		subjects.clear();
+		kingCol = int(piece->getCoords().first - 'a');
+		kingRow = 8 - piece->getCoords().second;
+
+		addSubject(grid[kingRow][kingCol]);
+
+		knightSquares = {
+			make_pair(kingCol-1, kingRow-2),
+			make_pair(kingCol-1, kingRow+2),
+			make_pair(kingCol+1, kingRow-2),
+			make_pair(kingCol+1, kingRow+2),
+			make_pair(kingCol-2, kingRow+1),
+			make_pair(kingCol-2, kingRow-1),
+			make_pair(kingCol+2, kingRow+1),
+			make_pair(kingCol+2, kingRow-1)
+		};
+
 		for (auto coords:knightSquares) {
 			if (coords.first >= 0 && coords.first <= 7 && coords.second >= 0 && coords.second <= 7) {
 				addSubject(grid[coords.second][coords.first]);
@@ -417,6 +434,7 @@ void King::notify(const Piece* item, const Board* b) {
 	cout << "End of notify()" << endl;
 	cout << "-----------------------------" << endl;
 	cout << endl;
+	
 }
 
 vector<Piece*> King::getSubjects() const { return subjects; }
@@ -447,5 +465,9 @@ bool King::justCastled() const { return hasCastled; }
 void King::setCastled(bool castle) { hasCastled = castle; }
 
 void King::setSubjects(vector<Piece*> newSubjects) {
-	subjects = newSubjects;
+	subjects.clear();
+
+	for (auto subject:newSubjects) {
+		subjects.push_back(subject);
+	}
 }

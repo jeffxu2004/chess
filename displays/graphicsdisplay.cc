@@ -35,22 +35,8 @@ void GraphicsDisplay::update(const Piece* item) {
 
     bool isDark = ((row % 2 == 0) && (col % 2 == 1)) || ((row % 2 == 1) && (col % 2 == 0));
     string piece = PieceCreator::drawPiece(item->pieceType(), item->getSide(), isDark);
-
-    if (piece != "_" && piece != " ") {
-        display.drawString(
-            col*squareWidth+BORDER_WIDTH+COORDS_WIDTH+squareWidth / 2-10,
-            row*squareWidth+BORDER_WIDTH+COORDS_WIDTH+squareWidth / 2,
-            piece
-        );
-    } else if (piece != "_") {
-        display.fillRectangle(
-            col*squareWidth+BORDER_WIDTH+COORDS_WIDTH,
-            row*squareWidth+BORDER_WIDTH+COORDS_WIDTH,
-            squareWidth,
-            squareWidth,
-            Xwindow::Red
-        );
-    } else {
+    
+    if (isDark) {
         display.fillRectangle(
             col*squareWidth+BORDER_WIDTH+COORDS_WIDTH,
             row*squareWidth+BORDER_WIDTH+COORDS_WIDTH,
@@ -58,5 +44,21 @@ void GraphicsDisplay::update(const Piece* item) {
             squareWidth,
             Xwindow::Green
         );
+    } else {
+        display.fillRectangle(
+            col*squareWidth+BORDER_WIDTH+COORDS_WIDTH,
+            row*squareWidth+BORDER_WIDTH+COORDS_WIDTH,
+            squareWidth,
+            squareWidth,
+            Xwindow::Red
+        );
     }
+    
+    if (piece != "_" && piece != " ") {
+        display.drawString(
+            col*squareWidth+BORDER_WIDTH+COORDS_WIDTH+squareWidth / 2-10,
+            row*squareWidth+BORDER_WIDTH+COORDS_WIDTH+squareWidth / 2,
+            piece
+        );
+    } 
 }
