@@ -159,7 +159,6 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     int row1 = size - start.second; 
 
     if (isPlayableMove(grid[row1][col1].get(), end) == false) return false;
-
     bool legal = this->playLegalMove(start, end);
     if (!legal) return false;
     
@@ -275,8 +274,10 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     grid[row1][col1] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, start);
     //notify king observers for own king
     auto subjects = ownKing->getSubjects();
+    cout << ownKing->getSide() << endl;
     ownSubjects = subjects;
     for(Piece* s : subjects) {
+        cout << s->getCoords() << endl;
         // notify king if piece moved from starting square or to ending square
         // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
         if (s->getCoords() == start) ownKing->notify(temp2.get(), this);
