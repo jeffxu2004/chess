@@ -46,7 +46,7 @@ int main () {
             iss >> whiteSide >> blackSide;
             if (!checkValidInput(whiteSide) || !checkValidInput(whiteSide)) {
                 cout << "Invalid input" endl;
-                break;
+                continue;
             }
 
             board.standardInit();
@@ -57,6 +57,17 @@ int main () {
                 getline(cin, input);
                 istringstream newIss {input};
                 newIss >> cmd >> start >> end;
+
+                if (cmd == "resign") {
+                    cout << "lmfao you lost hahahaha" << endl;
+                    if (board.getTurn == Colour::White) cout << "black wins" << endl;
+                    if (board.getTurn == Colour::Black) cout << "white wins" << endl;                   
+                }
+
+                if (cmd != "move" || !checkValidCoords(start) || !checkValidCoords(end)) {
+                    return "Invalid Input";
+                    continue;
+                }
                 
                 if(board.getTurn() == Colour::White) {
                     if (whiteSide == "p") {
@@ -83,6 +94,7 @@ int main () {
                 }
                 cout << c.getTd();
             }
+
         } else if (cmd == "setup") {
             while (true) { //format is K e8
                 string piece, move;
