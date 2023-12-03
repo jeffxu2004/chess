@@ -272,9 +272,10 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     // changes original square to be a blank
     grid[row1][col1] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, start);
     //notify king observers for own king
-    auto subjects = ownKing->getSubjects();
-    cout << ownKing->getSide() << endl;
-    ownSubjects = subjects;
+    ownSubjects = ownKing->getSubjects();
+    oppSubjects = oppKing->getSubjects();
+
+    auto subjects = ownSubjects;
     for(Piece* s : subjects) {
         cout << s->getCoords() << endl;
         // notify king if piece moved from starting square or to ending square
@@ -291,8 +292,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     }
 
     //notify king observrs for enemy king
-    oppSubjects = oppKing->getSubjects();
-    subjects = oppSubjects;
+    subjects = oppKing->getSubjects();
     for(Piece* s : subjects) {
         // notify king if piece moved from starting square or to ending square
         // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
@@ -328,7 +328,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         }
         ownKing->setSubjects(ownSubjects);
         oppKing->setSubjects(oppSubjects);
-
 
         if (revert) return !inCheck;
         else return false;
