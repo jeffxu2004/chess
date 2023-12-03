@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <climits>
 
-class LevelFour : ChessBot {
+class LevelFour : public ChessBot {
     // Gives a weight to the move
     int weightOfMove(Board &b, pair<char, int> start, pair<char, int> dest) {
         int weight = b.getPiece(dest)->getWeight();
