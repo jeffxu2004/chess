@@ -8,8 +8,8 @@ GraphicsDisplay::GraphicsDisplay(int n): gridSize {n}, squareWidth {BOARD_WIDTH 
     for (int i=0; i<gridSize; ++i) {
         int start = COORDS_WIDTH + BORDER_WIDTH + squareWidth / 2;
         string label;
-        label += char('H'-i);
-        display.drawString(COORDS_WIDTH / 2, start + i*squareWidth, to_string(i+1));
+        label += char('A'+i);
+        display.drawString(COORDS_WIDTH / 2, start + i*squareWidth, to_string(8-i));
         display.drawString(start + i*squareWidth, WIDTH-COORDS_WIDTH / 2, label);
         if (i % 2 == 0) {
             for (int j=0; j<gridSize; ++j) {
