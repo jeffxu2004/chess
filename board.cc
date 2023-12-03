@@ -167,7 +167,6 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     notifyAllObservers(getPiece(start), getTurn());   
     notifyAllObservers(getPiece(end), getTurn()); 
 
-
     auto king =  dynamic_cast<King*>(getKing(turn)); //find king
     bool isCheck = king->inCheck();  // check if king is in check
 
@@ -281,9 +280,16 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         // notify king if piece moved from starting square or to ending square
         // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
         if (s->getCoords() == start) ownKing->notify(temp2.get(), this);
+    }
+
+    ownSubjects = ownKing->getSubjects();
+    for(Piece* s : subjects) {
+        cout << s->getCoords() << endl;
+        // notify king if piece moved from starting square or to ending square
+        // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
         if (s->getCoords() == end) ownKing->notify(temp.get(), this);
     }
-    // en paessent 
+
     //notify king observrs for enemy king
     subjects = oppKing->getSubjects();
     oppSubjects = subjects;
@@ -291,7 +297,15 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         // notify king if piece moved from starting square or to ending square
         // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
         if (s->getCoords() == start) oppKing->notify(temp2.get(), this);
-        if (s->getCoords() == end) oppKing->notify(temp.get(), this);      
+      
+    }
+
+    oppSubjects = oppKing->getSubjects();
+    for(Piece* s : subjects) {
+        cout << s->getCoords() << endl;
+        // notify king if piece moved from starting square or to ending square
+        // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
+        if (s->getCoords() == end) oppKing->notify(temp.get(), this);
     }
     inCheck = ownKing->inCheck();
     if (revert || inCheck) { // if reverts or the king is still in check
@@ -316,6 +330,30 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         if (revert) return !inCheck;
         else return false;
     }
+    Piece* movedPiece = getPiece(end);
+
+    //set moved for rook to be true
+    if (movedPiece->pieceType() == PieceType::Rook) dynamic_cast<Rook*>(movedPiece)->hasMoved();
+
+    //set moved for rook to be false
+    if (movedPiece->pieceType() == PieceType::Pawn) {
+        if (row1 + 2 == row2 || row1 - 2 == row2) {
+            auto p = dynamic_cast<Pawn*>(movedPiece);
+            p->setMoveTwo(false);
+            p->setEnPas(true);
+        }
+    }
+
+    // disable enpas not sure if works
+    for(auto &row : grid) {
+        for (auto &piece : row) {
+            if (piece->pieceType() == PieceType::Pawn) {
+                auto p = dynamic_cast<Pawn*>(piece.get());
+                p->setEnPas(false);
+            }
+        }
+    }
+
     return true; //if reverting the board is not requested and that its a legal move return true
 
 }
