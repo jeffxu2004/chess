@@ -273,21 +273,18 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     grid[row1][col1] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, start);
     //notify king observers for own king
     auto subjects = ownKing->getSubjects();
-    cout << ownKing->getSide() << endl;
     ownSubjects = subjects;
     for(Piece* s : subjects) {
-        cout << s->getCoords() << endl;
         // notify king if piece moved from starting square or to ending square
         // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
-        if (s->getCoords() == start) ownKing->notify(temp2.get(), this);
+        if (s->getCoords() == start) ownKing->notify(grid[row1][col1].get(), this);
     }
 
     ownSubjects = ownKing->getSubjects();
     for(Piece* s : subjects) {
-        cout << s->getCoords() << endl;
         // notify king if piece moved from starting square or to ending square
         // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
-        if (s->getCoords() == end) ownKing->notify(temp.get(), this);
+        if (s->getCoords() == end) ownKing->notify(grid[row2][col2].get(), this);
     }
 
     //notify king observrs for enemy king
@@ -296,16 +293,15 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     for(Piece* s : subjects) {
         // notify king if piece moved from starting square or to ending square
         // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
-        if (s->getCoords() == start) oppKing->notify(temp2.get(), this);
+        if (s->getCoords() == start) oppKing->notify(grid[row1][col1].get(), this);
       
     }
 
     oppSubjects = oppKing->getSubjects();
     for(Piece* s : subjects) {
-        cout << s->getCoords() << endl;
         // notify king if piece moved from starting square or to ending square
         // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
-        if (s->getCoords() == end) oppKing->notify(temp.get(), this);
+        if (s->getCoords() == end) oppKing->notify(grid[row2][col2].get(), this);
     }
     inCheck = ownKing->inCheck();
     if (revert || inCheck) { // if reverts or the king is still in check
