@@ -9,6 +9,7 @@ using namespace std;
 enum class Colour { White, Black, Neither };
 enum class PieceType { Pawn, Knight, Bishop, Rook, Queen, King, Blank };
 enum class Result { Win, Lose, Draw, Continue };
+enum class Subscription { All, King };
 
 ostream& operator<<(ostream& out, PieceType type);
 ostream& operator<<(ostream& out, Colour c);

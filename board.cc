@@ -109,7 +109,7 @@ void Board::standardInit() {
 
     for(auto &row : grid) {
         for (auto &piece : row) {
-            notifyAllObservers(piece.get());
+            notifyAllObservers(piece.get(), getTurn());
         }
     }
 }
@@ -144,14 +144,14 @@ void Board::changeSquare(pair<char, int> loc, PieceType p, Colour side) {
     int col = loc.first - 'a';
     int row = size - loc.second;
     grid[row][col] = PieceCreator::createPiece(p, side, loc);
-    notifyAllObservers(getPiece(loc));
+    notifyAllObservers(getPiece(loc), getTurn());
 }
 
 void Board::changeSquare(char c, pair<char, int> loc) {
     int col = int(loc.first - 'a');
     int row = size - loc.second;
     grid[row][col] = PieceCreator::setPiece(c, loc);   
-    notifyAllObservers(getPiece(loc));   
+    notifyAllObservers(getPiece(loc), getTurn());   
 }
 
 bool Board::playMove(pair<char, int> start, pair<char, int> end) {
@@ -162,11 +162,12 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
 
     bool legal = this->playLegalMove(start, end);
     if (!legal) return false;
-
-    notifyAllObservers(getPiece(start));   
-    notifyAllObservers(getPiece(end)); 
-
+    
     turn = turn == Colour::White ? Colour::Black : Colour::White;
+
+    notifyAllObservers(getPiece(start), getTurn());   
+    notifyAllObservers(getPiece(end), getTurn()); 
+
 
     auto king =  dynamic_cast<King*>(getKing(turn)); //find king
     bool isCheck = king->inCheck();  // check if king is in check
@@ -367,10 +368,10 @@ void Board::detach(Observer* obs) {
     }
 }
 
-void Board::notifyAllObservers(Piece* p) {
+void Board::notifyAllObservers(Piece* p, Colour turn) {
   for (Observer *observer : observers) {
       if (observer->getSubscription() == Subscription::All) { 
-          observer->notify(p);
+          observer->notify(p, turn);
       }
   }
 }

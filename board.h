@@ -110,7 +110,7 @@ public:
 
 
 	// notifies ALL observers
-	void notifyAllObservers(Piece* p);
+	void notifyAllObservers(Piece* p, Colour turn);
 
 };
 

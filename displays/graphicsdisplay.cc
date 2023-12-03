@@ -3,9 +3,14 @@
 
 GraphicsDisplay::GraphicsDisplay(int n): gridSize {n}, squareWidth {BOARD_WIDTH / n} {
     // set up display with empty board
-    display.fillRectangle(25, 25, 780, 780, Xwindow::Blue);
+    display.fillRectangle(COORDS_WIDTH, COORDS_WIDTH, WIDTH - 2*COORDS_WIDTH , WIDTH - 2*COORDS_WIDTH , Xwindow::Blue);
 
     for (int i=0; i<gridSize; ++i) {
+        int start = COORDS_WIDTH + BORDER_WIDTH + squareWidth / 2;
+        string label;
+        label += char('H'-i);
+        display.drawString(COORDS_WIDTH / 2, start + i*squareWidth, label);
+        display.drawString(start + i*squareWidth, WIDTH-COORDS_WIDTH / 2, to_string(i+1));
         if (i % 2 == 0) {
             for (int j=0; j<gridSize; ++j) {
                 if (j % 2 == 0)

@@ -12,7 +12,7 @@ class Controller: public Observer {
 public:
     Controller(int n);
     Subscription getSubscription() const override;
-    void notify(const Piece *item) override;
+    void notify(const Piece *item, Colour turn) override;
     void notify(const Piece *item, const Board* b) override {};
     TextDisplay& getTd();
     GraphicsDisplay& getGd();
