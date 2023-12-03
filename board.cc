@@ -303,6 +303,11 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     ownKing->addSubject(grid[row1][col1].get());
     ownKing->addSubject(grid[row2][col2].get());  
 
+    oppKing->dropSubject(temp.get());
+    oppKing->dropSubject(temp2.get()); 
+    oppKing->addSubject(grid[row1][col1].get());
+    oppKing->addSubject(grid[row2][col2].get());     
+
     ownSubjects = ownKing->getSubjects();
 
     oppSubjects = oppKing->getSubjects();
