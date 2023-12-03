@@ -13,7 +13,7 @@ class ChessBot {
 protected:
 	Colour colour;
 public:
-    ChessBot();
+	ChessBot(Colour colour) : colour{colour} {};
 	// Returns the next move that the bot makes
     virtual pair<pair<char, int>, pair<char, int>> getNextMove(Board &b) = 0;
 	virtual ~ChessBot() = default;
