@@ -284,8 +284,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     }
     inCheck = ownKing->inCheck();
     if (revert || inCheck) { // if reverts or the king is still in check
-        grid[row2][col2] = move(temp); // stores piece on back rank
-        grid[row1][col1] = move(temp2);
         if (enpas) {
             grid[row1][col1] = move(temp2); // restore orginal move
             grid[row2+1][col1] = move(temp); //restore captured pawn
@@ -299,6 +297,9 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
             // restores squares to blanks
             if (col2 > col1) grid[row2][col2 - 1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col2 + 'a' - 1, row2));
             else grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col2 + 'a' + 1, row2));
+        } else {
+            grid[row2][col2] = move(temp); // restore original pieces
+            grid[row1][col1] = move(temp2);
         }
 
         if (revert) return !inCheck;
