@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <climits>
 
-class LevelThree : ChessBot {
+class LevelThree : public ChessBot {
     // Takes in the grid and a pair indicating the destination of the move in question
     // This function returns zero if the destination is an empty square, otherwise it returns
     // the weight of the piece taken.
