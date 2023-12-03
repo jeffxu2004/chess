@@ -155,40 +155,39 @@ void Board::changeSquare(char c, pair<char, int> loc) {
 }
 
 bool Board::playMove(pair<char, int> start, pair<char, int> end) {
+    cout << "Start of playMove(): " << endl;
     int col1 = start.first - 'a';
     int row1 = size - start.second; 
-    auto king2 = dynamic_cast<King*>(getKing(Colour::White));
-    auto subject = king2->getSubjects();
-    cout << "^^^^^^^^^^^^^^" << endl;
+    auto kingw = dynamic_cast<King*>(getKing(Colour::White));
+    auto subject = kingw->getSubjects();
+    cout << "   White King Subjects:" << endl;
     for (auto s:subject) {
         cout << s->getCoords() << endl;
     }
+
+    auto kingb = dynamic_cast<King*>(getKing(Colour::Black));
+    subject = kingb->getSubjects();
+    cout << "   Black King Subjects: " << endl;
+    for (auto s:subject){
+        cout << s->getCoords() << endl;
+    }
+    cout << "------------------------------" << endl;
     if (isPlayableMove(grid[row1][col1].get(), end) == false) return false;
     bool legal = this->playLegalMove(start, end);
 
     if (!legal) return false;
     
     turn = turn == Colour::White ? Colour::Black : Colour::White;
-    King* tempK2 = dynamic_cast<King*>(getKing(Colour::White));
-    auto subs2 = tempK2->getSubjects();
-    cout << "???????????" << endl;
-    for (auto s: subs2) {
-        cout << s->getCoords() << endl;
-    }
+
     notifyAllObservers(getPiece(start), getTurn());   
     notifyAllObservers(getPiece(end), getTurn()); 
-    King* tempK = dynamic_cast<King*>(getKing(Colour::White));
-    auto subs = tempK->getSubjects();
-    cout << "#####" << endl;
-    for (auto s: subs) {
-        cout << s->getCoords() << endl;
-    }
+
     auto king =  dynamic_cast<King*>(getKing(turn)); //find king
     bool isCheck = king->inCheck();  // check if king is in check
 
     bool playableMove = false;
     auto moves = getAllMoves(turn);
-    /*
+    
     for (auto m : moves) { //iterates through possible moves next player can make
         if(kingIsNotCheck(m.first, m.second)) { //checks if theres a single legal move
             playableMove = true; 
@@ -199,8 +198,24 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
         if (isCheck == true) state = Result::Win; //if the king is in check other side wins
         else state = Result::Draw; //otherwise its stalemate => draw
     }
-    */
+    
 
+    cout << "End of playMove(): " << endl;
+
+    kingw = dynamic_cast<King*>(getKing(Colour::White));
+    subject = kingw->getSubjects();
+    cout << "   White King Subjects:" << endl;
+    for (auto s:subject) {
+        cout << s->getCoords() << endl;
+    }
+
+    kingb = dynamic_cast<King*>(getKing(Colour::Black));
+    subject = kingb->getSubjects();
+    cout << "   Black King Subjects: " << endl;
+    for (auto s:subject){
+        cout << s->getCoords() << endl;
+    }
+    cout << "-----------------------" << endl;
 
     return true;
 }
@@ -267,10 +282,31 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     enpas = isEnPas(start, end);
     castle = isCastle(start, end);
 
-    cout << "&&&&&&&&&&&&&&&&" << endl;
-    auto subjects2 = oppKing->getSubjects();
-    for (auto s:subjects2) {
-        cout << s->getCoords() << endl;
+    // checks if the starting square is in the subject list of either kings
+    bool ownSubjectStart = false;
+    bool oppSubjectStart = false;
+    
+    ownSubjects = ownKing->getSubjects();
+    oppSubjects = oppKing->getSubjects();
+
+    for (auto subject:ownSubjects) {
+        if (subject->getCoords() == start) ownSubjectStart = true;
+    }
+
+    for (auto subject:oppSubjects) {
+        if (subject->getCoords() == start) oppSubjectStart = true;
+    }
+
+    // checks if the ending square is in the subject list of either kings
+    bool ownSubjectEnd = false;
+    bool oppSubjectEnd = false;
+
+    for (auto subject:ownSubjects) {
+        if (subject->getCoords() == end) ownSubjectEnd = true;
+    }
+
+    for (auto subject:oppSubjects) {
+        if (subject->getCoords() == end) oppSubjectEnd = true;
     }
 
     if(promotes) {
@@ -296,43 +332,45 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
 
     // changes original square to be a blank
     grid[row1][col1] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, start);
-    //notify king observers for own king
-
-    ownKing->dropSubject(temp.get());
-    ownKing->dropSubject(temp2.get()); 
-    ownKing->addSubject(grid[row1][col1].get());
-    ownKing->addSubject(grid[row2][col2].get());  
-
-    ownSubjects = ownKing->getSubjects();
-
-    oppSubjects = oppKing->getSubjects();
-
-
-    auto subjects = ownSubjects;
-    for(Piece* s : subjects) {
-        if (s->getCoords() == start) ownKing->notify(grid[row1][col1].get(), this);
+    //notify king observers for own king 
+    
+    if (ownSubjectStart) {
+        ownKing->dropSubject(temp2.get());
+        ownKing->addSubject(grid[row1][col1].get());
     }
 
-    subjects = ownKing->getSubjects();
+    if (oppSubjectStart) {
+        oppKing->dropSubject(temp2.get());
+        oppKing->addSubject(grid[row1][col1].get());
+    }
+
+    if (ownSubjectEnd) {
+        ownKing->dropSubject(temp.get());
+        ownKing->addSubject(grid[row2][col2].get());
+    }
+
+    if (oppSubjectEnd) {
+        oppKing->dropSubject(temp.get());
+        oppKing->addSubject(grid[row2][col2].get());
+    }
+
+    if (ownSubjectStart) ownKing->notify(grid[row1][col1].get(), this);
+    
+
+    auto subjects = ownKing->getSubjects();
     for(Piece* s : subjects) {
         if (s->getCoords() == end) ownKing->notify(grid[row2][col2].get(), this);
     }
 
-    //notify king observrs for enemy king
+    //notify king observrs for enemy king   
+    if (oppSubjectStart) oppKing->notify(grid[row1][col1].get(), this);
+
     subjects = oppKing->getSubjects();
 
-   
     for(Piece* s : subjects) {
-        if (s->getCoords() == start) oppKing->notify(grid[row1][col1].get(), this);
-    }
-    
-    subjects = oppKing->getSubjects();
-    for(Piece* s : subjects) {
-        // notify king if piece moved from starting square or to ending square
-        // Instead of calling notifyKing, just call ownKing->notify(grid[row1][col1], )
         if (s->getCoords() == end) oppKing->notify(grid[row2][col2].get(), this);
     }
-    
+
     inCheck = ownKing->inCheck();
     
     if (revert || inCheck) { // if reverts or the king is still in check
@@ -382,13 +420,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
                 p->setEnPas(false);
             }
         }
-    }
-
-    King* tempK = dynamic_cast<King*>(getKing(Colour::White));
-    auto subs = tempK->getSubjects();
-    cout << "@@@@@@" << endl;
-    for (auto s: subs) {
-        cout << s->getCoords() << endl;
     }
 
     return true; //if reverting the board is not requested and that its a legal move return true
@@ -446,7 +477,6 @@ void Board::detach(Observer* obs) {
 
 void Board::notifyAllObservers(Piece* p, Colour turn) {
   for (Observer *observer : observers) {
-    cout << "Hi" << endl;
       if (observer->getSubscription() == Subscription::All) { 
           observer->notify(p, turn);
       }
