@@ -36,25 +36,6 @@ public:
         }
     }
 
-    static unique_ptr<Piece> makePieceType(PieceType type, Colour side, pair<char, int> location) {
-        switch (type) {
-            case PieceType::Pawn:
-                return make_unique<Pawn>(1, side, location);
-            case PieceType::Rook:
-                return make_unique<Rook>(5, side, location);
-            case PieceType::Knight:
-                return make_unique<Knight>(3, side, location);
-            case PieceType::Bishop:
-                return make_unique<Bishop>(3, side, location);
-            case PieceType::Queen:
-                return make_unique<Queen>(9, side, location);
-            case PieceType::King:
-                return make_unique<King>(100, side, location);
-            default:
-                return make_unique<Blank>(0, side, location);
-        }
-    }
-
     static unique_ptr<Piece> setPiece(char pieceChar, pair<char, int> location) {
         Colour side = isupper(pieceChar) ? Colour::White : Colour::Black;
         pieceChar = tolower(pieceChar);
