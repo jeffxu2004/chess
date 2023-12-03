@@ -29,7 +29,7 @@ class LevelFour : public ChessBot {
 
 	// Recursively reads depth moves ahead and returns an integer indicating the value of the move
 	// pieces are worth weight, checks have a value of two, and pieces that threaten middle squares and squares near king are worth 1
-	int valueOfMove(Board b, pair<char, int> start, pair<char, int> end, int depth, Colour col) {
+	int valueOfMove(Board& b, pair<char, int> start, pair<char, int> end, int depth, Colour col) {
 		if (depth == 0) {
 			return 0;
 		}
