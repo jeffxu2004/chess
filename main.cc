@@ -45,7 +45,7 @@ int main () {
             string whiteSide, blackSide; 
             iss >> whiteSide >> blackSide;
             if (!checkValidInput(whiteSide) || !checkValidInput(whiteSide)) {
-                cout << "Invalid input" endl;
+                cout << "Invalid input" << endl;
                 continue;
             }
 
@@ -65,7 +65,7 @@ int main () {
                 }
 
                 if (cmd != "move" || !checkValidCoords(start) || !checkValidCoords(end)) {
-                    return "Invalid Input";
+                    cout << "Invalid Input" << endl;
                     continue;
                 }
 
