@@ -176,6 +176,14 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     bool legal = this->playLegalMove(start, end);
 
     if (!legal) return false;
+
+    cout << "*************" << endl;
+    kingw = dynamic_cast<King*>(getKing(Colour::White));
+    subject = kingw->getSubjects();
+    cout << "   White King Subjects:" << endl;
+    for (auto s:subject) {
+        cout << s->getCoords() << endl;
+    }
     
     turn = turn == Colour::White ? Colour::Black : Colour::White;
 
@@ -273,6 +281,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     bool promotes = false;
     bool enpas = false;
     bool castle = false;
+    bool kingMove = getPiece(start)->pieceType() == PieceType::King;
 
     if(grid[row1][col1]->getSide() != turn) return false; //check if moving piece of own colour
     if(grid[row2][col2]->getSide() == turn) return false; //check if capturing own piece
@@ -420,6 +429,11 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
                 p->setEnPas(false);
             }
         }
+    }
+
+    if (kingMove) {
+        King* k = dynamic_cast <King*> (grid[row2][col2].get());
+        k->setSubjects(ownKing->getSubjects());
     }
 
     return true; //if reverting the board is not requested and that its a legal move return true
