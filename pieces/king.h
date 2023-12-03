@@ -14,7 +14,7 @@ class King: public Piece, public Observer {
 	// tracks the subjects that the king is observing to make it easier to determine the
 	// legality of a move when the king is in check
 	bool check;
-	bool moved;
+	bool moved = true;
 	bool hasCastled;
 
 	vector<Piece*> subjects;

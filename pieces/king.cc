@@ -80,6 +80,9 @@ PieceType King::pieceType() const { return PieceType::King; }
 Subscription King::getSubscription() const { return Subscription::King; }
 
 void King::notify(const Piece* item, const Board* b) {
+	cout << "----------------" << endl;
+	cout << "King is notified" << endl;
+	cout << "----------------" << endl;
 	char kingCol = int(getCoords().first - 'a');
 	int kingRow = 8 - getCoords().second;
 
@@ -96,17 +99,15 @@ void King::notify(const Piece* item, const Board* b) {
 
 	const Piece* piece = dynamic_cast<const Piece*> (item);
 	const vector<vector<Piece *>> grid = b->getGrid();
-	
 	int row = 8 - piece->getCoords().second;
 	int col = int(piece->getCoords().first - 'a');
-	
+
 	if (piece->pieceType() == PieceType::Blank) { // if the square is calling notify because a piece moved away from it
 		for (auto coord:knightSquares) {
 			if (coord.first == int(piece->getCoords().first-'a') && coord.second == 8-piece->getCoords().second) {
 				return;
 			}
 		}
-		
 		// if the piece is in the same column then add pieces to subject until 
 		// the next non-blank piece is reached 
 		if (col == kingCol) {
@@ -141,16 +142,11 @@ void King::notify(const Piece* item, const Board* b) {
 					--col;
 				} while (col > 0 && grid[kingRow][col-1]->pieceType() == PieceType::Blank);
 
-				if (col > 0)
-					addSubject(grid[kingRow][col-1]);
 			} else {
 				do {
 					addSubject(grid[kingRow][col+1]);
 					++col;
 				} while (col < 7 && grid[kingRow][col+1]->pieceType() == PieceType::Blank);
-
-				if (col < 7) 
-					addSubject(grid[kingRow][col+1]);
 			}
 		} else { // if it reaches here, then the piece must belong on a diagonal that the king is observing
 			if (col == 0 || col == 7 || row == 0 || row == 7)
@@ -163,18 +159,12 @@ void King::notify(const Piece* item, const Board* b) {
 					++col;
 				} while (row < 7 && col < 7 && grid[row+1][col+1]->pieceType() == PieceType::Blank);
 
-				if (row < 7 && col < 7)
-					addSubject(grid[row+1][col+1]);
-
 			} else if (col > kingCol) {
 				do {
 					addSubject(grid[row-1][col+1]);
 					--row;
 					++col;
 				} while (row > 0 && col < 7 && grid[row-1][col+1]->pieceType() == PieceType::Blank);
-
-				if (row > 0 && col < 7) 
-					addSubject(grid[row-1][col+1]);
 			} else if (row > kingRow) {
 				do {
 					addSubject(grid[row+1][col-1]);
@@ -182,16 +172,12 @@ void King::notify(const Piece* item, const Board* b) {
 					--col;
 				} while (row < 7 && col > 0 && grid[row+1][col-1]->pieceType() == PieceType::Blank);
 
-				if (row < 7 && col > 0)
-					addSubject(grid[row+1][col-1]);
 			} else {
 				do {
 					addSubject(grid[row-1][col-1]);
 					--row;
 					--col;
 				} while (row > 0 && col > 0 && grid[row-1][col-1]->pieceType() == PieceType::Blank);
-				if (row > 0 && col > 0)
-					addSubject(grid[row-1][col-1]);
 			}
 		}	
 	} else if (piece != this) { // if the square calling notify is a piece moving into it and that piece is not the king itself
@@ -288,7 +274,7 @@ void King::notify(const Piece* item, const Board* b) {
 	} else { // if the king move
 		for (auto coords:knightSquares) {
 			if (coords.first >= 0 && coords.first <= 7 && coords.second >= 0 && coords.second <= 7) {
-				addSubject(grid[coords.first][coords.second]);
+				addSubject(grid[coords.second][coords.first]);
 			}
 		}
 
@@ -327,7 +313,7 @@ void King::notify(const Piece* item, const Board* b) {
 		inc = 1;
 
 		while (kingCol+inc <= 7) {
-			Piece *right = grid[kingRow][kingCol-inc];
+			Piece *right = grid[kingRow][kingCol+inc];
 			addSubject(right);
 
 			if (right->pieceType() != PieceType::Blank) break;
@@ -359,7 +345,7 @@ void King::notify(const Piece* item, const Board* b) {
 		inc = 1;
 
 		while (kingCol+inc <= 7 && kingRow-inc >= 0) {
-			Piece *upRight = grid[kingCol+inc][kingRow-inc];
+			Piece *upRight = grid[kingRow-inc][kingCol+inc];
 			addSubject(upRight);
 
 			if (upRight->pieceType() != PieceType::Blank) break;
@@ -370,7 +356,7 @@ void King::notify(const Piece* item, const Board* b) {
 		inc = 1;
 
 		while (kingCol+inc <= 7 && kingRow+inc <= 7) {
-			Piece *downRight = grid[kingCol+inc][kingRow+inc];
+			Piece *downRight = grid[kingRow+inc][kingCol+inc];
 			addSubject(downRight);
 
 			if (downRight->pieceType() != PieceType::Blank) break;
@@ -413,7 +399,14 @@ void King::notify(const Piece* item, const Board* b) {
 			}
 		}
 	}
-
+	
+	cout << "All subjects for " << getSide() << " king" << endl;
+	for (auto subject:subjects) {
+		cout << subject->getCoords() << endl;
+	}
+	cout << "End of notify()" << endl;
+	cout << "-----------------------------" << endl;
+	cout << endl;
 }
 
 vector<Piece*> King::getSubjects() const { return subjects; }
