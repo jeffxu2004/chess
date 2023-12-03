@@ -349,7 +349,7 @@ void King::notify(const Piece* item, const Board* b) {
 		inc = 1;
 
 		while (kingCol-inc >= 0 && kingRow+inc <= 7) {
-			Piece *downLeft = grid[kingRow-inc][kingCol+inc];
+			Piece *downLeft = grid[kingRow+inc][kingCol-inc];
 			addSubject(downLeft);
 			
 			if (downLeft->pieceType() != PieceType::Blank) break;
@@ -378,7 +378,6 @@ void King::notify(const Piece* item, const Board* b) {
 			++inc;
 		}
 	}
-	
 	check = false;
 
 	// Check if the king is in check
@@ -414,6 +413,7 @@ void King::notify(const Piece* item, const Board* b) {
 			}
 		}
 	}
+
 }
 
 vector<Piece*> King::getSubjects() const { return subjects; }

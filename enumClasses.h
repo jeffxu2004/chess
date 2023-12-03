@@ -6,7 +6,7 @@
 
 using namespace std;
 
-enum class Colour { White, Black, None };
+enum class Colour { White, Black, Neither };
 enum class PieceType { Pawn, Knight, Bishop, Rook, Queen, King, Blank };
 enum class Result { Win, Lose, Draw, Continue };
 

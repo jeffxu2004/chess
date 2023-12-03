@@ -113,6 +113,73 @@ public:
                 return (isDark ? '_' : ' ');
         }
     }
+
+    static string drawPiece(PieceType type, Colour side, bool isDark) {
+        string piece;
+        switch (type) {
+            case PieceType::Pawn:
+                if (side == Colour::Black){
+                    piece = "pawn";
+                    return piece;
+                }
+                else if (side == Colour::White){
+                    piece = "PAWN";
+                    return piece;
+                }
+            case PieceType::Rook:
+                if (side == Colour::Black){
+                    piece = "rook";
+                    return piece;
+                }
+                else if (side == Colour::White){
+                    piece = "ROOK";
+                    return piece;
+                }
+            case PieceType::Knight:
+                if (side == Colour::Black) {
+                    piece = "knight";
+                    return piece;
+                }
+                else if (side == Colour::White){
+                    piece = "KNIGHT";
+                    return piece;
+                }
+            case PieceType::Bishop:
+                if (side == Colour::Black) {
+                    piece = "bishop";
+                    return piece;
+                }
+                else if (side == Colour::White) {
+                    piece = "BISHOP";
+                    return piece;
+                }
+            case PieceType::Queen:
+                if (side == Colour::Black) {
+                    piece = "queen";
+                    return piece;
+                }
+                else if (side == Colour::White) {
+                    piece = "QUEEN";
+                    return piece;
+                }
+            case PieceType::King:
+                if (side == Colour::Black) {
+                    piece = "king";
+                    return piece;
+                }
+                else if (side == Colour::White) {
+                    piece = "KING";
+                    return piece;
+                }
+            default:
+                if (isDark) 
+                    piece = "_";
+                else
+                    piece = " ";
+                return piece;
+        }
+
+    }
 };
 
 #endif

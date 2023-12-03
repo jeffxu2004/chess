@@ -38,7 +38,6 @@ int main () {
             iss >> whiteSide >> blackSide;
             board.standardInit();
             cout << c.getTd();
-
             
             while (true) {
                 string start, end;

@@ -4,6 +4,11 @@
 #include <iostream>
 #include <string>
 
+const int WIDTH = 830;
+const int BORDER_WIDTH = 5;
+const int COORDS_WIDTH = 25;
+const int BOARD_WIDTH = WIDTH - 2 * (BORDER_WIDTH + COORDS_WIDTH);
+
 class Xwindow {
   Display *d;
   Window w;
@@ -12,7 +17,7 @@ class Xwindow {
   unsigned long colours[10];
 
  public:
-  Xwindow(int width=500, int height=500);  // Constructor; displays the window.
+  Xwindow(int width=1200, int height=WIDTH);  // Constructor; displays the window.
   ~Xwindow();                              // Destructor; destroys the window.
 
   enum {White=0, Black, Red, Green, Blue}; // Available colours.
