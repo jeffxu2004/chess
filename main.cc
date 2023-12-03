@@ -20,11 +20,10 @@ bool checkValidCoords(const string& coords) {
 }
 
 bool checkValidInput(string s, ChessBot& cb) {
-    if (s == "human") return true;
-    if (s == "human") {
-        
-    }
-
+    if (s == "human" || s == "p" || s == "player") return true;
+    if (s == "computer1" || s == "computer2" || s == "computer3" || s == "computer4") return true;
+    if (s == "c1" || s == "c2" || s == "c3" || s == "c4") return true;
+    return false;
 }
 
 
@@ -45,7 +44,10 @@ int main () {
         if (cmd == "game") {  // call "game p p" for testing
             string whiteSide, blackSide; 
             iss >> whiteSide >> blackSide;
-            
+            if (!checkValidInput(whiteSide) || !checkValidInput(whiteSide)) {
+                cout << "Invalid input" endl;
+                break;
+            }
 
             board.standardInit();
             cout << c.getTd();
