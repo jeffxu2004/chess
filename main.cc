@@ -5,17 +5,13 @@
 #include <sstream>
 
 using namespace std;
-
 // returns true if its a valid chess coord like "a8" or "b3"
 bool checkValidCoords(const string& coords) {
     if (coords.length() != 2) return false;
-
     char col = coords[0];
     char row = coords[1];
-
     bool isValidCol = col >= 'a' && col <= 'h'; 
     bool isValidRow = row >= '1' && row <= '8';
-
     return isValidCol && isValidRow;
 }
 
@@ -51,13 +47,12 @@ int main () {
 
             board.standardInit();
             cout << c.getTd();
-            
+
             while (true) {
                 string start, end;
                 getline(cin, input);
                 istringstream newIss {input};
                 newIss >> cmd >> start >> end;
-
                 if (cmd == "resign") {
                     cout << "lmfao you lost hahahaha" << endl;
                     if (board.getTurn() == Colour::White) cout << "black wins" << endl;
@@ -84,6 +79,12 @@ int main () {
                     }
                 }
 
+                King* king = dynamic_cast<King*>(board.getKing(Colour::White));
+                auto subjects = king->getSubjects();
+                cout << "$$$$$$$$$$$$$$" << endl;
+                for (auto s: subjects) {
+                    cout << s->getCoords() << endl;
+                }
                 if (board.getState() == Result::Win) {
                     cout << "checkmate" << endl;
                     break;
@@ -94,7 +95,6 @@ int main () {
                 }
                 cout << c.getTd();
             }
-
         } else if (cmd == "setup") {
             while (true) { //format is K e8
                 string piece, move;
@@ -107,5 +107,4 @@ int main () {
             cout << "Invalid input";
         }
     }
-
 }
