@@ -16,6 +16,7 @@ void Rook::setCastle(bool castleState) {
 vector<pair<char, int>> Rook::getMoves(const Board &b) const {
 	vector<pair<char, int>> moves;
 	vector<vector<Piece*>> tempGrid = b.getGrid();
+	
 	// Check horizontal span of rook (left and right)
 	for (int i = coords.first - 'a' - 1; i >= 0; i--) {
 		// If empty square, add as possible move
@@ -41,7 +42,7 @@ vector<pair<char, int>> Rook::getMoves(const Board &b) const {
 		if (tempGrid[i][coords.first - 'a']->pieceType() == PieceType::Blank) {
 			moves.push_back(make_pair(coords.first, i));
 		} else {
-            if (tempGrid[i][coords.first - 'a']->getSide() != this->side) moves.push_back(make_pair(coords.first, i));
+            if (tempGrid[i][coords.first - 'a']->getSide() != this->side) moves.push_back(make_pair(coords.first, 8 - i));
 			break;
 		}
 	}
@@ -49,7 +50,7 @@ vector<pair<char, int>> Rook::getMoves(const Board &b) const {
 		if (tempGrid[i][coords.first - 'a']->pieceType() == PieceType::Blank) {
 			moves.push_back(make_pair(coords.first, i));
 		} else {
-            if (tempGrid[i][coords.first - 'a']->getSide() != this->side) moves.push_back(make_pair(coords.first, i));
+            if (tempGrid[i][coords.first - 'a']->getSide() != this->side) moves.push_back(make_pair(coords.first, 8 - i));
 			break;
 		}
 	}
