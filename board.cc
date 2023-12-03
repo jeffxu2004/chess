@@ -304,8 +304,8 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
             grid[row2+1][col1] = move(temp); //restore captured pawn
             grid[row2][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, end); 
             // restores squares to blanks
-            if (col2 > col1) grid[row2][col2 - 1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col2 + 'a' - 1, row2));
-            else grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col2 + 'a' + 1, row2));
+            if (col2 > col1) grid[row2][col2 - 1] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, make_pair(col2 + 'a' - 1, row2));
+            else grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, make_pair(col2 + 'a' + 1, row2));
         } else {
             grid[row2][col2] = move(temp); // restore original pieces
             grid[row1][col1] = move(temp2);
