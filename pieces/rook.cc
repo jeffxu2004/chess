@@ -38,19 +38,19 @@ vector<pair<char, int>> Rook::getMoves(const Board &b) const {
 	}
 
 	// Check vertical span of rook (up and down)
-	for (int i = 7 - coords.second; i >= 0; i--) {
-		if (tempGrid[i][coords.first - 'a']->pieceType() == PieceType::Blank) {
-			moves.push_back(make_pair(coords.first, i));
+	for (int i = 1; coords.second - i >= 0; i++) {
+		if (tempGrid[8 - coords.second - i][coords.first - 'a']->pieceType() == PieceType::Blank) {
+			moves.push_back(make_pair(coords.first, coords.second + i));
 		} else {
-            if (tempGrid[i][coords.first - 'a']->getSide() != this->side) moves.push_back(make_pair(coords.first, 8 - i));
+            if (tempGrid[8 - coords.second - i][coords.first - 'a']->getSide() != this->side) moves.push_back(make_pair(coords.first, coords.second + i));
 			break;
 		}
 	}
-	for (int i = 9 - coords.second; i < tempGrid.size(); i++) {
-		if (tempGrid[i][coords.first - 'a']->pieceType() == PieceType::Blank) {
-			moves.push_back(make_pair(coords.first, i));
+	for (int i = 1; coords.second + i < tempGrid.size(); i++) {
+		if (tempGrid[8 - coords.second + i][coords.first - 'a']->pieceType() == PieceType::Blank) {
+			moves.push_back(make_pair(coords.first, coords.second - i));
 		} else {
-            if (tempGrid[i][coords.first - 'a']->getSide() != this->side) moves.push_back(make_pair(coords.first, 8 - i));
+            if (tempGrid[8 - coords.second + i][coords.first - 'a']->getSide() != this->side) moves.push_back(make_pair(coords.first, coords.second - i));
 			break;
 		}
 	}
