@@ -33,7 +33,7 @@ public:
 	Subscription getSubscription() const;
 	
 	void notify(const Piece* item, const Board* b) override;
-	void notify(const Piece* item) override {};
+	void notify(const Piece* item, Colour turn) override {};
 
 	// Accessors and Mutators
 	// returns a vector of the subjects that the king is observing	
