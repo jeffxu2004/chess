@@ -29,7 +29,7 @@ vector<pair<char,int>> Pawn::getMoves(const Board &b) const {
 	}
 	
 	// Take pieces
-	for (int i = -1; i < 1; i+=2) {
+	for (int i = -1; i <= 1; i+=2) {
 		int x = int(coords.first - 'a' + i);
 		int y = 8 - coords.second + direction;
 		if (x < 0 || x > 7 || y < 0 || y > 7) continue;

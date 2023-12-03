@@ -42,7 +42,7 @@ vector<pair<char, int>> Rook::getMoves(const Board &b) const {
 		if (tempGrid[i][coords.first - 'a']->pieceType() == PieceType::Blank) {
 			moves.push_back(make_pair(coords.first, i));
 		} else {
-            if (tempGrid[i][coords.first - 'a']->getSide() != this->side) moves.push_back(make_pair(coords.first, 8 - i));
+            if (tempGrid[i][coords.first - 'a']->getSide() != this->side) moves.push_back(make_pair(coords.first, 8 + i));
 			break;
 		}
 	}
@@ -50,7 +50,7 @@ vector<pair<char, int>> Rook::getMoves(const Board &b) const {
 		if (tempGrid[i][coords.first - 'a']->pieceType() == PieceType::Blank) {
 			moves.push_back(make_pair(coords.first, i));
 		} else {
-            if (tempGrid[i][coords.first - 'a']->getSide() != this->side) moves.push_back(make_pair(coords.first, 8 - i));
+            if (tempGrid[i][coords.first - 'a']->getSide() != this->side) moves.push_back(make_pair(coords.first, 8 + i));
 			break;
 		}
 	}
