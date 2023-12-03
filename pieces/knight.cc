@@ -24,11 +24,13 @@ vector<pair<char, int>> Knight::getMoves(const Board &b) const {
 		int y = 8 - coords.second - possibleMoves[i][1];
 		if (x < 0 || x >= int(tempGrid.size()) || y < 0 || y >= int(tempGrid.size())) continue;
 		// Check if square is empty or opposing piece
-		Piece* pieceAtLoc = tempGrid[x][y];
+		Piece* pieceAtLoc = tempGrid[y][x];
+
 		if (pieceAtLoc->pieceType() == PieceType::Blank || pieceAtLoc->getSide() != this->side) {
 			moves.push_back(make_pair(static_cast<char>(x + 'a'), 8 - y));
 		}
 	}
+
 	return moves;
 }
 

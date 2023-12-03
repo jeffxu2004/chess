@@ -9,7 +9,7 @@ Board::Board(int n = 8) {
     for (int row = 1; row <= n; row++) {
         grid.push_back(vector<unique_ptr<Piece>>());
         for (char col = 'a'; col <= 'h'; col++) {
-            grid[row-1].push_back(PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col,row)));
+            grid[row-1].push_back(PieceCreator::createPiece(PieceType::Blank, Colour::Neither, make_pair(col,8-row+1)));
         }
     }
 }
@@ -101,7 +101,11 @@ void Board::standardInit() {
 
     // Kings
     grid[0][4] = PieceCreator::createPiece(PieceType::King, Colour::Black, make_pair('e', 8));
+    King *king = dynamic_cast<King*>(grid[0][4].get());
+    king->notify(king, this);
     grid[7][4] = PieceCreator::createPiece(PieceType::King, Colour::White, make_pair('e', 1));
+    king = dynamic_cast<King*>(grid[7][4].get());
+    king->notify(king, this);
 
     for(auto &row : grid) {
         for (auto &piece : row) {
@@ -153,7 +157,9 @@ void Board::changeSquare(char c, pair<char, int> loc) {
 bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     int col1 = start.first - 'a';
     int row1 = size - start.second; 
+
     if (isPlayableMove(grid[row1][col1].get(), end) == false) return false;
+
     bool legal = this->playLegalMove(start, end);
     if (!legal) return false;
 
@@ -196,7 +202,7 @@ bool Board::isPlayableMove(Piece *piece, pair<char, int> dest) {
 vector<pair<pair<char, int>,pair<char, int>>> Board::getAllMoves(Colour c) {
     vector<pair<pair<char, int>,pair<char, int>>> list;
     for(auto &row : grid) {
-        for (auto &piece : row) { //iterates through each piece 
+        for (auto &piece : row) { //iterates through each piece
             if (piece->getSide() == turn) {  //checks for pieces of own colour
                 auto moves = piece->getMoves(*this);
                 for(auto m : moves) {
@@ -206,6 +212,8 @@ vector<pair<pair<char, int>,pair<char, int>>> Board::getAllMoves(Colour c) {
             }
         }
     }
+
+    return list;
 }
 
 bool Board::kingIsNotCheck(pair<char, int> start, pair<char, int> end) {
@@ -232,6 +240,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     bool promotes = false;
     bool enpas = false;
     bool castle = false;
+
     if(grid[row1][col1]->getSide() != turn) return false; //check if moving piece of own colour
     if(grid[row2][col2]->getSide() == turn) return false; //check if capturing own piece
 
@@ -262,7 +271,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     }
 
     // changes original square to be a blank
-    grid[row1][col1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, start);
+    grid[row1][col1] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, start);
     //notify king observers for own king
     auto subjects = ownKing->getSubjects();
     ownSubjects = subjects;
@@ -287,13 +296,13 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         if (enpas) {
             grid[row1][col1] = move(temp2); // restore orginal move
             grid[row2+1][col1] = move(temp); //restore captured pawn
-            grid[row2][col2] = PieceCreator::createPiece(PieceType::Pawn, Colour::None, end);
+            grid[row2][col2] = PieceCreator::createPiece(PieceType::Pawn, Colour::Neither, end);
             // restores squares to blanks
-            grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col2 + 'a', row2 + 1));                 
+            grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, make_pair(col2 + 'a', row2 + 1));                 
         } else if (castle) {
             grid[row1][col1] = move(temp2); // restore orginal move
             grid[row2+1][col1] = move(temp); //restore captured pawn
-            grid[row2][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::None, end); 
+            grid[row2][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, end); 
             // restores squares to blanks
             if (col2 > col1) grid[row2][col2 - 1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col2 + 'a' - 1, row2));
             else grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Blank, Colour::None, make_pair(col2 + 'a' + 1, row2));

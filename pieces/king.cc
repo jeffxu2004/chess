@@ -61,13 +61,15 @@ vector<pair<char, int>> King::getMoves(const Board& b) const{
 
 	vector<vector<Piece *>> grid = b.getGrid();
 	
-	for (auto it=moves.begin(); it !=moves.end(); ++it) {
+	for (auto it=moves.begin(); it !=moves.end();) {
 		if (it->first < 'a' || it->first > 'h')
 			moves.erase(it);
 		else if (it->second < 1 || it->second > 8)
 			moves.erase(it);
 		else if (grid[8-it->second][int(it->first-'a')]->getSide() == getSide())
 			moves.erase(it);
+		else
+			++it;
 	}
 
 	return moves;
@@ -347,7 +349,7 @@ void King::notify(const Piece* item, const Board* b) {
 		inc = 1;
 
 		while (kingCol-inc >= 0 && kingRow+inc <= 7) {
-			Piece *downLeft = grid[kingRow-inc][kingCol+inc];
+			Piece *downLeft = grid[kingRow+inc][kingCol-inc];
 			addSubject(downLeft);
 			
 			if (downLeft->pieceType() != PieceType::Blank) break;
@@ -376,7 +378,6 @@ void King::notify(const Piece* item, const Board* b) {
 			++inc;
 		}
 	}
-	
 	check = false;
 
 	// Check if the king is in check
@@ -412,6 +413,7 @@ void King::notify(const Piece* item, const Board* b) {
 			}
 		}
 	}
+
 }
 
 vector<Piece*> King::getSubjects() const { return subjects; }

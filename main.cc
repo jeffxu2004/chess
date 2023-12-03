@@ -49,7 +49,6 @@ int main () {
 
             board.standardInit();
             cout << c.getTd();
-
             
             while (true) {
                 string start, end;

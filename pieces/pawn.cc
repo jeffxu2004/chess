@@ -18,12 +18,12 @@ vector<pair<char,int>> Pawn::getMoves(const Board &b) const {
 	int direction = side==Colour::White?-1:1;
 
 	// Move forward
-	if (tempGrid[coords.first - 'a'][8 - coords.second + direction]->pieceType() == PieceType::Blank) {
+	if (tempGrid[8 - coords.second + direction][coords.first - 'a']->pieceType() == PieceType::Blank) {
 		moves.push_back(make_pair(coords.first, coords.second - direction));
 		// Check if piece can move two squares on first move
 		char c = coords.first - 'a';
 		int n = 8-coords.second + 2*direction;
-		if (moveTwo && tempGrid[coords.first - 'a'][8 - coords.second + 2*direction]->pieceType() == PieceType::Blank) {
+		if (moveTwo && tempGrid[8 - coords.second + 2*direction][coords.first - 'a']->pieceType() == PieceType::Blank) {
 			moves.push_back(make_pair(coords.first, coords.second - 2*direction));
 		}
 	}
@@ -33,12 +33,12 @@ vector<pair<char,int>> Pawn::getMoves(const Board &b) const {
 		int x = int(coords.first - 'a' + i);
 		int y = 8 - coords.second + direction;
 		if (x < 0 || x > 7 || y < 0 || y > 7) continue;
-		Piece* piece = tempGrid[coords.first - 'a' + i][8 - coords.second + direction];
+		Piece* piece = tempGrid[8 - coords.second + direction][coords.first - 'a' + i];
 		if (piece->pieceType() != PieceType::Blank && piece->getSide() != side) {
 			moves.push_back(make_pair(static_cast<char>(coords.first + i), coords.second - direction));
 		}
 		// En passant
-		piece = tempGrid[coords.first - 'a' + i][8 - coords.second];
+		piece = tempGrid[8 - coords.second][coords.first - 'a' + i];
 		if (piece->pieceType() == PieceType::Pawn && piece->getSide() != side && dynamic_cast<Pawn*>(piece)->canBeEnPas()) {
 			moves.push_back(make_pair(static_cast<char>(coords.first + i), coords.second - direction));
 		}

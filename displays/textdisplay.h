@@ -10,7 +10,7 @@ using namespace std;
 
 class TextDisplay {
     vector<vector<char>> display;
-    int gridSize;
+    const int gridSize;
     
 public:
     TextDisplay(int n);

@@ -3,25 +3,25 @@
 ostream& operator<<(ostream& out, PieceType type) {
     switch (type) {
         case PieceType::Pawn:
-            out << "Pawn" << endl;
+            out << "Pawn";
             return out;
         case PieceType::Bishop:
-            out << "Bishop" << endl;
+            out << "Bishop";
             return out;
         case PieceType::Queen:
-            out << "Queen" << endl;
+            out << "Queen";
             return out;
         case PieceType::King:
-            out << "King" << endl;
+            out << "King";
             return out;
         case PieceType::Blank:
-            out << "Blank" << endl;
+            out << "Blank";
             return out;
         case PieceType::Knight:
-            out << "Knight" << endl;
+            out << "Knight";
             return out;
         default:
-            out << "Rook" << endl;
+            out << "Rook";
             return out;
     }
 
@@ -31,24 +31,24 @@ ostream& operator<<(ostream& out, PieceType type) {
 ostream& operator<<(ostream& out, Colour c) {
     switch (c) {
         case Colour::White:
-            out << "White" << endl;
+            out << "White";
             return out;
         case Colour::Black:
-            out << "Black" << endl;
+            out << "Black";
             return out;
         default:
-            out << "None" << endl; 
+            out << "None"; 
     }
 
     return out;
 }
 
 ostream& operator<<(ostream& out, pair<char,int> move) {
-    out << "Move: " << move.first << move.second << endl;
+    out << "Coords: " << move.first << move.second;
     return out;
 }
 
 ostream& operator<<(ostream& out, pair<pair<char,int>,pair<char,int>> movePair) {
     out << "Start: " << movePair.first.first << movePair.first.second << " "
-        << "End: " << movePair.second.first << movePair.second.second << endl;
+        << "End: " << movePair.second.first << movePair.second.second;
 }
