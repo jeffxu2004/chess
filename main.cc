@@ -19,7 +19,7 @@ bool checkValidCoords(const string& coords) {
     return isValidCol && isValidRow;
 }
 
-bool checkValidInput(string s, ChessBot& cb) {
+bool checkValidInput(string s) {
     if (s == "human" || s == "p" || s == "player") return true;
     if (s == "computer1" || s == "computer2" || s == "computer3" || s == "computer4") return true;
     if (s == "c1" || s == "c2" || s == "c3" || s == "c4") return true;
@@ -68,7 +68,7 @@ int main () {
                     return "Invalid Input";
                     continue;
                 }
-                
+
                 if(board.getTurn() == Colour::White) {
                     if (whiteSide == "p") {
                         bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
