@@ -1,47 +1,33 @@
 #include "board.h"
 #include "displays/controller.h"
 #include "chessbot/chessbot.h"
-#include "chessbot/chessbotcreator.h"
 #include <iostream>
 #include <sstream>
 
 using namespace std;
-
 // returns true if its a valid chess coord like "a8" or "b3"
 bool checkValidCoords(const string& coords) {
     if (coords.length() != 2) return false;
-
     char col = coords[0];
     char row = coords[1];
-
     bool isValidCol = col >= 'a' && col <= 'h'; 
     bool isValidRow = row >= '1' && row <= '8';
-
     return isValidCol && isValidRow;
 }
 
-
-// checks if whitside, blackside is a valid input
-bool checkValidInput(string s, bool &cpu) {
+bool checkValidInput(string s) {
     if (s == "human" || s == "p" || s == "player") return true;
-    if (s == "computer1" || s == "computer2" || s == "computer3" || s == "computer4") {
-        cpu = true;
-        return true;
-    } 
-    if (s == "c1" || s == "c2" || s == "c3" || s == "c4") {
-        cpu = true;
-        return true;
-    }
+    if (s == "computer1" || s == "computer2" || s == "computer3" || s == "computer4") return true;
+    if (s == "c1" || s == "c2" || s == "c3" || s == "c4") return true;
     return false;
 }
 
 
 int main () {
     string input;
-    Board board(8);
-    board.standardInit();
 
     while (true) {
+        Board board(8);
         string cmd;
         cout << "Enter a command: ";
         Controller c (8);
@@ -52,34 +38,26 @@ int main () {
 
         //currently ignores error-handeling to accomadate for enhancements format
         if (cmd == "game") {  // call "game p p" for testing
-            bool whiteCPU = false; //true if white is a CPU/bot
-            bool blackCPU = false;
-            unique_ptr<ChessBot> wBot; //pointer to white Bot 
-            unique_ptr<ChessBot> bBot;
             string whiteSide, blackSide; 
             iss >> whiteSide >> blackSide;
-            if (!checkValidInput(whiteSide, whiteCPU) || !checkValidInput(whiteSide, blackCPU)) {
+            if (!checkValidInput(whiteSide) || !checkValidInput(whiteSide)) {
                 cout << "Invalid input" << endl;
                 continue;
             }
 
-            if (whiteCPU) wBot = ChessBotCreator::makeBot(Colour::White);
-            if (blackCPU) bBot = ChessBotCreator::makeBot(Colour::Black);           
-
+            board.standardInit();
             cout << c.getTd();
-            
+
             while (true) {
                 string start, end;
                 getline(cin, input);
                 istringstream newIss {input};
                 newIss >> cmd >> start >> end;
-
                 if (cmd == "resign") {
                     cout << "lmfao you lost hahahaha" << endl;
                     if (board.getTurn() == Colour::White) cout << "black wins" << endl;
                     if (board.getTurn() == Colour::Black) cout << "white wins" << endl;                   
                 }
-
 
                 if (cmd != "move" || !checkValidCoords(start) || !checkValidCoords(end)) {
                     cout << "Invalid Input" << endl;
@@ -87,30 +65,26 @@ int main () {
                 }
 
                 if(board.getTurn() == Colour::White) {
-                    if (!whiteCPU) {
+                    if (whiteSide == "p") {
                         bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
-                        if (!b) {
-                            cout << "Not a valid move" << endl;
-                            continue;
-                        }
-                    } else {
-                        auto move = wBot->getNextMove();
-                        bool b = board.playMove(move.first, move.second);                       
+                    } else if (whiteSide == "c1"){
+                        //
                     }
                 }
-                if(board.getTurn() == Colour::Black) {
-                    if (!blackCPU) {
+                else if(board.getTurn() == Colour::Black) {
+                    if (blackSide == "p") {
                         bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
-                        if (!b) {
-                            cout << "Not a valid move" << endl;
-                            continue;
-                        }
-                    } else {
-                        auto move = bBot->getNextMove();
-                        bool b = board.playMove(move.first, move.second);                       
+                    } else if (blackSide == "c1"){
+                        //
                     }
                 }
 
+                King* king = dynamic_cast<King*>(board.getKing(Colour::White));
+                auto subjects = king->getSubjects();
+                cout << "$$$$$$$$$$$$$$" << endl;
+                for (auto s: subjects) {
+                    cout << s->getCoords() << endl;
+                }
                 if (board.getState() == Result::Win) {
                     cout << "checkmate" << endl;
                     break;
@@ -121,7 +95,6 @@ int main () {
                 }
                 cout << c.getTd();
             }
-
         } else if (cmd == "setup") {
             while (true) { //format is K e8
                 string piece, move;
@@ -134,5 +107,4 @@ int main () {
             cout << "Invalid input";
         }
     }
-
 }
