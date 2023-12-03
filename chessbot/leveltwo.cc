@@ -26,6 +26,8 @@ class LevelTwo : public ChessBot {
 		return weight + check;
 	}
 public:
+	LevelTwo(Colour colour) : ChessBot{colour} {};
+	
 	pair<pair<char, int>, pair<char, int>> getNextMove(Board &b) override { 
 		vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(this->colour);
 
