@@ -80,9 +80,10 @@ PieceType King::pieceType() const { return PieceType::King; }
 Subscription King::getSubscription() const { return Subscription::King; }
 
 void King::notify(const Piece* item, const Board* b) {
-	cout << "----------------" << endl;
-	cout << "King is notified" << endl;
-	cout << "----------------" << endl;
+	cout << getSide() << " King notified" << endl;
+	for (auto s:subjects) {
+		cout << s->getCoords() << endl;
+	}
 	char kingCol = int(getCoords().first - 'a');
 	int kingRow = 8 - getCoords().second;
 
@@ -103,6 +104,7 @@ void King::notify(const Piece* item, const Board* b) {
 	int col = int(piece->getCoords().first - 'a');
 
 	if (piece->pieceType() == PieceType::Blank) { // if the square is calling notify because a piece moved away from it
+		cout << "Blanks" << endl;
 		for (auto coord:knightSquares) {
 			if (coord.first == int(piece->getCoords().first-'a') && coord.second == 8-piece->getCoords().second) {
 				return;
@@ -111,6 +113,7 @@ void King::notify(const Piece* item, const Board* b) {
 		// if the piece is in the same column then add pieces to subject until 
 		// the next non-blank piece is reached 
 		if (col == kingCol) {
+			cout << "   Same column" << endl;
 			if (row == 0 || row == 7)
 				return;
 
@@ -133,6 +136,7 @@ void King::notify(const Piece* item, const Board* b) {
 			}
 
 		} else if (row == kingRow) { // if the piece is in the same row
+			std::cout << "   Same Row" << endl;
 			if (col == 0 || col == 7)
 				return;
 			
@@ -149,6 +153,7 @@ void King::notify(const Piece* item, const Board* b) {
 				} while (col < 7 && grid[kingRow][col+1]->pieceType() == PieceType::Blank);
 			}
 		} else { // if it reaches here, then the piece must belong on a diagonal that the king is observing
+			cout << "   Same Diagonal" << endl;
 			if (col == 0 || col == 7 || row == 0 || row == 7)
 				return;
 
@@ -181,7 +186,9 @@ void King::notify(const Piece* item, const Board* b) {
 			}
 		}	
 	} else if (piece != this) { // if the square calling notify is a piece moving into it and that piece is not the king itself
+		cout << "Others" << endl;
 		if (kingCol == col) {
+			cout << "   Same column" << endl;
 			if (kingRow > row) {
 				for (auto pieceIt=subjects.begin(); pieceIt!=subjects.end();) {
 					int pieceCol = (*pieceIt)->getCoords().first - 'a';
@@ -206,6 +213,7 @@ void King::notify(const Piece* item, const Board* b) {
 			}
 
 		} else if (kingRow == row) {
+			cout << "   Same row" << endl;
 			if (kingCol > col) {
 				for (auto pieceIt=subjects.begin(); pieceIt!=subjects.end();) {
 					int pieceCol = (*pieceIt)->getCoords().first - 'a';
@@ -229,6 +237,7 @@ void King::notify(const Piece* item, const Board* b) {
 			}
 
 		} else { // then the piece is on the diagonal that the king observes
+			cout << "   Same diagonal" << endl;
 			if (col > kingCol && row > kingRow) {
 				for (auto pieceIt=subjects.begin(); pieceIt!=subjects.end();) {
 					int pieceCol = (*pieceIt)->getCoords().first - 'a';
@@ -272,6 +281,7 @@ void King::notify(const Piece* item, const Board* b) {
 			}
 		}
 	} else { // if the king move
+		cout << "King" << endl;
 		for (auto coords:knightSquares) {
 			if (coords.first >= 0 && coords.first <= 7 && coords.second >= 0 && coords.second <= 7) {
 				addSubject(grid[coords.second][coords.first]);
@@ -435,3 +445,7 @@ void King::setMoved(bool move) { moved = move; }
 bool King::justCastled() const { return hasCastled; }
 
 void King::setCastled(bool castle) { hasCastled = castle; }
+
+void King::setSubjects(vector<Piece*> newSubjects) {
+	subjects = newSubjects;
+}

@@ -84,6 +84,13 @@ int main () {
                     }
                 }
 
+                King* king = dynamic_cast<King*>(board.getKing(Colour::White));
+                auto subjects = king->getSubjects();
+                cout << "$$$$$$$$$$$$$$" << endl;
+                for (auto s: subjects) {
+                    cout << s->getCoords() << endl;
+                }
+
                 if (board.getState() == Result::Win) {
                     cout << "checkmate" << endl;
                     break;
