@@ -24,7 +24,11 @@ vector<pair<char,int>> Pawn::getMoves(const Board &b) const {
 		char c = coords.first - 'a';
 		int n = 8-coords.second + 2*direction;
 		if (moveTwo && tempGrid[8 - coords.second + 2*direction][coords.first - 'a']->pieceType() == PieceType::Blank) {
-			moves.push_back(make_pair(coords.first, coords.second - 2*direction));
+			// Check if piece is in the correct starting position to move two
+			if ((this->side == Colour::White && this->coords.second == 2) ||
+				(this->side == Colour::Black && this->coords.second == 7)) {
+				moves.push_back(make_pair(coords.first, coords.second - 2*direction));
+			}
 		}
 	}
 	
