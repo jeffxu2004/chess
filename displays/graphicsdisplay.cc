@@ -9,8 +9,8 @@ GraphicsDisplay::GraphicsDisplay(int n): gridSize {n}, squareWidth {BOARD_WIDTH 
         int start = COORDS_WIDTH + BORDER_WIDTH + squareWidth / 2;
         string label;
         label += char('H'-i);
-        display.drawString(COORDS_WIDTH / 2, start + i*squareWidth, label);
-        display.drawString(start + i*squareWidth, WIDTH-COORDS_WIDTH / 2, to_string(i+1));
+        display.drawString(COORDS_WIDTH / 2, start + i*squareWidth, to_string(i+1));
+        display.drawString(start + i*squareWidth, WIDTH-COORDS_WIDTH / 2, label);
         if (i % 2 == 0) {
             for (int j=0; j<gridSize; ++j) {
                 if (j % 2 == 0)
