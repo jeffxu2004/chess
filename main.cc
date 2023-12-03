@@ -60,8 +60,8 @@ int main () {
 
                 if (cmd == "resign") {
                     cout << "lmfao you lost hahahaha" << endl;
-                    if (board.getTurn == Colour::White) cout << "black wins" << endl;
-                    if (board.getTurn == Colour::Black) cout << "white wins" << endl;                   
+                    if (board.getTurn() == Colour::White) cout << "black wins" << endl;
+                    if (board.getTurn() == Colour::Black) cout << "white wins" << endl;                   
                 }
 
                 if (cmd != "move" || !checkValidCoords(start) || !checkValidCoords(end)) {
