@@ -10,8 +10,8 @@ Controller::Controller(int n) {
 
 Subscription Controller::getSubscription() const { return Subscription::All; }
 
-void Controller::notify(const Piece *item) {
-    td->update(item);
+void Controller::notify(const Piece *item, Colour turn) {
+    td->update(item, turn);
     gd->update(item);
 }
 

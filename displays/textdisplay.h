@@ -11,10 +11,11 @@ using namespace std;
 class TextDisplay {
     vector<vector<char>> display;
     const int gridSize;
+    Colour turn = Colour::White;
     
 public:
     TextDisplay(int n);
-    void update(const Piece* item);
+    void update(const Piece* item, Colour turn);
     vector<vector<char>> getDisplay() const;
     friend ostream& operator<<(ostream& out, const TextDisplay& td);
 };

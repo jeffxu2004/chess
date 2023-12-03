@@ -28,9 +28,11 @@ TextDisplay::TextDisplay(int n): gridSize{n} {
     display = board;
 }
 
-void TextDisplay::update(const Piece* item) {
+void TextDisplay::update(const Piece* item, Colour turn) {
     int row = 8 - item->getCoords().second;
     int col = int(item->getCoords().first - 'a');
+
+    this->turn = turn;
 
     bool isDark = ((row % 2 == 0) && (col % 2 == 1)) || ((row % 2 == 1) && (col % 2 == 0));
     display[row][col] = PieceCreator::createPiece(item->pieceType(), item->getSide(), isDark);
@@ -38,6 +40,7 @@ void TextDisplay::update(const Piece* item) {
 
 ostream& operator<<(ostream& out, const TextDisplay& td) {
     int width = td.gridSize;
+    cout << td.turn << "'s turn" << endl;
     // print top border
     out << "  ";
     for (int i=0; i<width+2; ++i) {
