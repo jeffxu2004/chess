@@ -58,7 +58,7 @@ Piece* Board::getPiece(pair<char,int> loc) {
 Piece* Board::getKing(Colour c) {
     for(auto &row : grid) {
         for (auto &piece : row) {
-            if (piece->pieceType() == PieceType::King) { //finds king
+            if (piece->pieceType() == PieceType::King && piece->getSide() == c) { //finds king
                 return piece.get(); //returns raw ptr 
             }
         }
