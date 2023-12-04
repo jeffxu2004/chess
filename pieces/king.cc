@@ -121,17 +121,19 @@ void King::notify(const Piece* item, const Board* b) {
 				do {
 					addSubject(grid[row-1][kingCol]);
 					--row;
+					if (grid[row-1][kingCol]->pieceType() != PieceType::Blank) break;
 				} while (row > 0 && grid[row-1][kingCol]->pieceType() == PieceType::Blank);
 				
-				if (row > 0)
+				if (row > 0 && grid[row][kingCol]->pieceType() == PieceType::Blank)
 					addSubject(grid[row-1][kingCol]);
 			} else {
 				do {
 					addSubject(grid[row+1][kingCol]);
 					++row;
+					if (grid[row + 1][kingCol]->pieceType() != PieceType::Blank) break;
 				} while (row < 7 && grid[row+1][kingCol]->pieceType() == PieceType::Blank);
 
-				if (row < 7)
+				if (row < 7 && grid[row][kingCol]->pieceType() == PieceType::Blank)
 					addSubject(grid[row+1][kingCol]);
 			}
 
@@ -144,13 +146,22 @@ void King::notify(const Piece* item, const Board* b) {
 				do {
 					addSubject(grid[kingRow][col-1]);
 					--col;
+					if (grid[kingRow][col-1]->pieceType() != PieceType::Blank) break;
 				} while (col > 0 && grid[kingRow][col-1]->pieceType() == PieceType::Blank);
-
+				
+				if (col > 0 && grid[kingRow][col]->pieceType() == PieceType::Blank) {
+					addSubject(grid[kingRow][col-1]);
+				}
 			} else {
 				do {
 					addSubject(grid[kingRow][col+1]);
 					++col;
+					if (grid[kingRow][col+1]->pieceType() != PieceType::Blank) break;
 				} while (col < 7 && grid[kingRow][col+1]->pieceType() == PieceType::Blank);
+
+				if (col < 7 && grid[kingRow][col]->pieceType() == PieceType::Blank) {
+					addSubject(grid[kingRow][col+1]);
+				}
 			}
 		} else { // if it reaches here, then the piece must belong on a diagonal that the king is observing
 			cout << "   Same Diagonal" << endl;
@@ -158,31 +169,53 @@ void King::notify(const Piece* item, const Board* b) {
 				return;
 
 			if (col > kingCol && row > kingRow) {
+				cout << "      Bottom Right" << endl;
 				do {
 					addSubject(grid[row+1][col+1]);
 					++row;
 					++col;
-				} while (row < 7 && col < 7 && grid[row+1][col+1]->pieceType() == PieceType::Blank);
+					if (grid[kingRow][col+1]->pieceType() != PieceType::Blank) break;
 
+				} while (row < 7 && col < 7 && grid[row+1][col+1]->pieceType() == PieceType::Blank);
+				if (row < 7 && col < 7 && grid[row][col]->pieceType() == PieceType::Blank) {
+					addSubject(grid[row+1][col+1]);
+				}
 			} else if (col > kingCol) {
+				cout << "      Top Right" << endl;
 				do {
 					addSubject(grid[row-1][col+1]);
 					--row;
 					++col;
-				} while (row > 0 && col < 7 && grid[row-1][col+1]->pieceType() == PieceType::Blank);
+				} while (row > 0 && col < 7 && grid[row-1][col+1]->pieceType() == PieceType::Blank &&
+						grid[row][col]->pieceType() == PieceType::Blank);
+
+				if (row > 0 && col < 7 && grid[row][col]->pieceType() == PieceType::Blank) {
+					addSubject(grid[row-1][col+1]);
+				}
 			} else if (row > kingRow) {
+				cout << "      Bottom Left" << endl;
 				do {
 					addSubject(grid[row+1][col-1]);
 					++row;
 					--col;
-				} while (row < 7 && col > 0 && grid[row+1][col-1]->pieceType() == PieceType::Blank);
+				} while (row < 7 && col > 0 && grid[row+1][col-1]->pieceType() == PieceType::Blank &&
+						grid[row][col]->pieceType() == PieceType::Blank );
+				if (row < 7 && col > 0 && grid[row][col]->pieceType() == PieceType::Blank) {
+					addSubject(grid[row+1][col-1]);
+				}
 
 			} else {
+				cout << "      Top Left" << endl;
 				do {
 					addSubject(grid[row-1][col-1]);
 					--row;
 					--col;
-				} while (row > 0 && col > 0 && grid[row-1][col-1]->pieceType() == PieceType::Blank);
+				} while (row > 0 && col > 0 && grid[row-1][col-1]->pieceType() == PieceType::Blank &&
+						grid[row][col]->pieceType() == PieceType::Blank);
+
+				if (row > 0 && col > 0 && grid[row][col]->pieceType() == PieceType::Blank) {
+					addSubject(grid[row-1][col-1]);
+				}
 			}
 		}	
 	} else if (piece->pieceType() != PieceType::King || piece->getSide() != getSide()) { // if the square calling notify is a piece moving into it and that piece is not the king itself
@@ -399,7 +432,7 @@ void King::notify(const Piece* item, const Board* b) {
 			subject->getSide() != getSide()) {
 			int pieceCol = int(subject->getCoords().first-'a');
 			int pieceRow = 8 - subject->getCoords().second;
-
+			cout << "entered" << endl;
 			if ((subject->pieceType() == PieceType::Rook || 
 				subject->pieceType() == PieceType::Queen) &&
 				(pieceCol == kingCol || pieceRow == kingRow)) {
@@ -428,6 +461,7 @@ void King::notify(const Piece* item, const Board* b) {
 	}
 	
 	cout << "All subjects for " << getSide() << " king" << endl;
+	cout << "Currently the king is " << (check ? "" : "not ") << "in check" << endl;
 	for (auto subject:subjects) {
 		cout << subject->getCoords() << endl;
 	}

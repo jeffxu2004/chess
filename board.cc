@@ -275,7 +275,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     vector<Piece*> oppSubjects; //used to store original observers of black king
     King* ownKing = dynamic_cast<King*> (getKing(turn));
     King* oppKing = dynamic_cast<King*> (getKing(turn == Colour::White ? Colour::Black : Colour::White));
-    bool inCheck;
+    bool inCheck = ownKing->inCheck();
     unique_ptr<Piece> temp; //used to hold pieces in case revert 
     unique_ptr<Piece> temp2; 
     bool promotes = false;
@@ -380,9 +380,10 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         if (s->getCoords() == end) oppKing->notify(grid[row2][col2].get(), this);
     }
 
-    inCheck = ownKing->inCheck();
-    
-    if (revert || inCheck) { // if reverts or the king is still in check
+    bool isCheckAfter = ownKing->inCheck(); // determines if the king is still in check AFTER the move is played
+
+    cout << ownKing->getSide() << "is " << (inCheck ? "" : "not ") << "in check" << endl;
+    if (revert || isCheckAfter) { // if reverts or the king is still in check
         if (enpas) {
             grid[row1][col1] = move(temp2); // restore orginal move
             grid[row2+1][col1] = move(temp); //restore captured pawn
@@ -403,7 +404,10 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         ownKing->setSubjects(ownSubjects);
         oppKing->setSubjects(oppSubjects);
 
-        if (revert) return !inCheck;
+        if (revert) {
+            ownKing->setCheck(inCheck); // if the position is to be reverted, then we also have to revert the check-status of the king
+            return !isCheckAfter;
+        }
         else return false;
     }
     
