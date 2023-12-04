@@ -336,7 +336,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
 
 
     if(promotes) {
-        cout << "PROMOTING!!" << endl;
         temp = move(grid[row2][col2]); // stores piece on back rank
         temp2 = move(grid[row1][col1]); // stores old pawn
         grid[row2][col2] = PieceCreator::createPiece(promotionPiece, turn, end);
@@ -350,11 +349,11 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         if (turn == Colour::White) {
             temp3 = move(grid[row2 + 1][col2]);
             thirdCoord = make_pair(end.first, end.second - 1);
-            grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Blank, turn, thirdCoord);      
+            grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, thirdCoord);      
         } else {
             temp3 = move(grid[row2 - 1][col2]);
             thirdCoord = make_pair(end.first, end.second + 1);
-            grid[row2 - 1][col2] = PieceCreator::createPiece(PieceType::Blank, turn, thirdCoord);    
+            grid[row2 - 1][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, thirdCoord);    
         }
     
     } else if (castle) {

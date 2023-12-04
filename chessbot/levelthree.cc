@@ -20,9 +20,10 @@ class LevelThree : public ChessBot {
                 weight += 2;
                 break;
             }
-			pair<char, int> coords = b.getPiece(move)->getCoords();
-			if (coords == make_pair('d', 4) || coords == make_pair('d', 5) ||
-				coords == make_pair('e', 4) || coords == make_pair('e', 5)) {
+			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
+			if ((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White) {
+				weight++;
+			} else if ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black) {
 				weight++;
 			}
         }
@@ -33,7 +34,8 @@ class LevelThree : public ChessBot {
 	// Takes in a copy of the board and a pair indicating the destination of the move in question
 	// Checks through all of opponents moves to see what their most valuable move is
 	// Then returns the difference between bot's move and opponents move
-	int valueOfMove(Board& b, pair<char, int> start, pair<char, int> end) {
+	int valueOfMove(Board &b, pair<char, int> start, pair<char, int> end) {
+		
 		// Get weight of own move
 		int weight = b.getPiece(end)->getWeight();
 
@@ -48,8 +50,9 @@ class LevelThree : public ChessBot {
 				}
 				// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
 				pair<char, int> coords = b.getPiece(move)->getCoords();
-				if (coords == make_pair('d', 4) || coords == make_pair('d', 5) ||
-					coords == make_pair('e', 4) || coords == make_pair('e', 5)) {
+				if ((coords == make_pair('e', 5) || coords == make_pair('d', 5)) && this->colour == Colour::White) {
+					weight++;
+				} else if ((coords == make_pair('e', 4) || coords == make_pair('d', 4)) && this->colour == Colour::Black) {
 					weight++;
 				}
 			}

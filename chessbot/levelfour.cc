@@ -17,9 +17,10 @@ class LevelFour : public ChessBot {
             if (b.getPiece(move)->pieceType() == PieceType::King) {
                 weight += 2;
             }
-			pair<char, int> coords = b.getPiece(move)->getCoords();
-			if (coords == make_pair('d', 4) || coords == make_pair('d', 5) ||
-				coords == make_pair('e', 4) || coords == make_pair('e', 5)) {
+			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
+			if ((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White) {
+				weight++;
+			} else if ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black) {
 				weight++;
 			}
         }

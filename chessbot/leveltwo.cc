@@ -14,8 +14,14 @@ class LevelTwo : public ChessBot {
 		int weight = 2*b.getPiece(dest)->getWeight();
 		int check = 0;
 
+		PieceType type = b.getPiece(start)->pieceType();
+		// Check edge case where move is pawn promotion
+		if ((this->colour == Colour::Black && type == PieceType::Pawn && dest.second == 8)
+		|| (this->colour == Colour::White && type == PieceType::Pawn && dest.first == 1)) {
+			type = PieceType::Queen;
+		}
 		// Create a copy of my piece and check if this move will result in the piece checking the king
-		unique_ptr<Piece> copy = PieceCreator::createPiece(b.getPiece(start)->pieceType(), this->colour, dest);
+		unique_ptr<Piece> copy; = PieceCreator::createPiece(type, this->colour, dest);
 		vector<pair<char, int>> moves = copy->getMoves(b);
 		for (auto move : moves) {
 			if (b.getPiece(move)->pieceType() == PieceType::King) {
@@ -23,9 +29,9 @@ class LevelTwo : public ChessBot {
 				break;
 			}
 			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-			pair<char, int> coords = b.getPiece(move)->getCoords();
-			if (coords == make_pair('d', 4) || coords == make_pair('d', 5) ||
-				coords == make_pair('e', 4) || coords == make_pair('e', 5)) {
+			if ((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White) {
+				weight++;
+			} else if ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black) {
 				weight++;
 			}
 		}
