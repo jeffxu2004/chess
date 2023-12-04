@@ -69,8 +69,6 @@ int main () {
                 continue;
             }
 
-            cout << blackCPU << endl;
-
             if (whiteCPU) wBot = ChessBotCreator::makeBot(whiteSide, Colour::White);
             if (blackCPU) bBot = ChessBotCreator::makeBot(blackSide, Colour::Black);           
 
@@ -85,8 +83,8 @@ int main () {
 
                 if (cmd == "resign") {
                     cout << "lmfao you lost hahahaha" << endl;
-                    if (board.getTurn() == Colour::White) cout << "black wins" << endl;
-                    if (board.getTurn() == Colour::Black) cout << "white wins" << endl;   
+                    string side = board.getTurn() == Colour::White ? "Black" : "White";
+                    cout << side << " wins!" << endl;  
                     break;                
                 }
 
@@ -157,7 +155,9 @@ int main () {
                 }
 
                 if (board.getState() == Result::Win) {
-                    cout << "checkmate" << endl;
+                    cout << "Checkmate! ";
+                    string side = board.getTurn() == Colour::White ? "Black" : "White";
+                    cout << side << " wins!" << endl;
                     break;
                 } 
                 else if (board.getState() == Result::Draw) {
@@ -165,6 +165,11 @@ int main () {
                     break;
                 }
                 cout << c.getTd();
+                if (dynamic_cast <King*> (board.getKing(Colour::White))->inCheck()) {
+                    cout << "White is in check" << endl;
+                } else if (dynamic_cast <King*> (board.getKing(Colour::Black))->inCheck()) {
+                    cout << "Black is in check" << endl;
+                }
             }
             cout << "Enter anything to proceed to the next game" << endl;
             getline(cin, input); 

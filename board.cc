@@ -147,6 +147,7 @@ void Board::standardInit() {
             notifyAllObservers(piece.get(), getTurn());
         }
     }
+    state = Result::Continue;
 }
 
 bool Board::validSetup() {
@@ -481,7 +482,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
 
     if (revert || isCheckAfter) { // if reverts or the king is still in check
         if (enpas) {
-            cout << "aaaaa" << endl;
             grid[row2][col1] = move(temp); // restore orginal move
             grid[row1][col1] = move(temp2);
 
@@ -490,10 +490,10 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
             else grid[row2-1][col2] = move(temp3);
 
         } else if (castle) {
-            grid[row2][col2] = move(temp);
-            grid[row1][col1] = move(temp2);
+            grid[row2][col2] = move(temp); //becomes empty
+            grid[row1][col1] = move(temp2); //becomes king
             if (col2 > col1) {     
-                grid[row2][col2 - 1] = move(temp3);
+                grid[row2][col2 - 1] = move(temp3); // becomes empty square 
                 grid[row2][size - 1] = move(temp4);
             } else {
                 grid[row2][col2 + 1] = move(temp3);
