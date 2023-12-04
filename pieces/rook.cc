@@ -9,7 +9,7 @@ bool Rook::hasMoved() const {
 	return moved;
 }
 
-void Rook::setCastle(bool castleState) {
+void Rook::setMoved(bool castleState) {
 	moved = castleState;
 }
 

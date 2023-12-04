@@ -106,6 +106,15 @@ void Board::standardInit() {
     grid[7][7] = PieceCreator::createPiece(PieceType::Rook, Colour::White, make_pair('h', 1));
     grid[0][0] = PieceCreator::createPiece(PieceType::Rook, Colour::Black, make_pair('a', 8));
     grid[0][7] = PieceCreator::createPiece(PieceType::Rook, Colour::Black, make_pair('h', 8));
+    
+    Rook * rook = dynamic_cast<Rook*>(grid[7][0].get());
+    rook->setMoved(false);
+    rook = dynamic_cast<Rook*>(grid[7][7].get());
+    rook->setMoved(false);
+    rook = dynamic_cast<Rook*>(grid[0][0].get());
+    rook->setMoved(false);
+    rook = dynamic_cast<Rook*>(grid[0][7].get());
+    rook->setMoved(false);
 
     // Knights
     grid[0][1] = PieceCreator::createPiece(PieceType::Knight, Colour::Black, make_pair('b', 8));
@@ -127,9 +136,11 @@ void Board::standardInit() {
     grid[0][4] = PieceCreator::createPiece(PieceType::King, Colour::Black, make_pair('e', 8));
     King *king = dynamic_cast<King*>(grid[0][4].get());
     king->notify(king, this);
+    king->setMoved(false);
     grid[7][4] = PieceCreator::createPiece(PieceType::King, Colour::White, make_pair('e', 1));
     king = dynamic_cast<King*>(grid[7][4].get());
     king->notify(king, this);
+    king->setMoved(false);
 
     for(auto &row : grid) {
         for (auto &piece : row) {
@@ -382,7 +393,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
             thirdCoord = make_pair(end.first + 1, end.second);
             grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Rook, turn, thirdCoord);
 
-            temp4 = move(grid[row2][size-1]);
+            temp4 = move(grid[row2][0]);
             fourthCoord = make_pair('a', end.second);
             grid[row2][0] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, fourthCoord);           
         }
@@ -524,6 +535,11 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
             p->setEnPas(true);
             cout << "true" << endl;
         }
+    }
+
+    if (castle) {
+        notifyAllObservers(getPiece(thirdCoord), getTurn());
+        notifyAllObservers(getPiece(fourthCoord), getTurn());
     }
 
     if (enpas) {
