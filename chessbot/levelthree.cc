@@ -36,27 +36,24 @@ class LevelThree : public ChessBot {
 	int valueOfMove(Board b, pair<char, int> start, pair<char, int> end) {
 		// Get weight of own move
 		int weight = b.getPiece(end)->getWeight();
-			
-		// Create a copy of my piece and check if this move will result in the piece checking the king
-		unique_ptr<Piece> copy = PieceCreator::createPiece(b.getPiece(start)->pieceType(), this->colour, end);
-		vector<pair<char, int>> moves = copy->getMoves(b);
-		//cout<<copy->pieceType()<<": "<<moves.size()<<endl;
-
-		for (auto move : moves) {
-			if (b.getPiece(move)->pieceType() == PieceType::King) {
-				weight += 2;
-				break;
-			}
-			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-			pair<char, int> coords = b.getPiece(move)->getCoords();
-			if (coords == make_pair('d', 4) || coords == make_pair('d', 5) ||
-				coords == make_pair('e', 4) || coords == make_pair('e', 5)) {
-				weight++;
-			}
-		}
 
 		int opponent = 0;
 		if (b.playLegalMove(start, end)) {
+			// Get points for own move first
+			vector<pair<char, int>> moves = b.getPiece(end)->getMoves(b);
+			for (auto move : moves) {
+				if (b.getPiece(move)->pieceType() == PieceType::King) {
+					weight += 2;
+					break;
+				}
+				// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
+				pair<char, int> coords = b.getPiece(move)->getCoords();
+				if (coords == make_pair('d', 4) || coords == make_pair('d', 5) ||
+					coords == make_pair('e', 4) || coords == make_pair('e', 5)) {
+					weight++;
+				}
+			}
+
 			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
 	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(side);
 			
