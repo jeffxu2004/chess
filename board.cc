@@ -300,6 +300,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     int col2 = end.first - 'a';
     int row2 = size - end.second;
     pair<char, int> thirdCoord;
+    pair<char, int> fourthCoord;    
     vector<Piece*> ownSubjects; //used to store original observers of white king
     vector<Piece*> oppSubjects; //used to store original observers of black king
     King* ownKing = dynamic_cast<King*> (getKing(turn));
@@ -308,6 +309,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     unique_ptr<Piece> temp; //used to hold pieces in case revert 
     unique_ptr<Piece> temp2; 
     unique_ptr<Piece> temp3;
+    unique_ptr<Piece> temp4;   
     bool promotes = false;
     bool enpas = false;
     bool castle = false;
@@ -326,8 +328,8 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     bool oppSubjectStart = false;
     bool ownSubjectEnd = false;
     bool oppSubjectEnd = false;
-    bool ownSubject3 = false;
-    bool oppSubject3 = false;
+    bool ownSubject3 = false, oppSubject3 = false;
+    bool ownSubject4 = false, oppSubject4 = false;
     
     ownSubjects = ownKing->getSubjects();
     oppSubjects = oppKing->getSubjects();
@@ -356,11 +358,32 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         }
     
     } else if (castle) {
-        temp = move(grid[row2][col2]); // store piece that is going to be captured 
-        temp2 = move(grid[row1][col1]); // stores piece that is going to be moved
+        if (start.first < start.second) {// moving right 
+            if (!kingIsNotCheck(start, make_pair(end.first + 1, end.second))) return false;
+        } else {
+            if (!kingIsNotCheck(start, make_pair(end.first - 1, end.second))) return false;
+        }
+        temp = move(grid[row2][col2]); // store the empty square
+        temp2 = move(grid[row1][col1]); // store old king
         grid[row2][col2] = PieceCreator::createPiece(PieceType::King, turn, end); 
-        if (col2 > col1) grid[row2][col2 - 1] = PieceCreator::createPiece(PieceType::Rook, turn, make_pair(col2 + 'a' - 1, row2));
-        else grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Rook, turn, make_pair(col2 + 'a' + 1, row2));
+        if (col2 > col1) {
+
+            temp3 = move(grid[row2][col2 - 1]); //store other empty square
+            thirdCoord = make_pair(end.first - 1, end.second);
+            grid[row2][col2 - 1] = PieceCreator::createPiece(PieceType::Rook, turn, thirdCoord);
+
+            temp4 = move(grid[row2][size-1]);
+            fourthCoord = make_pair('h', end.second);
+            grid[row2][size - 1] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, fourthCoord);
+        } else {
+            temp3 = move(grid[row2][col2 + 1]); //store other empty square
+            thirdCoord = make_pair(end.first + 1, end.second);
+            grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Rook, turn, thirdCoord);
+
+            temp4 = move(grid[row2][size-1]);
+            fourthCoord = make_pair('a', end.second);
+            grid[row2][0] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, fourthCoord);           
+        }
     } else {
         temp = move(grid[row2][col2]); // store piece that is going to be captured 
         temp2 = move(grid[row1][col1]); // stores piece that is going to be moved
@@ -374,12 +397,14 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         if (subject->getCoords() == start) ownSubjectStart = true;
         if (subject->getCoords() == end) ownSubjectEnd = true;
         if (subject->getCoords() == thirdCoord) ownSubject3 = true;
+        if (subject->getCoords() == fourthCoord) ownSubject4 = true;
     }
 
     for (auto subject:oppSubjects) {
         if (subject->getCoords() == start) oppSubjectStart = true;
         if (subject->getCoords() == end) oppSubjectEnd = true;
-        if (subject->getCoords() == thirdCoord) oppSubject3 = true;       
+        if (subject->getCoords() == thirdCoord) oppSubject3 = true; 
+        if (subject->getCoords() == fourthCoord) ownSubject4 = true;      
     }
 
     if (ownSubjectStart) {
@@ -412,6 +437,16 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         oppKing->addSubject(getPiece(thirdCoord));
     }
 
+    if (ownSubject4) {
+        ownKing->dropSubject(temp4.get());
+        ownKing->addSubject(getPiece(fourthCoord));
+    }
+
+    if (oppSubject4) {
+        oppKing->dropSubject(temp4.get());
+        oppKing->addSubject(getPiece(fourthCoord));
+    }
+
     if (ownSubjectStart) ownKing->notify(grid[row1][col1].get(), this);
     
 
@@ -442,12 +477,15 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
             else grid[row2-1][col2] = move(temp3);
 
         } else if (castle) {
-            grid[row1][col1] = move(temp2); // restore orginal move
-            grid[row2+1][col1] = move(temp); //restore captured pawn
-            grid[row2][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, end); 
-            // restores squares to blanks
-            if (col2 > col1) grid[row2][col2 - 1] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, make_pair(col2 + 'a' - 1, row2));
-            else grid[row2][col2 + 1] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, make_pair(col2 + 'a' + 1, row2));
+            grid[row2][col2] = move(temp);
+            grid[row1][col1] = move(temp2);
+            if (col2 > col1) {     
+                grid[row2][col2 - 1] = move(temp3);
+                grid[row2][size - 1] = move(temp4);
+            } else {
+                grid[row2][col2 + 1] = move(temp3);
+                grid[row2][0] = move(temp4);                
+            }
         } else {
             grid[row2][col2] = move(temp); // restore original pieces
             grid[row1][col1] = move(temp2);
