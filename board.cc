@@ -196,7 +196,10 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
 
     bool playableMove = false;
     auto moves = getAllMoves(turn);
-    
+    cout << "$$$$$$$$$GET ALL MOVES FUNCTION FOR " << turn << endl;
+    for (auto m:moves) {
+        cout << m << endl;
+    }
     for (auto m : moves) { //iterates through possible moves next player can make
         if(kingIsNotCheck(m.first, m.second)) { //checks if theres a single legal move
             playableMove = true; 
@@ -388,11 +391,8 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         }
         ownKing->setSubjects(ownSubjects);
         oppKing->setSubjects(oppSubjects);
-
-        if (revert) {
-            ownKing->setCheck(inCheck); // if the position is to be reverted, then we also have to revert the check-status of the king
-            return !isCheckAfter;
-        }
+        ownKing->setCheck(inCheck);
+        if (revert) { return !isCheckAfter; }
         else return false;
     }
     
