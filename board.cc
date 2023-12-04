@@ -55,6 +55,8 @@ Piece* Board::getPiece(pair<char,int> loc) {
     }
 }
 
+int Board::getSize() {return size;}
+
 Piece* Board::getKing(Colour c) {
     for(auto &row : grid) {
         for (auto &piece : row) {
@@ -69,6 +71,20 @@ Piece* Board::getKing(Colour c) {
 void Board::setPromotionPiece(PieceType p) {
     promotionPiece = p;
 }
+
+void Board::setTurn(Colour c) {
+    turn = c;
+}
+
+void Board::clearBoard() {
+    for (int row = 1; row <= size; row++) {
+        for (char col = 'a'; col <= 'h'; col++) {
+            int gridRow = 8 - row + 1;
+            grid[row-1][col-'a'] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, make_pair(col, gridRow));
+        }
+    }
+}
+
 
 void Board::standardInit() {
     // Pawns
@@ -160,6 +176,7 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     int row1 = size - start.second; 
     auto kingw = dynamic_cast<King*>(getKing(Colour::White));
     auto subject = kingw->getSubjects();
+
     cout << "   White King Subjects:" << endl;
     for (auto s:subject) {
         cout << s->getCoords() << endl;
@@ -173,7 +190,6 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     // }
     // cout << "------------------------------" << endl;
     if (isPlayableMove(grid[row1][col1].get(), end) == false) return false;
-
     bool legal = this->playLegalMove(start, end);
 
     if (!legal)  {
@@ -181,7 +197,6 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
         return false;
     }
 
-    cout << "hello" << endl;
     for (auto s:subject) {
         cout << s->getCoords() << endl;
     }
@@ -209,7 +224,7 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     }
     
 
-    cout << "End of playMove(): " << endl;
+    // cout << "End of playMove(): " << endl;
     return true;
 }
 
@@ -367,7 +382,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
 
     bool isCheckAfter = ownKing->inCheck(); // determines if the king is still in check AFTER the move is played
 
-    cout << ownKing->getSide() << "is " << (inCheck ? "" : "not ") << "in check" << endl;
+    cout << ownKing->getSide() << "  is " << (inCheck ? "" : "not ") << "in check" << endl;
     if (revert || isCheckAfter) { // if reverts or the king is still in check
         if (enpas) {
             grid[row1][col1] = move(temp2); // restore orginal move
@@ -388,12 +403,13 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         }
         ownKing->setSubjects(ownSubjects);
         oppKing->setSubjects(oppSubjects);
-
+        
         if (revert) {
             ownKing->setCheck(inCheck); // if the position is to be reverted, then we also have to revert the check-status of the king
             return !isCheckAfter;
         }
-        else return false;
+        cout << "hahahahha" << endl;
+        return false;
     }
     
     Piece* movedPiece = getPiece(end);
