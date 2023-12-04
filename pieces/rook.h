@@ -15,7 +15,7 @@ class Rook: public Piece {
 public:
 	Rook(int weight, Colour side, pair<char, int> coords);
 	bool hasMoved() const;
-	void setCastle(bool castleState);
+	void setMoved(bool castleState);
 
 	vector<pair<char,int>> getMoves(const Board &b) const override;
 
