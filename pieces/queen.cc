@@ -22,9 +22,9 @@ vector<pair<char, int>> Queen::getMoves(const Board &b) const {
 	}
 	for (int i = coords.first - 'a' + 1; i < tempGrid.size(); i++) {
 		if (tempGrid[coords.second - 1][i]->pieceType() == PieceType::Blank) {
-			moves.push_back(make_pair(i, 8 - coords.second));
+			moves.push_back(make_pair(static_cast<char>(i+'a'), 8 - coords.second));
 		} else {
-			if (tempGrid[8 - coords.second][i]->getSide() != this->side) moves.push_back(make_pair(i, coords.second));
+			if (tempGrid[8 - coords.second][i]->getSide() != this->side) moves.push_back(make_pair(static_cast<char>(i+'a'), coords.second));
 			break;
 		}
 	}
