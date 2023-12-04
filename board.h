@@ -119,7 +119,7 @@ public:
 
 
 	// notifies ALL observers
-	void notifyAllObservers(Piece* p, Colour turn);
+	void notifyAllObservers(const Piece* p, Colour turn) const;
 
 };
 

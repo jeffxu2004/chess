@@ -547,7 +547,7 @@ void Board::detach(Observer* obs) {
     }
 }
 
-void Board::notifyAllObservers(Piece* p, Colour turn) {
+void Board::notifyAllObservers(const Piece* p, Colour turn) const {
   for (Observer *observer : observers) {
       if (observer->getSubscription() == Subscription::All) { 
           observer->notify(p, turn);
