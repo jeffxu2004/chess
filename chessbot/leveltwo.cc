@@ -1,6 +1,7 @@
 #include "chessbot.h"
 #include "../board.h"
 #include "../pieces/piece.h"
+#include "../piececreator.h"
 #include <cstdlib>
 
 class LevelTwo : public ChessBot {
@@ -13,8 +14,7 @@ class LevelTwo : public ChessBot {
 		int check = 0;
 
 		// Create a copy of my piece and check if this move will result in the piece checking the king
-		Piece *copy = b.getPiece(start);
-		copy->setCoords(dest);
+		unique_ptr<Piece> copy = PieceCreator::createPiece(b.getPiece(start)->pieceType(), this->colour, dest);
 		vector<pair<char, int>> moves = copy->getMoves(b);
 		for (auto move : moves) {
 			if (b.getPiece(move)->pieceType() == PieceType::King) {

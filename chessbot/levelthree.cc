@@ -9,17 +9,13 @@ class LevelThree : public ChessBot {
     // This function returns zero if the destination is an empty square, otherwise it returns
     // the weight of the piece taken.
     // Checks have a weight of two. (If a move takes a piece and checks the enemy king, the weight is summed)
-    int weightOfMove(Board &b, pair<char, int> start, pair<char, int> dest) {
+    int weightOfMove(Board &b, pair<char, int> start, pair<char, int> dest, Colour colour) {
         int weight = b.getPiece(dest)->getWeight();
 
         // Create a copy of my piece and check if this move will result in the piece checking the king
-        Piece *copy = b.getPiece(start);
-        copy->setCoords(dest);
+		unique_ptr<Piece> copy = PieceCreator::createPiece(b.getPiece(start)->pieceType(), colour, dest);
         vector<pair<char, int>> moves = copy->getMoves(b);
         for (auto move : moves) {
-			int first = move.first - 'a';
-			int second = 8 - move.second;
-			if (first < 0 || first >= 8 || second < 0 || second >= 8) continue;
             if (b.getPiece(move)->pieceType() == PieceType::King) {
                 weight += 2;
                 break;
@@ -43,11 +39,12 @@ class LevelThree : public ChessBot {
 		int opponent = 0;
 
 		if (b.playLegalMove(start, end)) {
-	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves((colour == Colour::White)?Colour::Black:Colour::White);
+			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
+	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(side);
 			
 			// Find the opponent move that would yield them the most points
         	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-            	int value = weightOfMove(b, move->first, move->second);
+            	int value = weightOfMove(b, move->first, move->second, side);
             	if (value > opponent) opponent = value;
 	        }
 
