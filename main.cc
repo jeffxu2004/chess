@@ -162,6 +162,7 @@ int main () {
         // PLEASE READ cmds properly: added clear
         } else if (cmd == "setup") { //some of the error detection is not done
             cout << "Now in setup mode" << endl;
+            cout << c.getTd();
             while (true) { 
                 cout << "Enter a command:" << endl;
                 getline(cin, input);
