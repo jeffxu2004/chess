@@ -13,6 +13,8 @@ class Board;
 class ChessBot {
 protected:
 	Colour colour;
+	// stores the last three moves played by the bot to avoid repetition
+	vector<pair<pair<char,int>, pair<char,int>>> lastThreeMoves; 
 public:
 	ChessBot(Colour colour) : colour{colour} {};
 	// Returns the next move that the bot makes

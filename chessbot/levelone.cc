@@ -23,11 +23,32 @@ public:
 		if (!possibleMoves.empty()) {
     	    // Level one bot makes random moves so we use srand and rand
     		// Seed the random number generator
-    		srand(static_cast<unsigned int>(time(nullptr)));
+    		srand(static_cast<unsigned int>(10));
 
  	    	// Mod the number by the length of the array of moves
 			// so that the number represents a random index in the list of moves
     		int index = rand()%possibleMoves.size();
+			int len = lastThreeMoves.size();
+			int counter = 0;
+			vector<int> lastThreeIndex;
+			bool repeat = true;
+			for (int i=0; i<len; ++i) {
+				
+				if (lastThreeMoves[i] == possibleMoves[index]) {
+					for (int j=0; j<possibleMoves.size(); ++j) {
+						for (int k=0; k<3; ++k) {
+							if (lastThreeMoves[k] != possibleMoves[j]) {
+								repeat = false;
+							}
+						}
+
+						if (!repeat)
+							index = j;
+					}
+
+					break;
+				}
+			}
 			
 			// If pawn is promoting, pick random piece
 			if (b.isPromoting(possibleMoves[index].first, possibleMoves[index].second)) {
@@ -37,6 +58,12 @@ public:
 				else if (r == 2) b.setPromotionPiece(PieceType::Knight);
 				else if (r == 3) b.setPromotionPiece(PieceType::Bishop);
 			}
+
+			if (len == 3) {
+				lastThreeMoves.erase(lastThreeMoves.begin());
+			}
+
+			lastThreeMoves.push_back(possibleMoves[index]);
 
 			return possibleMoves[index];
     	} else {
