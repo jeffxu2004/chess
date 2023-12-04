@@ -191,7 +191,7 @@ int main () {
                         cout << "Setup is invalid" << endl;
                         cout << "Please make it valid before proceeding" << endl;
                     }
-                    break;
+                    
                 } else if (cmd == "clear") { // format: clear
                     //enhancement command, clears the board 
                     cout << "hi" << endl;
@@ -201,8 +201,10 @@ int main () {
                 }
                 cout << c.getTd();
             }
-        }
-        else {
+        } else if (cmd == "q" || cmd == "quit" || cmd == "exit"){
+            cout << "Existing Program" << endl;
+            break;
+        }else {
             cout << "Invalid input" << endl;
         }
     }
