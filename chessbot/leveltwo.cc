@@ -10,7 +10,8 @@ class LevelTwo : public ChessBot {
 	// the weight of the piece taken.
 	// Checks have a weight of two. (If a move takes a piece and checks the enemy king, the weight is summed)
 	int weightOfMove(Board &b, pair<char, int> start, pair<char, int> dest) {
-		int weight = b.getPiece(dest)->getWeight();
+		// This bot wants to capture pieces so lets scale the value of pieces by a factor of two
+		int weight = 2*b.getPiece(dest)->getWeight();
 		int check = 0;
 
 		// Create a copy of my piece and check if this move will result in the piece checking the king
@@ -57,8 +58,6 @@ public:
 
 		// If there is no moves that give any points, just pick the first move from possible moves (if that is empty return no valid moves)	
 		if (bestMove.second != -1) {
-			bestMove.first = possibleMoves[0];
-
 			if (b.isPromoting(bestMove.first.first, bestMove.first.second)) {
 				b.setPromotionPiece(PieceType::Queen);
 			}

@@ -42,6 +42,15 @@ class LevelThree : public ChessBot {
 			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
 	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(side);
 			
+			// filter moves that will put king in check
+        	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
+            	if (!b.kingIsNotCheck(move->first, move->second)) {
+                	possibleMoves.erase(move);
+            	} else {
+                	move++;
+            	}
+        	}
+
 			// Find the opponent move that would yield them the most points
         	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
             	int value = weightOfMove(b, move->first, move->second, side);
@@ -71,8 +80,6 @@ public:
 
 		// If there is no moves that give any points, just pick the first move from possible moves (if that is empty return no valid moves)
 		if (bestMove.second != INT_MIN) {
-			bestMove.first = possibleMoves[0];
-
 			// If promoting, always choose queen
             if (b.isPromoting(bestMove.first.first, bestMove.first.second)) {
                 b.setPromotionPiece(PieceType::Queen);
