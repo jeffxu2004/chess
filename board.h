@@ -48,11 +48,20 @@ public:
 	//Overloads the getPiece operator to return the coordinates of piece when passing in its address
 	pair<char,int> getPiece(Piece*);
 
+	//Get size of board
+	int getSize();
+
 	//set promotion piece
 	void setPromotionPiece(PieceType p);
 
+	//sets trun
+	void setTurn(Colour c);
+
 	// Initalizes the conventional chessboard with its respective pieces
 	void standardInit();
+
+	// Makes board filled with blank squares
+	void clearBoard();
 
 	// Prints true if the custom setup is valid
 	bool validSetup();

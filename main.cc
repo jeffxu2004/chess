@@ -42,7 +42,9 @@ int main () {
     Controller c (8);
     board.attach(&c);
     board.standardInit();
-
+    int blackScore = 0;
+    int whiteScore = 0;
+    // scoring not yet added
     while (true) {
         string cmd;
         cout << "Enter a command: " << endl;
@@ -53,6 +55,7 @@ int main () {
         // format is game whiteplayer blackplayer
         // game p p for player player
         // game p c1-c4 for player bot
+        // game c4-c1 p also
         //currently ignores error-handeling to accomadate for enhancements format
         if (cmd == "game") {  // call "game p p" for testing
             bool whiteCPU = false; //true if white is a CPU/bot
@@ -83,7 +86,8 @@ int main () {
                 if (cmd == "resign") {
                     cout << "lmfao you lost hahahaha" << endl;
                     if (board.getTurn() == Colour::White) cout << "black wins" << endl;
-                    if (board.getTurn() == Colour::Black) cout << "white wins" << endl;                   
+                    if (board.getTurn() == Colour::Black) cout << "white wins" << endl;   
+                    break;                
                 }
 
                 // checks valid cmd input
@@ -111,12 +115,12 @@ int main () {
                         }
                     } else {
                         auto move = wBot->getNextMove(board);
+                        cout << "!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
                         cout << move << endl;
                         if (move.first.first == '0') { // no valid moves 
-                            cout << "no moves possible" << endl; //indicates that its broken rn
-                            // will output checkmate stalemate ofc
+                            cout << "no moves possible" << endl;
                         } else {
-                            bool b = board.playMove(move.first, move.second);   
+                            bool b = board.playMove(move.first, move.second); 
                         }                    
                     }
                 }
@@ -128,12 +132,14 @@ int main () {
                         }
                     } else {
                         auto move = bBot->getNextMove(board);
+                        cout << "!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
                         cout << move << endl;
                         if (move.first.first == '0') { // no valid moves 
-                            cout << "no moves possible" << endl; //indicates that its broken rn
-                            // will output checkmate stalemate ofc
+                            cout << "no moves possible" << endl; 
                         } else {
+                            cout << board.getTurn() << endl;
                             bool b = board.playMove(move.first, move.second);   
+                            cout << b << endl;
                         }                      
                     }
                 }
@@ -148,17 +154,55 @@ int main () {
                 }
                 cout << c.getTd();
             } 
+            cout << "Enter anything to proceed to the next game" << endl;
+            getline(cin, input); 
+            board.clearBoard();
             board.standardInit();  // return to standard board after a game
-        } else if (cmd == "setup") {
-            while (true) { //format is K e8
-                string piece, move;
-                cin >> piece >> move;
-                board.changeSquare(piece[0] , make_pair(move[0],move[1] - '0'));
+
+        // PLEASE READ cmds properly: added clear
+        } else if (cmd == "setup") { //some of the error detection is not done
+            cout << "Now in setup mode" << endl;
+            while (true) { 
+                cout << "Enter a command:" << endl;
+                getline(cin, input);
+                istringstream newIss {input};
+
+                newIss >> cmd;
+                if (cmd == "+") { //format is + K e8
+                    string piece, move;
+                    newIss >> piece >> move;
+                    board.changeSquare(piece[0] , make_pair(move[0],move[1] - '0'));
+                } else if (cmd == "-") { //format is - e2 
+                    string move;
+                    newIss >> move;
+                    board.changeSquare(make_pair(move[0],move[1] - '0'), PieceType::Blank, Colour::Neither);
+                } else if (cmd == "=") { //format is  = w
+                    string c;
+                    newIss >> c;
+                    if (c == "White" || "W" || "w" || "white") board.setTurn(Colour::White);
+                    if (c == "Black" || "B" || "b" || "black") board.setTurn(Colour::Black);
+                    board.notifyAllObservers(board.getGrid()[0][0], board.getTurn() );
+                } else if (cmd == "done") { // format: done
+                    if (board.validSetup()) {  //checks if valid configuration
+                        cout << "Exiting setup mode" << endl;
+                        break;
+                    } else {
+                        cout << "Setup is invalid" << endl;
+                        cout << "Please make it valid before proceeding" << endl;
+                    }
+                    break;
+                } else if (cmd == "clear") { // format: clear
+                    //enhancement command, clears the board 
+                    cout << "hi" << endl;
+                    board.clearBoard();
+                } else {
+                    cout << "Invalid Input" << endl;
+                }
+                cout << c.getTd();
             }
-            cout << c.getTd();
         }
         else {
-            cout << "Invalid input";
+            cout << "Invalid input" << endl;
         }
     }
 }

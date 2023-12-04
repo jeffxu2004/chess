@@ -83,6 +83,11 @@ void Board::clearBoard() {
             grid[row-1][col-'a'] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, make_pair(col, gridRow));
         }
     }
+    for(auto &row : grid) {
+        for (auto &piece : row) {
+            notifyAllObservers(piece.get(), getTurn());
+        }
+    }
 }
 
 
@@ -130,7 +135,6 @@ void Board::standardInit() {
     }
 }
 
-
 bool Board::validSetup() {
     int countw = 0;
     int countb = 0;
@@ -138,13 +142,13 @@ bool Board::validSetup() {
         for (auto &piece : row) {
             if (piece->pieceType() == PieceType::King) { //finds king
                 if (piece->getSide() == Colour::White) countw++;
-               else if (piece->getSide() == Colour::Black) countb++;                
+                else if (piece->getSide() == Colour::Black) countb++;                
             }
         }
     }
     if (countw != 1 || countb != 1) return false; //checks only 1 king of each colour
-
-    for(int i = 0; i <= size; i++) {
+  
+    for(int i = 0; i < size; i++) {
         if (grid[0][i]->pieceType() == PieceType::Pawn) return false; 
         if (grid[size - 1][i]->pieceType() == PieceType::Pawn) return false;        
     }
