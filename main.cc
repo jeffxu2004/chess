@@ -45,12 +45,12 @@ int main () {
 
     while (true) {
         string cmd;
-        cout << "Enter a command: ";
+        cout << "Enter a command: " << endl;
         getline(cin, input);
         istringstream iss{input};
         iss >> cmd;
         
-
+        // format is game whiteplayer blackplayer
         // game p p for player player
         // game p c1-c4 for player bot
         //currently ignores error-handeling to accomadate for enhancements format
@@ -113,7 +113,7 @@ int main () {
                         auto move = wBot->getNextMove(board);
                         cout << move << endl;
                         if (move.first.first == '0') { // no valid moves 
-                            cout << "no moves possible";
+                            cout << "no moves possible" << endl; //indicates that its broken rn
                             // will output checkmate stalemate ofc
                         } else {
                             bool b = board.playMove(move.first, move.second);   
@@ -130,7 +130,7 @@ int main () {
                         auto move = bBot->getNextMove(board);
                         cout << move << endl;
                         if (move.first.first == '0') { // no valid moves 
-                            cout << "no moves possible";
+                            cout << "no moves possible" << endl; //indicates that its broken rn
                             // will output checkmate stalemate ofc
                         } else {
                             bool b = board.playMove(move.first, move.second);   
@@ -161,5 +161,4 @@ int main () {
             cout << "Invalid input";
         }
     }
-
 }
