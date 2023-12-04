@@ -165,22 +165,23 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
         cout << s->getCoords() << endl;
     }
 
-    auto kingb = dynamic_cast<King*>(getKing(Colour::Black));
-    subject = kingb->getSubjects();
-    cout << "   Black King Subjects: " << endl;
-    for (auto s:subject){
-        cout << s->getCoords() << endl;
-    }
-    cout << "------------------------------" << endl;
+    // auto kingb = dynamic_cast<King*>(getKing(Colour::Black));
+    // subject = kingb->getSubjects();
+    // cout << "   Black King Subjects: " << endl;
+    // for (auto s:subject){
+    //     cout << s->getCoords() << endl;
+    // }
+    // cout << "------------------------------" << endl;
     if (isPlayableMove(grid[row1][col1].get(), end) == false) return false;
+
     bool legal = this->playLegalMove(start, end);
 
-    if (!legal) return false;
+    if (!legal)  {
+        cout << "hi" << endl;
+        return false;
+    }
 
-    cout << "*************" << endl;
-    kingw = dynamic_cast<King*>(getKing(Colour::White));
-    subject = kingw->getSubjects();
-    cout << "   White King Subjects:" << endl;
+    cout << "hello" << endl;
     for (auto s:subject) {
         cout << s->getCoords() << endl;
     }
@@ -209,22 +210,6 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     
 
     cout << "End of playMove(): " << endl;
-
-    kingw = dynamic_cast<King*>(getKing(Colour::White));
-    subject = kingw->getSubjects();
-    cout << "   White King Subjects:" << endl;
-    for (auto s:subject) {
-        cout << s->getCoords() << endl;
-    }
-
-    kingb = dynamic_cast<King*>(getKing(Colour::Black));
-    subject = kingb->getSubjects();
-    cout << "   Black King Subjects: " << endl;
-    for (auto s:subject){
-        cout << s->getCoords() << endl;
-    }
-    cout << "-----------------------" << endl;
-
     return true;
 }
 
