@@ -55,6 +55,8 @@ Piece* Board::getPiece(pair<char,int> loc) {
     }
 }
 
+int Board::getSize() {return size;}
+
 Piece* Board::getKing(Colour c) {
     for(auto &row : grid) {
         for (auto &piece : row) {
@@ -69,6 +71,25 @@ Piece* Board::getKing(Colour c) {
 void Board::setPromotionPiece(PieceType p) {
     promotionPiece = p;
 }
+
+void Board::setTurn(Colour c) {
+    turn = c;
+}
+
+void Board::clearBoard() {
+    for (int row = 1; row <= size; row++) {
+        for (char col = 'a'; col <= 'h'; col++) {
+            int gridRow = 8 - row + 1;
+            grid[row-1][col-'a'] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, make_pair(col, gridRow));
+        }
+    }
+    for(auto &row : grid) {
+        for (auto &piece : row) {
+            notifyAllObservers(piece.get(), getTurn());
+        }
+    }
+}
+
 
 void Board::standardInit() {
     // Pawns
@@ -114,7 +135,6 @@ void Board::standardInit() {
     }
 }
 
-
 bool Board::validSetup() {
     int countw = 0;
     int countb = 0;
@@ -122,13 +142,13 @@ bool Board::validSetup() {
         for (auto &piece : row) {
             if (piece->pieceType() == PieceType::King) { //finds king
                 if (piece->getSide() == Colour::White) countw++;
-               else if (piece->getSide() == Colour::Black) countb++;                
+                else if (piece->getSide() == Colour::Black) countb++;                
             }
         }
     }
     if (countw != 1 || countb != 1) return false; //checks only 1 king of each colour
-
-    for(int i = 0; i <= size; i++) {
+  
+    for(int i = 0; i < size; i++) {
         if (grid[0][i]->pieceType() == PieceType::Pawn) return false; 
         if (grid[size - 1][i]->pieceType() == PieceType::Pawn) return false;        
     }
@@ -160,6 +180,8 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     int row1 = size - start.second; 
     auto kingw = dynamic_cast<King*>(getKing(Colour::White));
     auto subject = kingw->getSubjects();
+
+    cout << "   White King Subjects:" << endl;
     //cout << "   White King Subjects:" << endl;
     for (auto s:subject) {
         //cout << s->getCoords() << endl;
@@ -177,7 +199,6 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     
     //cout << "------------------------------" << endl;
     if (isPlayableMove(grid[row1][col1].get(), end) == false) return false;
-
     bool legal = this->playLegalMove(start, end);
 
     if (!legal)  {
@@ -185,6 +206,9 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
         return false;
     }
 
+    for (auto s:subject) {
+        cout << s->getCoords() << endl;
+    }
     
     turn = turn == Colour::White ? Colour::Black : Colour::White;
 
@@ -215,7 +239,7 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
         else state = Result::Draw; //otherwise its stalemate => draw
     }
     
-    //cout << "End of playMove(): " << endl;
+    // //cout << "End of playMove(): " << endl;
     subject = kingw->getSubjects();
     //cout << "   White King Subjects:" << endl;
     for (auto s:subject) {
