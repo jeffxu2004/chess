@@ -348,7 +348,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     }
 
     if(promotes) {
-        cout << "PROMOTING!!" << endl;
         temp = move(grid[row2][col2]); // stores piece on back rank
         temp2 = move(grid[row1][col1]); // stores old pawn
         grid[row2][col2] = PieceCreator::createPiece(promotionPiece, turn, end);
