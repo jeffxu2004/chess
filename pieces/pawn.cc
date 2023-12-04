@@ -16,17 +16,18 @@ vector<pair<char,int>> Pawn::getMoves(const Board &b) const {
 
 	// Set direction based on colour, white is negative, black is positive (not based on chess notation, based on array indexing)
 	int direction = side==Colour::White?-1:1;
+	int row = 8 - coords.second + direction;
 
 	// Move forward
-	if (tempGrid[8 - coords.second + direction][coords.first - 'a']->pieceType() == PieceType::Blank) {
+	if (tempGrid[row][coords.first - 'a']->pieceType() == PieceType::Blank) {
 		moves.push_back(make_pair(coords.first, coords.second - direction));
 		// Check if piece can move two squares on first move
 		char c = coords.first - 'a';
 		int n = 8-coords.second + 2*direction;
 		if (moveTwo) {
 			// Check if piece is in the correct starting position to move two
-			if ((this->side == Colour::White && this->coords.second == 2) ||
-				(this->side == Colour::Black && this->coords.second == 7) &&
+			if (((this->side == Colour::White && this->coords.second == 2) ||
+				(this->side == Colour::Black && this->coords.second == 7)) &&
 				tempGrid[8 - coords.second + 2*direction][coords.first - 'a']->pieceType() == PieceType::Blank) {
 				moves.push_back(make_pair(coords.first, coords.second - 2*direction));
 			}
