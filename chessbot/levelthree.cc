@@ -17,6 +17,9 @@ class LevelThree : public ChessBot {
         copy->setCoords(dest);
         vector<pair<char, int>> moves = copy->getMoves(b);
         for (auto move : moves) {
+			int first = move.first - 'a';
+			int second = 8 - move.second;
+			if (first >= 0 && first < 8 && second >= 0 && second < 8) continue;
             if (b.getPiece(move)->pieceType() == PieceType::King) {
                 weight += 2;
                 break;

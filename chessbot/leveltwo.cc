@@ -56,7 +56,7 @@ public:
 			if (b.isPromoting(bestMove.first.first, bestMove.first.second)) {
 				b.setPromotionPiece(PieceType::Queen);
 			}
-			
+
 			return bestMove.first;
     	} else {
     	   	// No valid moves, return a '0' instead of a letter from a to h to indicate this 
