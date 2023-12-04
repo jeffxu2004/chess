@@ -459,8 +459,10 @@ void King::notify(const Piece* item, const Board* b) {
 				2*abs(pieceCol-kingCol) == abs(kingRow-pieceRow))) {
 				check = true;
 			} else if (subject->pieceType() == PieceType::King &&
-				(pieceCol+1==kingCol || pieceCol-1==kingCol ||
-				pieceRow+1==kingRow || pieceRow-1==kingRow)) {
+				((pieceCol==kingCol && (pieceRow+1==kingRow || pieceRow-1==kingRow)) || 
+				(pieceRow==kingRow && (pieceCol+1==kingCol || pieceCol-1==kingCol))||
+				((pieceCol+1==kingCol || pieceCol-1==kingCol) &&
+				(pieceRow+1==kingRow || pieceRow-1==kingRow)))) {
 				check = true;
 			}
 		}
