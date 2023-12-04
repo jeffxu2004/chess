@@ -98,8 +98,6 @@ public:
                 b.setPromotionPiece(PieceType::Queen);
             }
 			
-			b.playLegalMove(bestMove.first.first, bestMove.first.second);
-
 			return bestMove.first;
     	} else {
 			// No valid moves

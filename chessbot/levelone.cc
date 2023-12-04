@@ -38,7 +38,6 @@ public:
 				else if (r == 3) b.setPromotionPiece(PieceType::Bishop);
 			}
 
-			b.playLegalMove(possibleMoves[index].first, possibleMoves[index].second);
 			return possibleMoves[index];
     	} else {
     	   	// No valid moves, return a '0' instead of a letter from a to h to indicate this 

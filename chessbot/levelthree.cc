@@ -77,8 +77,6 @@ public:
             if (b.isPromoting(bestMove.first.first, bestMove.first.second)) {
                 b.setPromotionPiece(PieceType::Queen);
             }
-			
-			b.playLegalMove(bestMove.first.first, bestMove.first.second);
 
 			return bestMove.first;
     	} else {
