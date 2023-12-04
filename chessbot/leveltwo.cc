@@ -21,6 +21,12 @@ class LevelTwo : public ChessBot {
 				check = 2;
 				break;
 			}
+			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
+			pair<char, int> coords = b.getPiece(move)->getCoords();
+			if (coords == make_pair('d', 4) || coords == make_pair('d', 5) ||
+				coords == make_pair('e', 4) || coords == make_pair('e', 5)) {
+				weight++;
+			}
 		}
 	
 		return weight + check;
