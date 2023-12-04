@@ -121,7 +121,7 @@ void King::notify(const Piece* item, const Board* b) {
 				do {
 					addSubject(grid[row-1][kingCol]);
 					--row;
-					if (grid[row-1][kingCol]->pieceType() != PieceType::Blank) break;
+					if (grid[row][kingCol]->pieceType() != PieceType::Blank) break;
 				} while (row > 0 && grid[row-1][kingCol]->pieceType() == PieceType::Blank);
 				
 				if (row > 0 && grid[row][kingCol]->pieceType() == PieceType::Blank)
@@ -130,7 +130,7 @@ void King::notify(const Piece* item, const Board* b) {
 				do {
 					addSubject(grid[row+1][kingCol]);
 					++row;
-					if (grid[row + 1][kingCol]->pieceType() != PieceType::Blank) break;
+					if (grid[row][kingCol]->pieceType() != PieceType::Blank) break;
 				} while (row < 7 && grid[row+1][kingCol]->pieceType() == PieceType::Blank);
 
 				if (row < 7 && grid[row][kingCol]->pieceType() == PieceType::Blank)
@@ -146,7 +146,7 @@ void King::notify(const Piece* item, const Board* b) {
 				do {
 					addSubject(grid[kingRow][col-1]);
 					--col;
-					if (grid[kingRow][col-1]->pieceType() != PieceType::Blank) break;
+					if (grid[kingRow][col]->pieceType() != PieceType::Blank) break;
 				} while (col > 0 && grid[kingRow][col-1]->pieceType() == PieceType::Blank);
 				
 				if (col > 0 && grid[kingRow][col]->pieceType() == PieceType::Blank) {
@@ -156,7 +156,7 @@ void King::notify(const Piece* item, const Board* b) {
 				do {
 					addSubject(grid[kingRow][col+1]);
 					++col;
-					if (grid[kingRow][col+1]->pieceType() != PieceType::Blank) break;
+					if (grid[kingRow][col]->pieceType() != PieceType::Blank) break;
 				} while (col < 7 && grid[kingRow][col+1]->pieceType() == PieceType::Blank);
 
 				if (col < 7 && grid[kingRow][col]->pieceType() == PieceType::Blank) {
@@ -174,7 +174,7 @@ void King::notify(const Piece* item, const Board* b) {
 					addSubject(grid[row+1][col+1]);
 					++row;
 					++col;
-					if (grid[kingRow][col+1]->pieceType() != PieceType::Blank) break;
+					if (grid[row][col]->pieceType() != PieceType::Blank) break;
 
 				} while (row < 7 && col < 7 && grid[row+1][col+1]->pieceType() == PieceType::Blank);
 				if (row < 7 && col < 7 && grid[row][col]->pieceType() == PieceType::Blank) {
@@ -462,6 +462,7 @@ void King::notify(const Piece* item, const Board* b) {
 	
 	cout << "All subjects for " << getSide() << " king" << endl;
 	cout << "Currently the king is " << (check ? "" : "not ") << "in check" << endl;
+	cout << "And the king " << (moved ? "cannot " : "can ") << "castle" << endl;
 	for (auto subject:subjects) {
 		cout << subject->getCoords() << endl;
 	}
