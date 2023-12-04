@@ -109,37 +109,49 @@ int main () {
 
                 if(board.getTurn() == Colour::White) {
                     if (!whiteCPU) {
+                        if (board.isPromoting(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'))) {
+                            string promotion;
+                            newIss >> promotion;
+                            if (promotion == "Q" || promotion == "q") board.setPromotionPiece(PieceType::Queen);
+                            if (promotion == "R" || promotion == "r") board.setPromotionPiece(PieceType::Rook);
+                            if (promotion == "N" || promotion == "n") board.setPromotionPiece(PieceType::Knight);
+                            if (promotion == "B" || promotion == "b") board.setPromotionPiece(PieceType::Bishop);
+                        }
                         bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
                         if (!b) {
                             cout << "Not a valid move" << endl;
                         }
                     } else {
                         auto move = wBot->getNextMove(board);
-                        cout << "!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
                         cout << move << endl;
                         if (move.first.first == '0') { // no valid moves 
                             cout << "no moves possible" << endl;
                         } else {
                             bool b = board.playMove(move.first, move.second); 
-                        }                    
+                        }
                     }
                 }
                 else if(board.getTurn() == Colour::Black) {
                     if (!blackCPU) {
+                        if (board.isPromoting(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'))) {
+                            string promotion;
+                            newIss >> promotion;
+                            if (promotion == "Q" || promotion == "q") board.setPromotionPiece(PieceType::Queen);
+                            if (promotion == "R" || promotion == "r") board.setPromotionPiece(PieceType::Rook);
+                            if (promotion == "N" || promotion == "n") board.setPromotionPiece(PieceType::Knight);
+                            if (promotion == "B" || promotion == "b") board.setPromotionPiece(PieceType::Bishop);
+                        }
                         bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
                         if (!b) {
                             cout << "Not a valid move" << endl;
                         }
                     } else {
                         auto move = bBot->getNextMove(board);
-                        cout << "!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
                         cout << move << endl;
                         if (move.first.first == '0') { // no valid moves 
                             cout << "no moves possible" << endl; 
                         } else {
-                            cout << board.getTurn() << endl;
                             bool b = board.playMove(move.first, move.second);   
-                            cout << b << endl;
                         }                      
                     }
                 }
@@ -194,7 +206,6 @@ int main () {
                     
                 } else if (cmd == "clear") { // format: clear
                     //enhancement command, clears the board 
-                    cout << "hi" << endl;
                     board.clearBoard();
                 } else {
                     cout << "Invalid Input" << endl;
