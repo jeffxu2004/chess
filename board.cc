@@ -175,29 +175,34 @@ void Board::changeSquare(char c, pair<char, int> loc) {
 }
 
 bool Board::playMove(pair<char, int> start, pair<char, int> end) {
-    cout << "Start of playMove(): " << endl;
+    //cout << "Start of playMove(): " << endl;
     int col1 = start.first - 'a';
     int row1 = size - start.second; 
     auto kingw = dynamic_cast<King*>(getKing(Colour::White));
     auto subject = kingw->getSubjects();
 
     cout << "   White King Subjects:" << endl;
+    //cout << "   White King Subjects:" << endl;
     for (auto s:subject) {
-        cout << s->getCoords() << endl;
+        //cout << s->getCoords() << endl;
     }
 
-    // auto kingb = dynamic_cast<King*>(getKing(Colour::Black));
-    // subject = kingb->getSubjects();
-    // cout << "   Black King Subjects: " << endl;
-    // for (auto s:subject){
-    //     cout << s->getCoords() << endl;
-    // }
-    // cout << "------------------------------" << endl;
+    auto kingb = dynamic_cast<King*>(getKing(Colour::Black));
+    subject = kingb->getSubjects();
+    //cout << "   Black King Subjects: " << endl;
+    for (auto s:subject){
+        //cout << s->getCoords() << endl;
+    }
+
+    //cout << "White king is " << (kingw->inCheck() ? "in" : "not in") << " check" << endl;
+    //cout << "Black king is " << (kingb->inCheck() ? "in" : "not in") << " check" << endl;
+    
+    //cout << "------------------------------" << endl;
     if (isPlayableMove(grid[row1][col1].get(), end) == false) return false;
     bool legal = this->playLegalMove(start, end);
 
     if (!legal)  {
-        cout << "hi" << endl;
+        //cout << "hi" << endl;
         return false;
     }
 
@@ -211,16 +216,20 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     notifyAllObservers(getPiece(end), getTurn()); 
 
     auto king =  dynamic_cast<King*>(getKing(turn)); //find king
+    kingw = dynamic_cast<King*>(getKing(Colour::White));
+    kingb = dynamic_cast<King*>(getKing(Colour::Black));
     bool isCheck = king->inCheck();  // check if king is in check
+    bool checkw = kingw->inCheck();
+    bool checkb = kingb->inCheck();
+    //cout << kingw->getSide() << " is " << (checkw ? "in" : "not in ") << "check" << endl;
+    //cout << kingb->getSide() << " is " << (checkb ? "in" : "not in " ) << "check" << endl;
 
     bool playableMove = false;
     auto moves = getAllMoves(turn);
-    cout << "$$$$$$$$$GET ALL MOVES FUNCTION FOR " << turn << endl;
-    for (auto m:moves) {
-        cout << m << endl;
-    }
+
     for (auto m : moves) { //iterates through possible moves next player can make
         if(kingIsNotCheck(m.first, m.second)) { //checks if theres a single legal move
+            subject = kingw->getSubjects();
             playableMove = true; 
             break;
         }
@@ -230,8 +239,21 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
         else state = Result::Draw; //otherwise its stalemate => draw
     }
     
+    // //cout << "End of playMove(): " << endl;
+    subject = kingw->getSubjects();
+    //cout << "   White King Subjects:" << endl;
+    for (auto s:subject) {
+        //cout << s->getCoords() << endl;
+    }
 
-    // cout << "End of playMove(): " << endl;
+    kingb = dynamic_cast<King*>(getKing(Colour::Black));
+    subject = kingb->getSubjects();
+    //cout << "   Black King Subjects: " << endl;
+    for (auto s:subject){
+        //cout << s->getCoords() << endl;
+    }
+    //cout << "------------------------------" << endl;
+
     return true;
 }
 
@@ -389,7 +411,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
 
     bool isCheckAfter = ownKing->inCheck(); // determines if the king is still in check AFTER the move is played
 
-    cout << ownKing->getSide() << "  is " << (inCheck ? "" : "not ") << "in check" << endl;
     if (revert || isCheckAfter) { // if reverts or the king is still in check
         if (enpas) {
             grid[row1][col1] = move(temp2); // restore orginal move
