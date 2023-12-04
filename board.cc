@@ -92,6 +92,9 @@ void Board::clearBoard() {
 
 
 void Board::standardInit() {
+    // Reset game state (for when play again)
+    Result state = ::Result::Continue;
+
     // Pawns
     for (char col = 'a'; col <= 'h'; col++) {
         grid[1][col - 'a'] = PieceCreator::createPiece(PieceType::Pawn, Colour::Black, make_pair(col, 7));
