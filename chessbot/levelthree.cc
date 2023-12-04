@@ -33,11 +33,29 @@ class LevelThree : public ChessBot {
 	// Takes in a copy of the board and a pair indicating the destination of the move in question
 	// Checks through all of opponents moves to see what their most valuable move is
 	// Then returns the difference between bot's move and opponents move
-	int valueOfMove(Board& b, pair<char, int> start, pair<char, int> end) {
+	int valueOfMove(Board b, pair<char, int> start, pair<char, int> end) {
+		// Get weight of own move
 		int weight = b.getPiece(end)->getWeight();
-		int check = 0;
-		int opponent = 0;
+			
+		// Create a copy of my piece and check if this move will result in the piece checking the king
+		unique_ptr<Piece> copy = PieceCreator::createPiece(b.getPiece(start)->pieceType(), this->colour, end);
+		vector<pair<char, int>> moves = copy->getMoves(b);
+		cout<<copy->pieceType()<<": "<<moves.size()<<endl;
 
+		for (auto move : moves) {
+			if (b.getPiece(move)->pieceType() == PieceType::King) {
+				weight += 2;
+				break;
+			}
+			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
+			pair<char, int> coords = b.getPiece(move)->getCoords();
+			if (coords == make_pair('d', 4) || coords == make_pair('d', 5) ||
+				coords == make_pair('e', 4) || coords == make_pair('e', 5)) {
+				weight++;
+			}
+		}
+
+		int opponent = 0;
 		if (b.playLegalMove(start, end)) {
 			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
 	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(side);
@@ -57,7 +75,7 @@ class LevelThree : public ChessBot {
             	if (value > opponent) opponent = value;
 	        }
 
-			return weight + check - opponent;
+			return weight - opponent;
 		} else {
 			return INT_MIN;
 		}
