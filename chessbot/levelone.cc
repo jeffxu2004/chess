@@ -13,7 +13,7 @@ public:
 		// getAllMoves does not consider if the move will place/leave the king in check,
 		// as a result we must filter out those moves		
         for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
-            if (b.kingIsNotCheck(move->first, move->second)) {
+            if (!b.kingIsNotCheck(move->first, move->second)) {
                 possibleMoves.erase(move);
             } else {
                 move++;
@@ -38,7 +38,6 @@ public:
 				else if (r == 3) b.setPromotionPiece(PieceType::Bishop);
 			}
 
-			b.playLegalMove(possibleMoves[index].first, possibleMoves[index].second);
 			return possibleMoves[index];
     	} else {
     	   	// No valid moves, return a '0' instead of a letter from a to h to indicate this 

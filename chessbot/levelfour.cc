@@ -74,7 +74,7 @@ public:
 		// getAllMoves does not consider if the move will place/leave the king in check,
 		// as a result we must filter out those moves		
         for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
-            if (b.kingIsNotCheck(move->first, move->second)) {
+            if (!b.kingIsNotCheck(move->first, move->second)) {
                 possibleMoves.erase(move);
             } else {
                 move++;
@@ -98,8 +98,6 @@ public:
                 b.setPromotionPiece(PieceType::Queen);
             }
 			
-			b.playLegalMove(bestMove.first.first, bestMove.first.second);
-
 			return bestMove.first;
     	} else {
 			// No valid moves
