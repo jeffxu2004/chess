@@ -33,7 +33,7 @@ class LevelThree : public ChessBot {
 	// Takes in a copy of the board and a pair indicating the destination of the move in question
 	// Checks through all of opponents moves to see what their most valuable move is
 	// Then returns the difference between bot's move and opponents move
-	int valueOfMove(Board b, pair<char, int> start, pair<char, int> end) {
+	int valueOfMove(Board& b, pair<char, int> start, pair<char, int> end) {
 		// Get weight of own move
 		int weight = b.getPiece(end)->getWeight();
 
