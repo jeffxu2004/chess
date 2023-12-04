@@ -178,20 +178,19 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     //cout << "Start of playMove(): " << endl;
     int col1 = start.first - 'a';
     int row1 = size - start.second; 
+
     auto kingw = dynamic_cast<King*>(getKing(Colour::White));
     auto subject = kingw->getSubjects();
-
     cout << "   White King Subjects:" << endl;
-    //cout << "   White King Subjects:" << endl;
     for (auto s:subject) {
-        //cout << s->getCoords() << endl;
+        cout << s->getCoords() << endl;
     }
 
     auto kingb = dynamic_cast<King*>(getKing(Colour::Black));
     subject = kingb->getSubjects();
-    //cout << "   Black King Subjects: " << endl;
+    cout << "   Black King Subjects: " << endl;
     for (auto s:subject){
-        //cout << s->getCoords() << endl;
+        cout << s->getCoords() << endl;
     }
 
     //cout << "White king is " << (kingw->inCheck() ? "in" : "not in") << " check" << endl;
@@ -206,9 +205,9 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
         return false;
     }
 
-    for (auto s:subject) {
-        cout << s->getCoords() << endl;
-    }
+    // for (auto s:subject) {
+    //     cout << s->getCoords() << endl;
+    // }
     
     turn = turn == Colour::White ? Colour::Black : Colour::White;
 
@@ -246,13 +245,13 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
         //cout << s->getCoords() << endl;
     }
 
-    kingb = dynamic_cast<King*>(getKing(Colour::Black));
-    subject = kingb->getSubjects();
-    //cout << "   Black King Subjects: " << endl;
-    for (auto s:subject){
-        //cout << s->getCoords() << endl;
-    }
-    //cout << "------------------------------" << endl;
+    // kingb = dynamic_cast<King*>(getKing(Colour::Black));
+    // subject = kingb->getSubjects();
+    // cout << "   Black King Subjects: " << endl;
+    // for (auto s:subject){
+    //     cout << s->getCoords() << endl;
+    // }
+    // cout << "------------------------------" << endl;
 
     return true;
 }
@@ -300,6 +299,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     int row1 = size - start.second; 
     int col2 = end.first - 'a';
     int row2 = size - end.second;
+    pair<char, int> thirdCoord;
     vector<Piece*> ownSubjects; //used to store original observers of white king
     vector<Piece*> oppSubjects; //used to store original observers of black king
     King* ownKing = dynamic_cast<King*> (getKing(turn));
@@ -307,6 +307,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     bool inCheck = ownKing->inCheck();
     unique_ptr<Piece> temp; //used to hold pieces in case revert 
     unique_ptr<Piece> temp2; 
+    unique_ptr<Piece> temp3;
     bool promotes = false;
     bool enpas = false;
     bool castle = false;
@@ -323,29 +324,14 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     // checks if the starting square is in the subject list of either kings
     bool ownSubjectStart = false;
     bool oppSubjectStart = false;
+    bool ownSubjectEnd = false;
+    bool oppSubjectEnd = false;
+    bool ownSubject3 = false;
+    bool oppSubject3 = false;
     
     ownSubjects = ownKing->getSubjects();
     oppSubjects = oppKing->getSubjects();
 
-    for (auto subject:ownSubjects) {
-        if (subject->getCoords() == start) ownSubjectStart = true;
-    }
-
-    for (auto subject:oppSubjects) {
-        if (subject->getCoords() == start) oppSubjectStart = true;
-    }
-
-    // checks if the ending square is in the subject list of either kings
-    bool ownSubjectEnd = false;
-    bool oppSubjectEnd = false;
-
-    for (auto subject:ownSubjects) {
-        if (subject->getCoords() == end) ownSubjectEnd = true;
-    }
-
-    for (auto subject:oppSubjects) {
-        if (subject->getCoords() == end) oppSubjectEnd = true;
-    }
 
     if(promotes) {
         cout << "PROMOTING!!" << endl;
@@ -353,10 +339,22 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         temp2 = move(grid[row1][col1]); // stores old pawn
         grid[row2][col2] = PieceCreator::createPiece(promotionPiece, turn, end);
     } else if (enpas) {
-        temp = move(grid[row2 + 1][col2]); // store pawn that is going to be captured 
-        temp2 = move(grid[row1][col1]); // stores piece that is going to be moved        
+        cout << "hi" << endl;
+        temp = move(grid[row2][col2]); // store pawn that is going to be captured 
+        temp2 = move(grid[row1][col1]); // stores empt that is going to be moved
         grid[row2][col2] = PieceCreator::createPiece(PieceType::Pawn, turn, end);
-        grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Pawn, turn, make_pair(col2 + 'a', row2 + 1));      
+
+        //stroes pawn that is going to be taken through en passant
+        if (turn == Colour::White) {
+            temp3 = move(grid[row2 + 1][col2]);
+            thirdCoord = make_pair(end.first, end.second - 1);
+            grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Blank, turn, thirdCoord);      
+        } else {
+            temp3 = move(grid[row2 - 1][col2]);
+            thirdCoord = make_pair(end.first, end.second + 1);
+            grid[row2 - 1][col2] = PieceCreator::createPiece(PieceType::Blank, turn, thirdCoord);    
+        }
+    
     } else if (castle) {
         temp = move(grid[row2][col2]); // store piece that is going to be captured 
         temp2 = move(grid[row1][col1]); // stores piece that is going to be moved
@@ -371,8 +369,19 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
 
     // changes original square to be a blank
     grid[row1][col1] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, start);
-    //notify king observers for own king 
-    
+
+    for (auto subject:ownSubjects) {
+        if (subject->getCoords() == start) ownSubjectStart = true;
+        if (subject->getCoords() == end) ownSubjectEnd = true;
+        if (subject->getCoords() == thirdCoord) ownSubject3 = true;
+    }
+
+    for (auto subject:oppSubjects) {
+        if (subject->getCoords() == start) oppSubjectStart = true;
+        if (subject->getCoords() == end) oppSubjectEnd = true;
+        if (subject->getCoords() == thirdCoord) oppSubject3 = true;       
+    }
+
     if (ownSubjectStart) {
         ownKing->dropSubject(temp2.get());
         ownKing->addSubject(grid[row1][col1].get());
@@ -391,6 +400,16 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     if (oppSubjectEnd) {
         oppKing->dropSubject(temp.get());
         oppKing->addSubject(grid[row2][col2].get());
+    }
+
+    if (ownSubject3) {
+        ownKing->dropSubject(temp3.get());
+        ownKing->addSubject(getPiece(thirdCoord));
+    }
+
+    if (oppSubject3) {
+        oppKing->dropSubject(temp3.get());
+        oppKing->addSubject(getPiece(thirdCoord));
     }
 
     if (ownSubjectStart) ownKing->notify(grid[row1][col1].get(), this);
@@ -414,11 +433,14 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
 
     if (revert || isCheckAfter) { // if reverts or the king is still in check
         if (enpas) {
-            grid[row1][col1] = move(temp2); // restore orginal move
-            grid[row2+1][col1] = move(temp); //restore captured pawn
-            grid[row2][col2] = PieceCreator::createPiece(PieceType::Pawn, Colour::Neither, end);
-            // restores squares to blanks
-            grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, make_pair(col2 + 'a', row2 + 1));                 
+            cout << "aaaaa" << endl;
+            grid[row2][col1] = move(temp); // restore orginal move
+            grid[row1][col1] = move(temp2);
+
+            //restores pawn that was taken
+            if (turn == Colour::White) grid[row2+1][col2] = move(temp3);
+            else grid[row2-1][col2] = move(temp3);
+
         } else if (castle) {
             grid[row1][col1] = move(temp2); // restore orginal move
             grid[row2+1][col1] = move(temp); //restore captured pawn
@@ -442,17 +464,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     //set moved for rook to be true
     if (movedPiece->pieceType() == PieceType::Rook) dynamic_cast<Rook*>(movedPiece)->hasMoved();
 
-    //set moved for rook to be false
-    if (movedPiece->pieceType() == PieceType::Pawn) {
-        auto p = dynamic_cast<Pawn*>(movedPiece);
-
-        p->setMoveTwo(false);
-
-        if (row1 + 2 == row2 || row1 - 2 == row2) {
-            p->setEnPas(true);
-        }
-    }
-
     // disable enpas not sure if works
     for(auto &row : grid) {
         for (auto &piece : row) {
@@ -461,6 +472,22 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
                 p->setEnPas(false);
             }
         }
+    }
+
+
+    if (movedPiece->pieceType() == PieceType::Pawn) {
+        auto p = dynamic_cast<Pawn*>(movedPiece);
+
+        p->setMoveTwo(false);
+
+        if (row1 + 2 == row2 || row1 - 2 == row2) {
+            p->setEnPas(true);
+            cout << "true" << endl;
+        }
+    }
+
+    if (enpas) {
+        notifyAllObservers(getPiece(thirdCoord), getTurn());
     }
 
     if (kingMove) {
