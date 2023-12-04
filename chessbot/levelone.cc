@@ -23,7 +23,7 @@ public:
 		if (!possibleMoves.empty()) {
     	    // Level one bot makes random moves so we use srand and rand
     		// Seed the random number generator
-    		srand(static_cast<unsigned int>(10));
+    		srand(static_cast<unsigned int>(time(nullptr)));
 
  	    	// Mod the number by the length of the array of moves
 			// so that the number represents a random index in the list of moves
