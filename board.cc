@@ -324,6 +324,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     }
 
     if(promotes) {
+        cout << "PROMOTING!!" << endl;
         temp = move(grid[row2][col2]); // stores piece on back rank
         temp2 = move(grid[row1][col1]); // stores old pawn
         grid[row2][col2] = PieceCreator::createPiece(promotionPiece, turn, end);
@@ -419,9 +420,11 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
 
     //set moved for rook to be false
     if (movedPiece->pieceType() == PieceType::Pawn) {
+        auto p = dynamic_cast<Pawn*>(movedPiece);
+
+        p->setMoveTwo(false);
+
         if (row1 + 2 == row2 || row1 - 2 == row2) {
-            auto p = dynamic_cast<Pawn*>(movedPiece);
-            p->setMoveTwo(false);
             p->setEnPas(true);
         }
     }
@@ -452,7 +455,7 @@ bool Board::isPromoting(pair<char, int> start, pair<char, int> end) {
 
     if (grid[row1][col1]->pieceType() == PieceType::Pawn) {
         if (grid[row1][col1]->getSide() == Colour::White && row1 == 1) return true;
-        if (grid[row1][col1]->getSide() == Colour::Black && row1 == 7) return true;
+        if (grid[row1][col1]->getSide() == Colour::Black && row1 == 6) return true;
     }
     return false;
 }
