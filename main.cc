@@ -165,7 +165,7 @@ int main () {
                     break;
                 }
                 cout << c.getTd();
-            } 
+            }
             cout << "Enter anything to proceed to the next game" << endl;
             getline(cin, input); 
             board.clearBoard();
