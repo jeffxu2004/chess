@@ -53,6 +53,8 @@ public:
 		pair<pair<pair<char, int>, pair<char, int>>, int> bestMove(make_pair(make_pair('0', 0), make_pair('0', 0)), -1);
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
 			int moveWeight = weightOfMove(b, move->first, move->second);
+			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
+			if (b.getPiece(move->first)->pieceType() == PieceType::Pawn) moveWeight++;
 			if (moveWeight > bestMove.second) bestMove = make_pair(*move, moveWeight);
 		}
 
