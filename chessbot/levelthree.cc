@@ -64,7 +64,8 @@ class LevelThree : public ChessBot {
 			}
 
 			// Get points for own move first
-			vector<pair<char, int>> moves = b.getPiece(end)->getMoves(b);
+			unique_ptr<Piece> copy = PieceCreator::createPiece(type, colour, end);
+        	vector<pair<char, int>> moves = copy->getMoves(b);
 			for (auto move : moves) {
 				if (b.getPiece(move)->pieceType() == PieceType::King) {
 					weight += 2;
