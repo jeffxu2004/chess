@@ -36,7 +36,7 @@ class LevelThree : public ChessBot {
 			if (numMoves < 8 && colour == this->colour) {
 				if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
 				|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
-					weight+=2;
+					weight++;
 				}
 			}
         }
