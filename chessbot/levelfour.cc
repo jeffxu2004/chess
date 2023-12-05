@@ -35,7 +35,6 @@ class LevelFour : public ChessBot {
 
 		if (b.playLegalMove(start, end)) {
 			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
-			b.setTurn(side);
 
 	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(side);
 			
@@ -57,7 +56,7 @@ class LevelFour : public ChessBot {
 				}
 			}
 
-			copy.setTurn(b.getTurn());
+			copy.setTurn(side);
 
 			int opponent = 0;
 			// Find the opponent move that would yield them the most points

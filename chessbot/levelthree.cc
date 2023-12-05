@@ -55,7 +55,6 @@ class LevelThree : public ChessBot {
 		
 		if (b.playLegalMove(start, end)) {
 			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
-			b.setTurn(side);
 
 			// Check edge case where move is pawn promotion
 			if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
@@ -101,7 +100,7 @@ class LevelThree : public ChessBot {
 					}
 				}
 
-				copy.setTurn(b.getTurn());
+				copy.setTurn(side);
             	int value = weightOfMove(copy, move->first, move->second, side);
             	if (value > opponent) opponent = value;
 	        }
