@@ -9,8 +9,8 @@ class LevelFour : public ChessBot {
 	// Checks through all of opponents moves to see what their most valuable move is
 	// Recursively checks how bot can react, then returns the difference between bot's move and opponents move
 	int valueOfMove(Board &b, pair<char, int> start, pair<char, int> end, int depth, Colour colour) {
-		// Get weight of own move (quadruple value of move to prevent cases where bot takes losing trade just for a check)
-		int weight = 4*b.getPiece(end)->getWeight();
+		// Get weight of own move (x10 value of move to prevent cases where bot takes losing trade just for a check)
+		int weight = 10*b.getPiece(end)->getWeight();
 
 		PieceType type = b.getPiece(start)->pieceType();
 		// Check edge case where move is pawn promotion
