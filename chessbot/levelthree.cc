@@ -45,7 +45,7 @@ class LevelThree : public ChessBot {
 		if (b.playLegalMove(start, end)) {
 			// Check edge case where move is pawn promotion
 			if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
-			|| (this->colour == Colour::White && type == PieceType::Pawn && end.first == 8)) {
+			|| (this->colour == Colour::White && type == PieceType::Pawn && end.second == 8)) {
 				type = PieceType::Queen;
 			}
 			// Get points for own move first
@@ -56,10 +56,7 @@ class LevelThree : public ChessBot {
 					break;
 				}
 				// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-				pair<char, int> coords = b.getPiece(move)->getCoords();
-				if ((coords == make_pair('e', 5) || coords == make_pair('d', 5)) && this->colour == Colour::White) {
-					weight++;
-				} else if ((coords == make_pair('e', 4) || coords == make_pair('d', 4)) && this->colour == Colour::Black) {
+				if (move == make_pair('e', 5) || move == make_pair('d', 5) || move == make_pair('e', 4) || move == make_pair('d', 4)) {
 					weight++;
 				}
 			}
@@ -101,13 +98,14 @@ public:
 		vector<pair<pair<char, int>, pair<char, int>>> bestMoves;
 		
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-			Board copy = b.copyBoard();
+			// Make copy of board for simulating moves
+			Board copy(8);
 
-			for (auto i : copy.getGrid()) {
-				for (auto j : i) {
-					cout<<j;
+			for (int i = 1; i <= copy.getSize(); i++) {
+				for (int j = 'a'; j <= 'h'; j++) {
+					pair<char, int> loc = make_pair(j, i);
+					copy.changeSquare(loc, b.getPiece(loc)->pieceType(), b.getPiece(loc)->getSide());
 				}
-				cout<<endl;
 			}
 
 			int moveWeight = valueOfMove(copy, move->first, move->second);
