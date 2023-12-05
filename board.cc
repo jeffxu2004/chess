@@ -258,7 +258,7 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
 
     if (checkDraw()) {
         state = Result::Draw;
-        return;
+        return true;
     }
     // for (auto s:subject) {
     //     cout << s->getCoords() << endl;
@@ -307,6 +307,8 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     //     cout << s->getCoords() << endl;
     // }
     // cout << "------------------------------" << endl;
+
+    return true;
 
 }
 
