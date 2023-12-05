@@ -49,7 +49,7 @@ class LevelThree : public ChessBot {
 					weight += 2;
 				}
 				// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-				if (numMoves < 4) {
+				if (numMoves < 8) {
 					if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
 					|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
 						weight++;
@@ -86,8 +86,16 @@ public:
 	
 	pair<pair<char, int>, pair<char, int>> getNextMove(Board &b) override {
 		vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(this->colour);
-
+		
 		// For each possible move, do a simple check as to if the move immediately problematic
+		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
+            if (!b.kingIsNotCheck(move->first, move->second)) {
+                possibleMoves.erase(move);
+            } else {
+                move++;
+            }
+        }
+
 		// Basically just decides whether to avoid or capture based on
 		// whether trade will be a net positive for bot
 		int bestWeight = INT_MIN;
@@ -95,7 +103,7 @@ public:
 		
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
 			// Make copy of board for simulating moves
-			Board copy(8);
+			Board copy(b.getSize());
 
 			for (int i = 1; i <= copy.getSize(); i++) {
 				for (int j = 'a'; j <= 'h'; j++) {
@@ -103,6 +111,8 @@ public:
 					copy.changeSquare(loc, b.getPiece(loc)->pieceType(), b.getPiece(loc)->getSide());
 				}
 			}
+
+			copy.setTurn(b.getTurn());
 
 			int moveWeight = valueOfMove(copy, move->first, move->second);
 			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
