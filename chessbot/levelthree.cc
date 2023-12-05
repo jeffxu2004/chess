@@ -33,10 +33,10 @@ class LevelThree : public ChessBot {
 			
 			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
 			// Do it only for own moves
-			if (numMoves < 6 && colour == this->colour) {
+			if (numMoves < 8 && colour == this->colour) {
 				if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
 				|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
-					weight++;
+					weight+=2;
 				}
 			}
         }

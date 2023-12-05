@@ -28,7 +28,7 @@ class LevelTwo : public ChessBot {
 				check = 2;
 			}
 			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-			if (numMoves < 4) {
+			if (numMoves < 8) {
 				if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
 				|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
 					weight++;
