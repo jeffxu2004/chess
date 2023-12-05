@@ -60,10 +60,15 @@ class LevelFour : public ChessBot {
 
 			int opponent = 0;
 			// Find the opponent move that would yield them the most points
+			pair<pair<char, int>, pair<char, int>> m = {{'0', 0}, {'0', 0}};
 			for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
 				int value = valueOfMove(copy, move->first, move->second, depth-1, b.getTurn());
-				if (value > opponent) opponent = value;
+				if (value > opponent) {opponent = value; m = *move;};
 			}
+
+			cout<<depth<<": weight"<<opponent<<endl;
+			cout<<"Move: "<<b.getPiece(m.first)->pieceType()<<" "<<m.first<<" to "<<b.getPiece(m.second)->pieceType()<<" "<<m.second<<": "<<moveWeight<<endl;
+
 
 			return weight - opponent;
 		} else {
