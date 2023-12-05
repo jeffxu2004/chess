@@ -10,7 +10,7 @@ class LevelThree : public ChessBot {
     // the weight of the piece taken.
     // Checks have a weight of two. (If a move takes a piece and checks the enemy king, the weight is summed)
     int weightOfMove(Board &b, pair<char, int> start, pair<char, int> dest, Colour colour) {
-        // Weight is doubled so check and taking center squares aren't as valuable
+        // Weight is tripled so check and taking center squares aren't as valuable
 		int weight = 3*b.getPiece(dest)->getWeight();
 
 		PieceType type = b.getPiece(start)->pieceType();
@@ -23,23 +23,15 @@ class LevelThree : public ChessBot {
         // Create a copy of my piece and check if this move will result in the piece checking the king
 		unique_ptr<Piece> copy = PieceCreator::createPiece(type, colour, dest);
         vector<pair<char, int>> moves = copy->getMoves(b);
-        // for (auto move : moves) {
-        //     if (b.getPiece(move)->pieceType() == PieceType::King) {
-        //         weight += 2;
-		// 		if (numMoves >= 20) {
-		// 			weight += 2;
-		// 		}
-        //     }
-			
-		// 	// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-		// 	// Do it only for own moves
-		// 	if (numMoves < 8 && colour == this->colour) {
-		// 		if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
-		// 		|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
-		// 			weight+=2;
-		// 		}
-		// 	}
-        // }
+        for (auto move : moves) {
+            if (b.getPiece(move)->pieceType() == PieceType::King) {
+                weight += 2;
+				if (numMoves >= 20) {
+					weight += 2;
+				}
+				break;
+            }
+        }
 
         return weight;
     }
@@ -48,11 +40,41 @@ class LevelThree : public ChessBot {
 	// Checks through all of opponents moves to see what their most valuable move is
 	// Then returns the difference between bot's move and opponents move
 	int valueOfMove(Board &b, pair<char, int> start, pair<char, int> end) {
-		// Get weight of own move
-		int weight = weightOfMove(b, start, end, this->colour);
+		// Get weight of own move (we don't call the weightOfMove function due to edge
+		// cases such as a king being direct a promoting pawn)
+		int weight = 3*b.getPiece(end)->getWeight();
+
+		// PieceType type = b.getPiece(start)->pieceType();
+		// // Check edge case where move is pawn promotion
+		// if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
+		// || (this->colour == Colour::White && type == PieceType::Pawn && end.second == 8)) {
+		// 	type = PieceType::Queen;
+		// }
 
 		int opponent = 0;
-		if (b.playLegalMove(start, end)) {
+		if (b.playMove(start, end)) {
+			// Create a copy of my piece and check if this move will result in the piece checking the king
+			//unique_ptr<Piece> copy = PieceCreator::createPiece(type, colour, end);
+
+			vector<pair<char, int>> moves = b.getPiece(end)->getMoves(b);
+			for (auto move : moves) {
+				if (b.getPiece(move)->pieceType() == PieceType::King) {
+					weight += 2;
+					if (numMoves >= 20) {
+						weight += 2;
+					}
+				}
+				
+				// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
+				// Do it only for own moves
+				if (numMoves < 8) {
+					if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
+					|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
+						weight+=2;
+					}
+				}
+			}
+
 			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
 
 	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(side);
@@ -113,8 +135,6 @@ public:
 			copy.setTurn(b.getTurn());
 
 			int moveWeight = valueOfMove(copy, move->first, move->second);
-			cout << "WEIGHT: " << moveWeight << endl;
-			cout << "Move: " << *move << endl;
 			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
 			if (b.getPiece(move->first)->pieceType() == PieceType::Pawn) moveWeight++;
 
