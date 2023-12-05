@@ -219,33 +219,19 @@ void Board::changeSquare(char c, pair<char, int> loc) {
 }
 
 bool Board::playMove(pair<char, int> start, pair<char, int> end) {
-    //cout << "Start of playMove(): " << endl;
     int col1 = start.first - 'a';
     int row1 = size - start.second; 
 
     auto kingw = dynamic_cast<King*>(getKing(Colour::White));
     auto subject = kingw->getSubjects();
-    cout << "   White King Subjects:" << endl;
-    for (auto s:subject) {
-        cout << s->getCoords() << endl;
-    }
 
     auto kingb = dynamic_cast<King*>(getKing(Colour::Black));
     subject = kingb->getSubjects();
-    cout << "   Black King Subjects: " << endl;
-    for (auto s:subject){
-        cout << s->getCoords() << endl;
-    }
 
-    //cout << "White king is " << (kingw->inCheck() ? "in" : "not in") << " check" << endl;
-    //cout << "Black king is " << (kingb->inCheck() ? "in" : "not in") << " check" << endl;
-    
-    //cout << "------------------------------" << endl;
     if (isPlayableMove(grid[row1][col1].get(), end) == false) return false;
     bool legal = this->playLegalMove(start, end);
 
     if (!legal)  {
-        //cout << "hi" << endl;
         return false;
     }
 
@@ -253,9 +239,6 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
         state = Result::Draw;
         return true;
     }
-    // for (auto s:subject) {
-    //     cout << s->getCoords() << endl;
-    // }
     
     turn = turn == Colour::White ? Colour::Black : Colour::White;
 
@@ -268,9 +251,7 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     bool isCheck = king->inCheck();  // check if king is in check
     bool checkw = kingw->inCheck();
     bool checkb = kingb->inCheck();
-    //cout << kingw->getSide() << " is " << (checkw ? "in" : "not in ") << "check" << endl;
-    //cout << kingb->getSide() << " is " << (checkb ? "in" : "not in " ) << "check" << endl;
-
+   
     bool playableMove = false;
     auto moves = getAllMoves(turn);
 
@@ -286,20 +267,6 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
         else state = Result::Stalemate; //otherwise its stalemate => draw
     }
     
-    // //cout << "End of playMove(): " << endl;
-    subject = kingw->getSubjects();
-    //cout << "   White King Subjects:" << endl;
-    for (auto s:subject) {
-        //cout << s->getCoords() << endl;
-    }
-
-    // kingb = dynamic_cast<King*>(getKing(Colour::Black));
-    // subject = kingb->getSubjects();
-    // cout << "   Black King Subjects: " << endl;
-    // for (auto s:subject){
-    //     cout << s->getCoords() << endl;
-    // }
-    // cout << "------------------------------" << endl;
 
     return true;
 
@@ -396,7 +363,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         temp2 = move(grid[row1][col1]); // stores old pawn
         grid[row2][col2] = PieceCreator::createPiece(promotionPiece, turn, end);
     } else if (enpas) {
-        cout << "ENPASSSANNTTTTTTTTTTTTT!!!!!!!!!!!!!!!!" << endl;
         temp = move(grid[row2][col2]); // store pawn that is going to be captured 
         temp2 = move(grid[row1][col1]); // stores empt that is going to be moved
         grid[row2][col2] = PieceCreator::createPiece(PieceType::Pawn, turn, end);
@@ -588,7 +554,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
 
         if (row1 + 2 == row2 || row1 - 2 == row2) {
             p->setEnPas(true);
-            cout << "true" << endl;
         }
     }
 
