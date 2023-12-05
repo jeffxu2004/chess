@@ -19,7 +19,7 @@ class LevelFour : public ChessBot {
 		}
 
         // Create a copy of my piece and check if this move will result in the piece checking the king
-		b.playMove(start, end));
+		b.playMove(start, end);
 		unique_ptr<Piece> copyPiece = PieceCreator::createPiece(type, colour, end);
 		vector<pair<char, int>> moves = copyPiece->getMoves(b);
 		for (auto move : moves) {
