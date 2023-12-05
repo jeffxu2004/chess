@@ -10,7 +10,8 @@ class LevelThree : public ChessBot {
     // the weight of the piece taken.
     // Checks have a weight of two. (If a move takes a piece and checks the enemy king, the weight is summed)
     int weightOfMove(Board &b, pair<char, int> start, pair<char, int> dest, Colour colour) {
-        int weight = 2*b.getPiece(dest)->getWeight();
+        // Weight is doubled so check and taking center squares aren't as valuable
+		int weight = 2*b.getPiece(dest)->getWeight();
 
         // Create a copy of my piece and check if this move will result in the piece checking the king
 		unique_ptr<Piece> copy = PieceCreator::createPiece(b.getPiece(start)->pieceType(), colour, dest);
@@ -21,7 +22,13 @@ class LevelThree : public ChessBot {
 				if (numMoves >= 20) {
 					weight += 3;
 				}
-                break;
+				// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
+				if (numMoves < 6) {
+					if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
+					|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
+						weight+=2;
+					}
+				}
             }
         }
 
@@ -32,9 +39,8 @@ class LevelThree : public ChessBot {
 	// Checks through all of opponents moves to see what their most valuable move is
 	// Then returns the difference between bot's move and opponents move
 	int valueOfMove(Board &b, pair<char, int> start, pair<char, int> end) {
-		
-		// Get weight of own move (double value of move to prevent cases where bot takes losing trade just for a check)
-		int weight = 2*b.getPiece(end)->getWeight();
+		// Get weight of own move
+		int weight = weightOfMove(b, start, end, this->colour);
 
 		if (numMoves < 6) {
 			if (((end == make_pair('e', 5) || end == make_pair('d', 5)) && this->colour == Colour::White)
@@ -53,24 +59,6 @@ class LevelThree : public ChessBot {
 			if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
 			|| (this->colour == Colour::White && type == PieceType::Pawn && end.second == 8)) {
 				type = PieceType::Queen;
-			}
-
-			// Get points for own move first
-			vector<pair<char, int>> moves = b.getPiece(end)->getMoves(b);
-			for (auto move : moves) {
-				if (b.getPiece(move)->pieceType() == PieceType::King) {
-					weight += 2;
-					if (numMoves >= 20) {
-						weight += 3;
-					}
-				}
-				// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-				if (numMoves < 6) {
-					if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
-					|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
-						weight+=2;
-					}
-				}
 			}
 
 	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(side);

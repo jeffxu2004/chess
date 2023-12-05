@@ -14,26 +14,26 @@ class LevelFour : public ChessBot {
 		// Get weight of own move (double value of move to prevent cases where bot takes losing trade just for a check)
 		int weight = 2*b.getPiece(end)->getWeight();
 
-		PieceType type = b.getPiece(start)->pieceType();		
-		if (b.playLegalMove(start, end)) {
-			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
+		PieceType type = b.getPiece(start)->pieceType();
+		// Check edge case where move is pawn promotion
+		if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
+		|| (this->colour == Colour::White && type == PieceType::Pawn && end.second == 8)) {
+			type = PieceType::Queen;
+		}
 
-			// Check edge case where move is pawn promotion
-			if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
-			|| (this->colour == Colour::White && type == PieceType::Pawn && end.second == 8)) {
-				type = PieceType::Queen;
-			}
-
-			// Get points for check
-			vector<pair<char, int>> moves = b.getPiece(end)->getMoves(b);
-			for (auto move : moves) {
-				if (b.getPiece(move)->pieceType() == PieceType::King) {
-					weight += 2;
-					if (numMoves >= 20) {
-						weight += 3;
-					}
+		// Get points for check
+		vector<pair<char, int>> moves = b.getPiece(end)->getMoves(b);
+		for (auto move : moves) {
+			if (b.getPiece(move)->pieceType() == PieceType::King) {
+				weight += 2;
+				if (numMoves >= 20) {
+					weight += 3;
 				}
 			}
+		}
+
+		if (b.playLegalMove(start, end)) {
+			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
 
 	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(side);
 			
