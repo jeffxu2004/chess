@@ -403,13 +403,13 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
 
         //stroes pawn that is going to be taken through en passant
         if (turn == Colour::White) {
-            temp3 = move(grid[row2 + 1][col2]);
-            thirdCoord = make_pair(end.first, end.second - 1);
-            grid[row2 + 1][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, thirdCoord);      
+            temp3 = move(grid[row1][col2]);
+            thirdCoord = make_pair(end.first, start.second);
+            grid[row1][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, thirdCoord);      
         } else {
-            temp3 = move(grid[row2 - 1][col2]);
-            thirdCoord = make_pair(end.first, end.second + 1);
-            grid[row2 - 1][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, thirdCoord);    
+            temp3 = move(grid[row1][col2]);
+            thirdCoord = make_pair(end.first, start.second);
+            grid[row1][col2] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, thirdCoord);    
         }
     
     } else if (castle) {
