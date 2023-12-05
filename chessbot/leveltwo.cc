@@ -56,24 +56,39 @@ public:
 
 		// Have a pair to keep track of the most valuable move and its value
 		// Most valuable move calculated by what gives most points
-		pair<pair<pair<char, int>, pair<char, int>>, int> bestMove(make_pair(make_pair('0', 0), make_pair('0', 0)), -1);
+		int bestWeight = -1;
+		vector<pair<pair<char, int>, pair<char, int>>> bestMoves;
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
 			int moveWeight = weightOfMove(b, move->first, move->second);
 			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
 			if (b.getPiece(move->first)->pieceType() == PieceType::Pawn) moveWeight++;
-			if (moveWeight > bestMove.second) bestMove = make_pair(*move, moveWeight);
+
+			// If move is equal to previously found best move, add as potential move
+			if (moveWeight == bestWeight) {
+				bestMoves.push_back(*move); 
+			// If found a new best move, clear previous array of potential best moves
+			} else if (moveWeight > bestWeight) {
+				bestWeight = moveWeight;
+				bestMoves.clear();
+				bestMoves.push_back(*move);
+			}
 		}
 
 		// If there is no moves that give any points, just pick the first move from possible moves (if that is empty return no valid moves)	
-		if (bestMove.second != -1) {
-			if (b.isPromoting(bestMove.first.first, bestMove.first.second)) {
+		if (bestWeight != -1) {
+			// Have some randomness in moves so bot isn't so predictable
+			// Also prevents situations were bot vs bot results in infinite loop
+    		srand(static_cast<unsigned int>(time(nullptr)));
+			int index = rand()%bestMoves.size();
+
+			if (b.isPromoting(bestMoves[index].first, bestMoves[index].second)) {
 				b.setPromotionPiece(PieceType::Queen);
 			}
 
-			return bestMove.first;
+			return bestMoves[index];
     	} else {
     	   	// No valid moves, return a '0' instead of a letter from a to h to indicate this 
-        	return bestMove.first;
+        	return make_pair(make_pair('0', 0), make_pair('0', 0));
 		}
 	}
 };
