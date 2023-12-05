@@ -120,7 +120,7 @@ int main () {
                         }
                         if (revert == "revert") {
                             cout << "hello" << endl;
-                        bool b = board.kingIsNotCheck(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));                            
+                            bool b = board.kingIsNotCheck(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));                            
                         }
                         else {bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
                         if (!b) {
@@ -149,9 +149,9 @@ int main () {
                         }
                         if (revert == "revert") {
                             cout << "hello" << endl;
-                        bool b = board.kingIsNotCheck(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));                            
+                            bool b = board.kingIsNotCheck(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));                            
                         } else {
-                        bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
+                            bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
                         if (!b) {
                             cout << "Not a valid move" << endl;
                         }}
