@@ -55,6 +55,7 @@ class LevelThree : public ChessBot {
 		
 		if (b.playLegalMove(start, end)) {
 			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
+			b.setTurn(side);
 
 			// Check edge case where move is pawn promotion
 			if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
@@ -90,7 +91,17 @@ class LevelThree : public ChessBot {
 
 			// Find the opponent move that would yield them the most points
         	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-            	int value = weightOfMove(b, move->first, move->second, side);
+				Board copy(b.getSize());
+
+				for (int i = 1; i <= copy.getSize(); i++) {
+					for (int j = 'a'; j <= 'h'; j++) {
+						pair<char, int> loc = make_pair(j, i);
+						copy.changeSquare(loc, b.getPiece(loc)->pieceType(), b.getPiece(loc)->getSide());
+					}
+				}
+
+				copy.setTurn(b.getTurn());
+            	int value = weightOfMove(copy, move->first, move->second, side);
             	if (value > opponent) opponent = value;
 	        }
 
