@@ -19,56 +19,53 @@ class LevelFour : public ChessBot {
 		}
 
         // Create a copy of my piece and check if this move will result in the piece checking the king
-		if (b.playMove(start, end)) {
-			unique_ptr<Piece> copyPiece = PieceCreator::createPiece(type, colour, end);
-			vector<pair<char, int>> moves = copyPiece->getMoves(b);
-			for (auto move : moves) {
-				if (b.getPiece(move)->pieceType() == PieceType::King) {
-					weight += 2;
-					// Prefer checking later into the game
-					if (numMoves >= 20) {
-						weight += 1;
-					}
-					break;
+		b.playMove(start, end));
+		unique_ptr<Piece> copyPiece = PieceCreator::createPiece(type, colour, end);
+		vector<pair<char, int>> moves = copyPiece->getMoves(b);
+		for (auto move : moves) {
+			if (b.getPiece(move)->pieceType() == PieceType::King) {
+				weight += 2;
+				// Prefer checking later into the game
+				if (numMoves >= 20) {
+					weight += 1;
 				}
+				break;
 			}
-
-			// Base case
-			if (depth == 0) return weight;
-
-	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(b.getTurn());
-			
-			// filter moves that will put king in check
-        	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
-            	if (!b.kingIsNotCheck(move->first, move->second)) {
-                	possibleMoves.erase(move);
-            	} else {
-                	move++;
-            	}
-        	}
-
-			Board copy(b.getSize());
-
-			for (int i = 1; i <= copy.getSize(); i++) {
-				for (int j = 'a'; j <= 'h'; j++) {
-					pair<char, int> loc = make_pair(j, i);
-					copy.changeSquare(loc, b.getPiece(loc)->pieceType(), b.getPiece(loc)->getSide());
-				}
-			}
-
-			copy.setTurn(b.getTurn());
-
-			int opponent = 0;
-			// Find the opponent move that would yield them the most points
-        	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-            	int value = valueOfMove(copy, move->first, move->second, depth-1, b.getTurn());
-            	if (value > opponent) opponent = value;
-	        }
-
-			return weight - opponent;
-		} else {
-			return INT_MIN;
 		}
+
+		// Base case
+		if (depth == 0) return weight;
+
+		vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(b.getTurn());
+		
+		// filter moves that will put king in check
+		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
+			if (!b.kingIsNotCheck(move->first, move->second)) {
+				possibleMoves.erase(move);
+			} else {
+				move++;
+			}
+		}
+
+		Board copy(b.getSize());
+
+		for (int i = 1; i <= copy.getSize(); i++) {
+			for (int j = 'a'; j <= 'h'; j++) {
+				pair<char, int> loc = make_pair(j, i);
+				copy.changeSquare(loc, b.getPiece(loc)->pieceType(), b.getPiece(loc)->getSide());
+			}
+		}
+
+		copy.setTurn(b.getTurn());
+
+		int opponent = 0;
+		// Find the opponent move that would yield them the most points
+		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
+			int value = valueOfMove(copy, move->first, move->second, depth-1, b.getTurn());
+			if (value > opponent) opponent = value;
+		}
+
+		return weight - opponent;
 	}
 
 public:
@@ -130,7 +127,7 @@ public:
 				}
 			}
 
-			cout<<"Move: "<<b.getPiece(move->first)->pieceType()<<" "<<move->first<<" to "<<b.getPiece(move->second)->pieceType()<<move->second<<": "<<moveWeight<<endl;
+			cout<<"Move: "<<b.getPiece(move->first)->pieceType()<<" "<<move->first<<" to "<<b.getPiece(move->second)->pieceType()<<" "<<move->second<<": "<<moveWeight<<endl;
 
 			// If move is equal to previously found best move, add as potential move
 			if (moveWeight == bestWeight) {
