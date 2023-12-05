@@ -191,6 +191,7 @@ int main () {
             getline(cin, input); 
             board.clearBoard();
             board.standardInit();  // return to standard board after a game
+            board.setResult(Result::Continue);
         // PLEASE READ cmds properly: added clear
         } else if (cmd == "setup") { //some of the error detection is not done
             cout << "Now in setup mode" << endl;
@@ -214,7 +215,6 @@ int main () {
                     newIss >> c;
                     if (c == "White" || "W" || "w" || "white") board.setTurn(Colour::White);
                     if (c == "Black" || "B" || "b" || "black") board.setTurn(Colour::Black);
-                    board.notifyAllObservers(board.getGrid()[0][0], board.getTurn() );
                 } else if (cmd == "done") { // format: done
                     if (board.validSetup()) {  //checks if valid configuration
                         cout << "Exiting setup mode" << endl;

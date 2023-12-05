@@ -10,7 +10,7 @@ class LevelThree : public ChessBot {
     // the weight of the piece taken.
     // Checks have a weight of two. (If a move takes a piece and checks the enemy king, the weight is summed)
     int weightOfMove(Board &b, pair<char, int> start, pair<char, int> dest, Colour colour) {
-        int weight = b.getPiece(dest)->getWeight();
+        int weight = 2*b.getPiece(dest)->getWeight();
 
         // Create a copy of my piece and check if this move will result in the piece checking the king
 		unique_ptr<Piece> copy = PieceCreator::createPiece(b.getPiece(start)->pieceType(), colour, dest);
@@ -36,11 +36,18 @@ class LevelThree : public ChessBot {
 	// Then returns the difference between bot's move and opponents move
 	int valueOfMove(Board &b, pair<char, int> start, pair<char, int> end) {
 		
-		// Get weight of own move
-		int weight = b.getPiece(end)->getWeight();
+		// Get weight of own move (double value of move to prevent cases where bot takes losing trade just for a check)
+		int weight = 2*b.getPiece(end)->getWeight();
 
 		int opponent = 0;
+		PieceType type = b.getPiece(start)->pieceType();
+		
 		if (b.playLegalMove(start, end)) {
+			// Check edge case where move is pawn promotion
+			if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
+			|| (this->colour == Colour::White && type == PieceType::Pawn && end.first == 8)) {
+				type = PieceType::Queen;
+			}
 			// Get points for own move first
 			vector<pair<char, int>> moves = b.getPiece(end)->getMoves(b);
 			for (auto move : moves) {
@@ -88,25 +95,43 @@ public:
 		vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(this->colour);
 
 		// For each possible move, do a simple check as to if the move immediately problematic
-		// Basically just checks small things such as whether trade will be a net positive for bot
-		pair<pair<pair<char, int>, pair<char, int>>, int> bestMove(make_pair(make_pair('0', 0), make_pair('0', 0)), INT_MIN);
+		// Basically just decides whether to avoid or capture based on
+		// whether trade will be a net positive for bot
+		int bestWeight = INT_MIN;
+		vector<pair<pair<char, int>, pair<char, int>>> bestMoves;
 		
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-			int value = valueOfMove(b, move->first, move->second);
-			if (value > bestMove.second) bestMove = make_pair(*move, value);
+			Board& copy = b.copyBoard();
+			int moveWeight = valueOfMove(copy, move->first, move->second);
+			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
+			if (b.getPiece(move->first)->pieceType() == PieceType::Pawn) moveWeight++;
+
+			// If move is equal to previously found best move, add as potential move
+			if (moveWeight == bestWeight) {
+				bestMoves.push_back(*move); 
+			// If found a new best move, clear previous array of potential best moves
+			} else if (moveWeight > bestWeight) {
+				bestWeight = moveWeight;
+				bestMoves.clear();
+				bestMoves.push_back(*move);
+			}
 		}
 
 		// If there is no moves that give any points, just pick the first move from possible moves (if that is empty return no valid moves)
-		if (bestMove.second != INT_MIN) {
-			// If promoting, always choose queen
-            if (b.isPromoting(bestMove.first.first, bestMove.first.second)) {
-                b.setPromotionPiece(PieceType::Queen);
-            }
+		if (bestWeight != INT_MIN) {
+			// Have some randomness in moves so bot isn't so predictable
+			// Also prevents situations were bot vs bot results in infinite loop
+    		srand(static_cast<unsigned int>(time(nullptr)));
+			int index = rand()%bestMoves.size();
 
-			return bestMove.first;
+			if (b.isPromoting(bestMoves[index].first, bestMoves[index].second)) {
+				b.setPromotionPiece(PieceType::Queen);
+			}
+
+			return bestMoves[index];
     	} else {
     	   	// No valid moves, return a '0' instead of a letter from a to h to indicate this 
-        	return bestMove.first;
+        	return make_pair(make_pair('0', 0), make_pair('0', 0));
 		}
 	}
 };

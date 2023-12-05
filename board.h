@@ -54,6 +54,9 @@ public:
 	//set promotion piece
 	void setPromotionPiece(PieceType p);
 
+	//set result
+	void setResult(Result r);
+
 	//sets trun
 	void setTurn(Colour c);
 
