@@ -21,7 +21,7 @@ class LevelThree : public ChessBot {
 		}
 		
         // Create a copy of my piece and check if this move will result in the piece checking the king
-		unique_ptr<Piece> copy = PieceCreator::createPiece(b.getPiece(start)->pieceType(), colour, dest);
+		unique_ptr<Piece> copy = PieceCreator::createPiece(type, colour, dest);
         vector<pair<char, int>> moves = copy->getMoves(b);
         for (auto move : moves) {
             if (b.getPiece(move)->pieceType() == PieceType::King) {
