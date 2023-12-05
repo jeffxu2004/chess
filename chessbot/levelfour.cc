@@ -12,7 +12,7 @@ class LevelFour : public ChessBot {
 		if (depth == 0) return 0;
 
 		// Get weight of own move (double value of move to prevent cases where bot takes losing trade just for a check)
-		int weight = 2*b.getPiece(end)->getWeight();
+		int weight = 3*b.getPiece(end)->getWeight();
 
 		PieceType type = b.getPiece(start)->pieceType();
 		// Check edge case where move is pawn promotion
@@ -28,8 +28,9 @@ class LevelFour : public ChessBot {
 			if (b.getPiece(move)->pieceType() == PieceType::King) {
 				weight += 2;
 				if (numMoves >= 20) {
-					weight += 3;
+					weight += 2;
 				}
+				break;
 			}
 		}
 
@@ -110,8 +111,8 @@ public:
 			
 			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
 			if (numMoves < 6) {
-				if (((move->second == make_pair('e', 5) || move->second == make_pair('d', 5)) && this->colour == Colour::White)
-				|| ((move->second == make_pair('e', 4) || move->second == make_pair('d', 4)) && this->colour == Colour::Black)) {
+				if (move->second == make_pair('e', 5) || move->second == make_pair('d', 5) 
+				|| move->second == make_pair('e', 4) || move->second == make_pair('d', 4)) {
 					moveWeight+=2;
 				}
 			}
