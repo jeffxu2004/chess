@@ -370,7 +370,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         temp2 = move(grid[row1][col1]); // stores old pawn
         grid[row2][col2] = PieceCreator::createPiece(promotionPiece, turn, end);
     } else if (enpas) {
-        cout << "hi" << endl;
+        cout << "ENPASSSANNTTTTTTTTTTTTT!!!!!!!!!!!!!!!!" << endl;
         temp = move(grid[row2][col2]); // store pawn that is going to be captured 
         temp2 = move(grid[row1][col1]); // stores empt that is going to be moved
         grid[row2][col2] = PieceCreator::createPiece(PieceType::Pawn, turn, end);
