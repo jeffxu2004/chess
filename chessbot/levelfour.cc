@@ -129,6 +129,9 @@ public:
 					moveWeight+=2;
 				}
 			}
+
+			cout<<"Move: "<<b.getPiece(move->first)->pieceType()<<" "move->first<<" to "<<b.getPiece(move->second)->pieceType()<<move->second<<": "<<moveWeight<<endl;
+
 			// If move is equal to previously found best move, add as potential move
 			if (moveWeight == bestWeight) {
 				bestMoves.push_back(*move); 
