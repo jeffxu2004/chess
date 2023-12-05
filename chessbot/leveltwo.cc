@@ -54,7 +54,7 @@ public:
             }
         }
 
-		// Have a pair to keep track of the most valuable move and its value
+		// Have a vector of pairs to keep track of the most valuable moves
 		// Most valuable move calculated by what gives most points
 		int bestWeight = -1;
 		vector<pair<pair<char, int>, pair<char, int>>> bestMoves;
