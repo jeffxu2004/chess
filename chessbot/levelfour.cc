@@ -19,9 +19,6 @@ class LevelFour : public ChessBot {
 		}
 
         // Create a copy of my piece and check if this move will result in the piece checking the king
-
-		// Base case
-
 		if (b.playMove(start, end)) {
 			unique_ptr<Piece> copyPiece = PieceCreator::createPiece(type, colour, end);
 			vector<pair<char, int>> moves = copyPiece->getMoves(b);
@@ -30,7 +27,7 @@ class LevelFour : public ChessBot {
 					weight += 2;
 					// Prefer checking later into the game
 					if (numMoves >= 20) {
-						weight += 2;
+						weight += 1;
 					}
 					break;
 				}
@@ -95,6 +92,9 @@ public:
 		vector<pair<pair<char, int>, pair<char, int>>> bestMoves;
 		
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
+			// Variable to count the number of pieces left on the board
+			int numPieces = 0;
+
 			// Make copy of board for simulating moves
 			Board copy(b.getSize());
 
@@ -106,8 +106,13 @@ public:
 			}
 
 			copy.setTurn(b.getTurn());
-
-			int moveWeight = valueOfMove(copy, move->first, move->second, 9, this->colour);
+			int moveWeight = 0;
+			// Increase depth in late game situations
+			if (numPieces < 14) {
+				moveWeight = valueOfMove(copy, move->first, move->second, 11, this->colour);
+			} else {
+				moveWeight = valueOfMove(copy, move->first, move->second, 5, this->colour);
+			}
 			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
 			if (b.getPiece(move->first)->pieceType() == PieceType::Pawn) moveWeight++;
 			// Incentivize developing pieces
