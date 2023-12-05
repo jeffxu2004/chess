@@ -438,32 +438,43 @@ void King::notify(const Piece* item, const Board* b) {
 			if ((subject->pieceType() == PieceType::Rook || 
 				subject->pieceType() == PieceType::Queen) &&
 				(pieceCol == kingCol || pieceRow == kingRow)) {
+				cout << "Check is now True" << endl;
 				check = true;
 			} else if ((subject->pieceType() == PieceType::Bishop ||
 				subject->pieceType() == PieceType::Queen) &&
 				(pieceCol-kingCol == pieceRow-kingRow || 
 				pieceCol-kingCol == kingRow-pieceRow)) {
 				check = true;
+								cout << "Check is now True" << endl;
+
 			} else if (subject->pieceType() == PieceType::Pawn) {
 				if (getSide() == Colour::Black &&
 					kingRow+1 == pieceRow &&
 					(kingCol-1 == pieceCol || kingCol+1 == pieceCol)) {
 					check = true;
+									cout << "Check is now True" << endl;
+
 				} else if (kingRow-1 == pieceRow &&
 					(kingCol-1 == pieceCol || kingCol+1 == pieceCol)) {
 					check = true;
+									cout << "Check is now True" << endl;
+
 				}
 			} else if (subject->pieceType() == PieceType::Knight && 
 				pieceCol != kingCol && pieceRow != kingRow && 
 				(abs(pieceCol-kingCol) == 2*abs(pieceRow-kingRow) ||
 				2*abs(pieceCol-kingCol) == abs(kingRow-pieceRow))) {
 				check = true;
+								cout << "Check is now True" << endl;
+
 			} else if (subject->pieceType() == PieceType::King &&
 				((pieceCol==kingCol && (pieceRow+1==kingRow || pieceRow-1==kingRow)) || 
 				(pieceRow==kingRow && (pieceCol+1==kingCol || pieceCol-1==kingCol))||
 				((pieceCol+1==kingCol || pieceCol-1==kingCol) &&
 				(pieceRow+1==kingRow || pieceRow-1==kingRow)))) {
 				check = true;
+								cout << "Check is now True" << endl;
+
 			}
 		}
 	}
@@ -480,9 +491,7 @@ void King::notify(const Piece* item, const Board* b) {
 	
 }
 
-vector<Piece*> King::getSubjects() const { 
-	auto s = subjects;
-	return subjects; }
+vector<Piece*> King::getSubjects() const { return subjects; }
 
 void King::addSubject(Piece* subject) { 
 	subjects.push_back(subject); 

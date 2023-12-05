@@ -109,14 +109,21 @@ void Board::clearBoard() {
 
 Board& Board::copyBoard() {
     Board newBoard(8);
-    auto& newGrid = newBoard.grid;
-    for (int row = 1; row <= size; row++) {
-        for (char col = 'a'; col <= 'h'; col++) {
-            int gridRow = 8 - row + 1;
-            newGrid[row-1][col-'a'] = PieceCreator::createPiece
-                (grid[row-1][col-'a'].get()->pieceType(), grid[row-1][col-'a'].get()->getSide(), make_pair(col, gridRow));
+    for (auto &row : newBoard.grid) {
+        for (auto &piece : row) {
+            piece = PieceCreator::createPiece(piece->pieceType(), piece->getSide(), piece->getCoords());
+            cout<<piece->pieceType();
         }
-    } 
+    }
+
+    // auto& newGrid = newBoard.grid;
+    // for (int row = 1; row <= size; row++) {
+    //     for (char col = 'a'; col <= 'h'; col++) {
+    //         int gridRow = 8 - row + 1;
+    //         newGrid[row-1][col-'a'] = PieceCreator::createPiece
+    //             (grid[row-1][col-'a'].get()->pieceType(), grid[row-1][col-'a'].get()->getSide(), make_pair(col, gridRow));
+    //     }
+    // }
 
     return newBoard;
 }
@@ -352,7 +359,8 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     vector<Piece*> oppSubjects; //used to store original observers of black king
     King* ownKing = dynamic_cast<King*> (getKing(turn));
     King* oppKing = dynamic_cast<King*> (getKing(turn == Colour::White ? Colour::Black : Colour::White));
-    bool inCheck = ownKing->inCheck();
+    bool ownInCheck = ownKing->inCheck();
+    bool oppInCheck = oppKing->inCheck();
     unique_ptr<Piece> temp; //used to hold pieces in case revert 
     unique_ptr<Piece> temp2; 
     unique_ptr<Piece> temp3;
@@ -389,7 +397,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         temp2 = move(grid[row1][col1]); // stores old pawn
         grid[row2][col2] = PieceCreator::createPiece(promotionPiece, turn, end);
     } else if (enpas) {
-        cout << "hi" << endl;
+        cout << "ENPASSSANNTTTTTTTTTTTTT!!!!!!!!!!!!!!!!" << endl;
         temp = move(grid[row2][col2]); // store pawn that is going to be captured 
         temp2 = move(grid[row1][col1]); // stores empt that is going to be moved
         grid[row2][col2] = PieceCreator::createPiece(PieceType::Pawn, turn, end);
@@ -551,7 +559,8 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         }
         ownKing->setSubjects(ownSubjects);
         oppKing->setSubjects(oppSubjects);
-        ownKing->setCheck(inCheck);
+        ownKing->setCheck(ownInCheck);
+        oppKing->setCheck(oppInCheck);
         if (revert) { return !isCheckAfter; }
         else return false;
     }
