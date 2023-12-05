@@ -28,6 +28,7 @@ class LevelFour : public ChessBot {
 			for (auto move : moves) {
 				if (b.getPiece(move)->pieceType() == PieceType::King) {
 					weight += 2;
+					// Prefer checking later into the game
 					if (numMoves >= 20) {
 						weight += 2;
 					}
@@ -109,6 +110,12 @@ public:
 			int moveWeight = valueOfMove(copy, move->first, move->second, 9, this->colour);
 			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
 			if (b.getPiece(move->first)->pieceType() == PieceType::Pawn) moveWeight++;
+			// Incentivize developing pieces
+			if (numMoves < 6) {
+				if (b.getPiece(move->first)->pieceType() == PieceType::Bishop || b.getPiece(move->first)->pieceType() == PieceType::Knight) {
+					moveWeight++;
+				}
+			}
 			
 			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
 			if (numMoves < 6) {
