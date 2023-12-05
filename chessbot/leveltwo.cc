@@ -29,8 +29,10 @@ class LevelTwo : public ChessBot {
 				break;
 			}
 			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-			if (move == make_pair('e', 5) || move == make_pair('d', 5) || move == make_pair('e', 4) || move == make_pair('d', 4)) {
-				weight++;
+			if (numMoves < 4) {
+				if (move == make_pair('e', 5) || move == make_pair('d', 5) || move == make_pair('e', 4) || move == make_pair('d', 4)) {
+					weight++;
+				}
 			}
 		}
 	
@@ -71,6 +73,7 @@ public:
 				bestMoves.push_back(*move);
 			}
 		}
+		numMoves++;
 
 		// If there is no moves that give any points, just pick the first move from possible moves (if that is empty return no valid moves)	
 		if (bestWeight != -1) {
