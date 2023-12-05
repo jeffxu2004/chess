@@ -44,20 +44,11 @@ class LevelThree : public ChessBot {
 		// cases such as a king being direct a promoting pawn)
 		int weight = 3*b.getPiece(end)->getWeight();
 
-		// PieceType type = b.getPiece(start)->pieceType();
-		// // Check edge case where move is pawn promotion
-		// if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
-		// || (this->colour == Colour::White && type == PieceType::Pawn && end.second == 8)) {
-		// 	type = PieceType::Queen;
-		// }
-
 		int opponent = 0;
 		if (b.playMove(start, end)) {
-			// Create a copy of my piece and check if this move will result in the piece checking the king
-			//unique_ptr<Piece> copy = PieceCreator::createPiece(type, colour, end);
-
 			vector<pair<char, int>> moves = b.getPiece(end)->getMoves(b);
 			for (auto move : moves) {
+				// Check if move will check enemy
 				if (b.getPiece(move)->pieceType() == PieceType::King) {
 					weight += 2;
 					if (numMoves >= 20) {
