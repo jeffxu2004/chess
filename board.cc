@@ -314,8 +314,8 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     int row1 = size - start.second; 
     int col2 = end.first - 'a';
     int row2 = size - end.second;
-    pair<char, int> thirdCoord;
-    pair<char, int> fourthCoord;    
+    pair<char, int> thirdCoord = make_pair('0', -1);
+    pair<char, int> fourthCoord = make_pair('0', -1);  
     vector<Piece*> ownSubjects; //used to store original observers of white king
     vector<Piece*> oppSubjects; //used to store original observers of black king
     King* ownKing = dynamic_cast<King*> (getKing(turn));
@@ -329,6 +329,8 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     bool enpas = false;
     bool castle = false;
     bool kingMove = getPiece(start)->pieceType() == PieceType::King;
+    auto subjects = ownKing->getSubjects();
+    King *newKing;
 
     if(grid[row1][col1]->getSide() != turn) return false; //check if moving piece of own colour
     if(grid[row2][col2]->getSide() == turn) return false; //check if capturing own piece
@@ -407,78 +409,89 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     // changes original square to be a blank
     grid[row1][col1] = PieceCreator::createPiece(PieceType::Blank, Colour::Neither, start);
 
-    for (auto subject:ownSubjects) {
-        if (subject->getCoords() == start) ownSubjectStart = true;
-        if (subject->getCoords() == end) ownSubjectEnd = true;
-        if (subject->getCoords() == thirdCoord) ownSubject3 = true;
-        if (subject->getCoords() == fourthCoord) ownSubject4 = true;
+    if (kingMove) { //reupdate observers for king move 
+        newKing = dynamic_cast <King*> (grid[row2][col2].get());
+        newKing->notify(newKing, this);
+    } else {
+        for (auto subject:ownSubjects) {
+            if (subject->getCoords() == start) ownSubjectStart = true;
+            if (subject->getCoords() == end) ownSubjectEnd = true;
+            if (subject->getCoords() == thirdCoord) ownSubject3 = true;
+            if (subject->getCoords() == fourthCoord) ownSubject4 = true;
+        }
+
+        for (auto subject:oppSubjects) {
+            if (subject->getCoords() == start) oppSubjectStart = true;
+            if (subject->getCoords() == end) oppSubjectEnd = true;
+            if (subject->getCoords() == thirdCoord) oppSubject3 = true; 
+            if (subject->getCoords() == fourthCoord) ownSubject4 = true;      
+        }
+
+        if (ownSubjectStart) {
+            ownKing->dropSubject(temp2.get());
+            ownKing->addSubject(grid[row1][col1].get());
+        }
+
+        if (oppSubjectStart) {
+            oppKing->dropSubject(temp2.get());
+            oppKing->addSubject(grid[row1][col1].get());
+        }
+
+        if (ownSubjectEnd) {
+            ownKing->dropSubject(temp.get());
+            ownKing->addSubject(grid[row2][col2].get());
+        }
+
+        if (oppSubjectEnd) {
+            oppKing->dropSubject(temp.get());
+            oppKing->addSubject(grid[row2][col2].get());
+        }
+
+        if (ownSubject3) {
+            ownKing->dropSubject(temp3.get());
+            ownKing->addSubject(getPiece(thirdCoord));
+        }
+
+        if (oppSubject3) {
+            oppKing->dropSubject(temp3.get());
+            oppKing->addSubject(getPiece(thirdCoord));
+        }
+
+        if (ownSubject4) {
+            ownKing->dropSubject(temp4.get());
+            ownKing->addSubject(getPiece(fourthCoord));
+        }
+
+        if (oppSubject4) {
+            oppKing->dropSubject(temp4.get());
+            oppKing->addSubject(getPiece(fourthCoord));
+        }
+
+        if (ownSubjectStart) ownKing->notify(grid[row1][col1].get(), this);
+        
+        subjects = ownKing->getSubjects();
+        for(Piece* s : subjects) {
+            if (s->getCoords() == end) ownKing->notify(grid[row2][col2].get(), this);
+            if (s->getCoords() == thirdCoord) ownKing->notify(getPiece(thirdCoord), this);
+            if (s->getCoords() == fourthCoord) ownKing->notify(getPiece(fourthCoord), this);       
+        }
+
+        //notify king observrs for enemy king   
+        if (oppSubjectStart) oppKing->notify(grid[row1][col1].get(), this);
+
+        subjects = oppKing->getSubjects();
+
+        for(Piece* s : subjects) {
+            if (s->getCoords() == end) oppKing->notify(grid[row2][col2].get(), this);     
+        }
     }
 
-    for (auto subject:oppSubjects) {
-        if (subject->getCoords() == start) oppSubjectStart = true;
-        if (subject->getCoords() == end) oppSubjectEnd = true;
-        if (subject->getCoords() == thirdCoord) oppSubject3 = true; 
-        if (subject->getCoords() == fourthCoord) ownSubject4 = true;      
+    bool isCheckAfter;
+    if (kingMove) {
+        isCheckAfter = newKing->inCheck();
+    } else {
+        isCheckAfter = ownKing->inCheck(); // determines if the king is still in check AFTER the move is played
     }
-
-    if (ownSubjectStart) {
-        ownKing->dropSubject(temp2.get());
-        ownKing->addSubject(grid[row1][col1].get());
-    }
-
-    if (oppSubjectStart) {
-        oppKing->dropSubject(temp2.get());
-        oppKing->addSubject(grid[row1][col1].get());
-    }
-
-    if (ownSubjectEnd) {
-        ownKing->dropSubject(temp.get());
-        ownKing->addSubject(grid[row2][col2].get());
-    }
-
-    if (oppSubjectEnd) {
-        oppKing->dropSubject(temp.get());
-        oppKing->addSubject(grid[row2][col2].get());
-    }
-
-    if (ownSubject3) {
-        ownKing->dropSubject(temp3.get());
-        ownKing->addSubject(getPiece(thirdCoord));
-    }
-
-    if (oppSubject3) {
-        oppKing->dropSubject(temp3.get());
-        oppKing->addSubject(getPiece(thirdCoord));
-    }
-
-    if (ownSubject4) {
-        ownKing->dropSubject(temp4.get());
-        ownKing->addSubject(getPiece(fourthCoord));
-    }
-
-    if (oppSubject4) {
-        oppKing->dropSubject(temp4.get());
-        oppKing->addSubject(getPiece(fourthCoord));
-    }
-
-    if (ownSubjectStart) ownKing->notify(grid[row1][col1].get(), this);
-    
-
-    auto subjects = ownKing->getSubjects();
-    for(Piece* s : subjects) {
-        if (s->getCoords() == end) ownKing->notify(grid[row2][col2].get(), this);
-    }
-
-    //notify king observrs for enemy king   
-    if (oppSubjectStart) oppKing->notify(grid[row1][col1].get(), this);
-
-    subjects = oppKing->getSubjects();
-
-    for(Piece* s : subjects) {
-        if (s->getCoords() == end) oppKing->notify(grid[row2][col2].get(), this);
-    }
-
-    bool isCheckAfter = ownKing->inCheck(); // determines if the king is still in check AFTER the move is played
 
     if (revert || isCheckAfter) { // if reverts or the king is still in check
         if (enpas) {
@@ -492,7 +505,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         } else if (castle) {
             grid[row2][col2] = move(temp); //becomes empty
             grid[row1][col1] = move(temp2); //becomes king
-            if (col2 > col1) {     
+            if (col2 > col1) {
                 grid[row2][col2 - 1] = move(temp3); // becomes empty square 
                 grid[row2][size - 1] = move(temp4);
             } else {
@@ -545,12 +558,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     if (enpas) {
         notifyAllObservers(getPiece(thirdCoord), getTurn());
     }
-
-    if (kingMove) {
-        King* k = dynamic_cast <King*> (grid[row2][col2].get());
-        k->setSubjects(ownKing->getSubjects());
-    }
-
     return true; //if reverting the board is not requested and that its a legal move return true
 
 }

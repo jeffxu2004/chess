@@ -42,11 +42,12 @@ int main () {
     Controller c (8);
     board.attach(&c);
     board.standardInit();
-    int blackScore = 0;
-    int whiteScore = 0;
-    // scoring not yet added
-    while (true) {
-        string cmd;
+    double blackScore = 0;
+    double whiteScore = 0;
+    string cmd;
+    bool first = true;
+    while (first || cin >> cmd) {
+        first = false;
         cout << "Enter a command: " << endl;
         getline(cin, input);
         istringstream iss{input};
@@ -85,6 +86,8 @@ int main () {
                     cout << "lmfao you lost hahahaha" << endl;
                     string side = board.getTurn() == Colour::White ? "Black" : "White";
                     cout << side << " wins!" << endl;  
+                    if (board.getTurn() == Colour::White) whiteScore++;
+                    else blackScore++;
                     break;                
                 }
 
@@ -158,10 +161,14 @@ int main () {
                     cout << "Checkmate! ";
                     string side = board.getTurn() == Colour::White ? "Black" : "White";
                     cout << side << " wins!" << endl;
+                    if (board.getTurn() == Colour::White) whiteScore++;
+                    else blackScore++;
                     break;
                 } 
                 else if (board.getState() == Result::Draw) {
-                    cout << "stalemate" << endl;
+                    cout << "Stalemate!" << endl;
+                    whiteScore += 0.5;
+                    blackScore += 0.5;
                     break;
                 }
                 cout << c.getTd();
@@ -175,7 +182,6 @@ int main () {
             getline(cin, input); 
             board.clearBoard();
             board.standardInit();  // return to standard board after a game
-
         // PLEASE READ cmds properly: added clear
         } else if (cmd == "setup") { //some of the error detection is not done
             cout << "Now in setup mode" << endl;
@@ -220,8 +226,11 @@ int main () {
         } else if (cmd == "q" || cmd == "quit" || cmd == "exit"){
             cout << "Existing Program" << endl;
             break;
-        }else {
+        } else {
             cout << "Invalid input" << endl;
         }
     }
+    cout << "Final Score: " << endl;
+    cout << "White: " << whiteScore << endl;
+    cout << "Black: " << blackScore << endl;
 }
