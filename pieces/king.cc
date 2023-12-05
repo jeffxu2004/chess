@@ -438,26 +438,26 @@ void King::notify(const Piece* item, const Board* b) {
 			if ((subject->pieceType() == PieceType::Rook || 
 				subject->pieceType() == PieceType::Queen) &&
 				(pieceCol == kingCol || pieceRow == kingRow)) {
-				cout << "Check is now True" << endl;
+				cout << "Check is now True via Rook / Queen" << endl;
 				check = true;
 			} else if ((subject->pieceType() == PieceType::Bishop ||
 				subject->pieceType() == PieceType::Queen) &&
 				(pieceCol-kingCol == pieceRow-kingRow || 
 				pieceCol-kingCol == kingRow-pieceRow)) {
 				check = true;
-								cout << "Check is now True" << endl;
+								cout << "Check is now True via Bishop / Queen" << endl;
 
 			} else if (subject->pieceType() == PieceType::Pawn) {
 				if (getSide() == Colour::Black &&
 					kingRow+1 == pieceRow &&
 					(kingCol-1 == pieceCol || kingCol+1 == pieceCol)) {
 					check = true;
-									cout << "Check is now True" << endl;
-
+									cout << "Check is now True via if pawn" << endl;
+					cout << subject->getCoords() << endl;
 				} else if (kingRow-1 == pieceRow &&
 					(kingCol-1 == pieceCol || kingCol+1 == pieceCol)) {
 					check = true;
-									cout << "Check is now True" << endl;
+									cout << "Check is now True via else if pawn" << endl;
 
 				}
 			} else if (subject->pieceType() == PieceType::Knight && 
@@ -465,7 +465,7 @@ void King::notify(const Piece* item, const Board* b) {
 				(abs(pieceCol-kingCol) == 2*abs(pieceRow-kingRow) ||
 				2*abs(pieceCol-kingCol) == abs(kingRow-pieceRow))) {
 				check = true;
-								cout << "Check is now True" << endl;
+								cout << "Check is now True via knight" << endl;
 
 			} else if (subject->pieceType() == PieceType::King &&
 				((pieceCol==kingCol && (pieceRow+1==kingRow || pieceRow-1==kingRow)) || 
@@ -473,9 +473,11 @@ void King::notify(const Piece* item, const Board* b) {
 				((pieceCol+1==kingCol || pieceCol-1==kingCol) &&
 				(pieceRow+1==kingRow || pieceRow-1==kingRow)))) {
 				check = true;
-								cout << "Check is now True" << endl;
+								cout << "Check is now True via King??" << endl;
 
 			}
+
+			cout << subject->getCoords() << endl;
 		}
 	}
 	
