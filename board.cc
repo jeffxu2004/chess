@@ -40,6 +40,19 @@ vector<vector<Piece *>> Board::getGrid() const {
     return retGrid;
 }
 
+bool Board::checkDraw() {
+    int countw = 0;
+    int countb = 0;
+    for(auto &row : grid) {
+        for (auto &piece : row) {
+            if (piece->pieceType() != PieceType::King || piece->pieceType() != PieceType::Blank) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 // can not return unique ptr by value so we use raw ptr
 Piece* Board::getPiece(pair<char,int> loc) {
     int col = loc.first - 'a';
@@ -236,6 +249,10 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
         return false;
     }
 
+    if (checkDraw()) {
+        state = Result::Draw;
+        return;
+    }
     // for (auto s:subject) {
     //     cout << s->getCoords() << endl;
     // }
@@ -266,7 +283,7 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     }
     if (playableMove == false) { // if there are no legal moves
         if (isCheck == true) state = Result::Win; //if the king is in check other side wins
-        else state = Result::Draw; //otherwise its stalemate => draw
+        else state = Result::Stalemate; //otherwise its stalemate => draw
     }
     
     // //cout << "End of playMove(): " << endl;
@@ -284,7 +301,6 @@ bool Board::playMove(pair<char, int> start, pair<char, int> end) {
     // }
     // cout << "------------------------------" << endl;
 
-    return true;
 }
 
 bool Board::isPlayableMove(Piece *piece, pair<char, int> dest) {

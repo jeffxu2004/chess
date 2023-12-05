@@ -69,6 +69,9 @@ public:
 	// Prints true if the custom setup is valid
 	bool validSetup();
 
+	// returns true if its only king v king
+	bool checkDraw();
+
 	// changes the square of coords loc to piecetype p of colour side
 	void changeSquare(pair<char, int> loc, PieceType p, Colour side);
 
