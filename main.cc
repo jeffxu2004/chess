@@ -174,11 +174,16 @@ int main () {
                     else blackScore++;
                     break;
                 } 
-                else if (board.getState() == Result::Draw) {
+                else if (board.getState() == Result::Stalemate) {
                     cout << "Stalemate!" << endl;
                     whiteScore += 0.5;
                     blackScore += 0.5;
                     break;
+                } else if (board.getState() == Result::Draw) {
+                    cout << "Draw by insufficent material" << endl;
+                    whiteScore += 0.5;
+                    blackScore += 0.5;
+                    break;                                    
                 }
                 cout << c.getTd();
                 if (dynamic_cast <King*> (board.getKing(Colour::White))->inCheck()) {
@@ -186,6 +191,7 @@ int main () {
                 } else if (dynamic_cast <King*> (board.getKing(Colour::Black))->inCheck()) {
                     cout << "Black is in check" << endl;
                 }
+
             }
             cout << "Enter anything to proceed to the next game" << endl;
             getline(cin, input); 
