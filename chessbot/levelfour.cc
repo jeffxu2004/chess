@@ -9,8 +9,6 @@ class LevelFour : public ChessBot {
 	// Checks through all of opponents moves to see what their most valuable move is
 	// Recursively checks how bot can react, then returns the difference between bot's move and opponents move
 	int valueOfMove(Board &b, pair<char, int> start, pair<char, int> end, int depth, Colour colour) {
-		if (depth == 0) return 0;
-
 		// Get weight of own move (double value of move to prevent cases where bot takes losing trade just for a check)
 		int weight = 3*b.getPiece(end)->getWeight();
 
@@ -33,6 +31,9 @@ class LevelFour : public ChessBot {
 				break;
 			}
 		}
+
+		// Base case
+		if (depth == 0) return weight;
 
 		if (b.playLegalMove(start, end)) {
 			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
@@ -105,7 +106,7 @@ public:
 
 			copy.setTurn(b.getTurn());
 
-			int moveWeight = valueOfMove(copy, move->first, move->second, 11, this->colour);
+			int moveWeight = valueOfMove(copy, move->first, move->second, 3, this->colour);
 			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
 			if (b.getPiece(move->first)->pieceType() == PieceType::Pawn) moveWeight++;
 			
