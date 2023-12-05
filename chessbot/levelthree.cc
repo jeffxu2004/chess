@@ -15,7 +15,7 @@ class LevelThree : public ChessBot {
 
 		PieceType type = b.getPiece(start)->pieceType();
 		// Check edge case where move is pawn promotion
-		if (type == PieceType::Pawn && (dest.second == 1 || dest.second == 8)) {
+		if (type == PieceType::Pawn && (dest.second == 1 || dest.second == b.getSize())) {
 			type = PieceType::Queen;
 		}
 		

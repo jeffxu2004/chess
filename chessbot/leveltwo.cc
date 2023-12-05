@@ -16,8 +16,7 @@ class LevelTwo : public ChessBot {
 
 		PieceType type = b.getPiece(start)->pieceType();
 		// Check edge case where move is pawn promotion
-		if ((this->colour == Colour::Black && type == PieceType::Pawn && dest.second == 1)
-		|| (this->colour == Colour::White && type == PieceType::Pawn && dest.second == 8)) {
+		if (type == PieceType::Pawn && (dest.second == 1 || dest.second == b.getSize())) {
 			type = PieceType::Queen;
 		}
 		// Create a copy of my piece and check if this move will result in the piece checking the king
