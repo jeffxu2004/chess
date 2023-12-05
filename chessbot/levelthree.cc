@@ -33,7 +33,7 @@ class LevelThree : public ChessBot {
 		// Get weight of own move (double value of move to prevent cases where bot takes losing trade just for a check)
 		int weight = 2*b.getPiece(end)->getWeight();
 
-		if (numMoves < 8) {
+		if (numMoves < 5) {
 			if (((end == make_pair('e', 5) || end == make_pair('d', 5)) && this->colour == Colour::White)
 			|| ((end == make_pair('e', 4) || end == make_pair('d', 4)) && this->colour == Colour::Black)) {
 				weight++;
@@ -96,7 +96,7 @@ public:
 	pair<pair<char, int>, pair<char, int>> getNextMove(Board &b) override {
 		vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(this->colour);
 		
-		// For each possible move, do a simple check as to if the move immediately problematic
+		// Remove moves that put own king in check
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
             if (!b.kingIsNotCheck(move->first, move->second)) {
                 possibleMoves.erase(move);
@@ -105,6 +105,7 @@ public:
             }
         }
 
+		// For each possible move, do a simple check as to if the move immediately problematic
 		// Basically just decides whether to avoid or capture based on
 		// whether trade will be a net positive for bot
 		int bestWeight = INT_MIN;

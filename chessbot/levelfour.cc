@@ -5,70 +5,76 @@
 #include <climits>
 
 class LevelFour : public ChessBot {
-    // Gives a weight to the move
-    int weightOfMove(Board &b, pair<char, int> start, pair<char, int> dest) {
-        int weight = b.getPiece(dest)->getWeight();
+	// Takes in a copy of the board and a pair indicating the destination of the move in question
+	// Checks through all of opponents moves to see what their most valuable move is
+	// Recursively checks how bot can react, then returns the difference between bot's move and opponents move
+	int valueOfMove(Board &b, pair<char, int> start, pair<char, int> end, int depth, Colour colour) {
+		if (depth == 0) return 0;
 
-        // Create a copy of my piece and check if this move will result in the piece checking the king
-        Piece* copy = b.getPiece(start);
-        copy->setCoords(dest);
-        vector<pair<char, int>> moves = copy->getMoves(b);
-        for (auto move : moves) {
-            if (b.getPiece(move)->pieceType() == PieceType::King) {
-                weight += 2;
-            }
-        }
+		// Get weight of own move (double value of move to prevent cases where bot takes losing trade just for a check)
+		int weight = 2*b.getPiece(end)->getWeight();
 
-        return weight;
-    }
+		PieceType type = b.getPiece(start)->pieceType();		
+		if (b.playLegalMove(start, end)) {
+			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
 
-	// Recursively reads depth moves ahead and returns an integer indicating the value of the move
-	// pieces are worth weight, checks have a value of two, and pieces that threaten middle squares and squares near king are worth 1
-	int valueOfMove(Board& b, pair<char, int> start, pair<char, int> end, int depth, Colour col) {
-		if (depth == 0) {
-			return 0;
-		}
-
-		int weight = b.getPiece(end)->getWeight();
-		int check = 0;
-		int opponent = 0;
-
-		col = (col == Colour::White)?Colour::Black:Colour::White;
-		b.playLegalMove(start, end);
-        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(col);
-
-		// getAllMoves does not consider if the move will place/leave the king in check,
-		// as a result we must filter out those moves		
-        for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
-            if (b.kingIsNotCheck(move->first, move->second)) {
-                possibleMoves.erase(move);
-            } else {
-                move++;
-            }
-        }
-		
-		// Find the opponent move that would yield them the most points
-		int best = INT_MIN;
-      	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-        	int value = weightOfMove(b, move->first, move->second);
-			int recurse = value + valueOfMove(b, move->first, move->second, depth-1, col);
-			if (recurse > best) {
-				best = recurse;
+			// Check edge case where move is pawn promotion
+			if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
+			|| (this->colour == Colour::White && type == PieceType::Pawn && end.second == 8)) {
+				type = PieceType::Queen;
 			}
-		}
 
-		return best;
+			// Get points for check
+			vector<pair<char, int>> moves = b.getPiece(end)->getMoves(b);
+			for (auto move : moves) {
+				if (b.getPiece(move)->pieceType() == PieceType::King) {
+					weight += 2;
+				}
+			}
+
+	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(side);
+			
+			// filter moves that will put king in check
+        	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
+            	if (!b.kingIsNotCheck(move->first, move->second)) {
+                	possibleMoves.erase(move);
+            	} else {
+                	move++;
+            	}
+        	}
+
+			Board copy(b.getSize());
+
+			for (int i = 1; i <= copy.getSize(); i++) {
+				for (int j = 'a'; j <= 'h'; j++) {
+					pair<char, int> loc = make_pair(j, i);
+					copy.changeSquare(loc, b.getPiece(loc)->pieceType(), b.getPiece(loc)->getSide());
+				}
+			}
+
+			copy.setTurn(b.getTurn());
+
+			int opponent = 0;
+			// Find the opponent move that would yield them the most points
+        	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
+            	int value = valueOfMove(b, move->first, move->second, depth-1, side);
+            	if (value > opponent) opponent = value;
+	        }
+
+			return weight - opponent;
+		} else {
+			return INT_MIN;
+		}
 	}
 
 public:
 	LevelFour(Colour colour) : ChessBot{colour} {};
-
+	
 	pair<pair<char, int>, pair<char, int>> getNextMove(Board &b) override {
 		vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(this->colour);
-
-		// getAllMoves does not consider if the move will place/leave the king in check,
-		// as a result we must filter out those moves		
-        for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
+		
+		// Remove moves that put own king in check
+		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
             if (!b.kingIsNotCheck(move->first, move->second)) {
                 possibleMoves.erase(move);
             } else {
@@ -76,34 +82,62 @@ public:
             }
         }
 
-		// For each possible move, check up to a few moves ahead and choose which move has the most value
-		pair<pair<pair<char, int>, pair<char, int>>, int> bestMove(make_pair(make_pair('0', 0), make_pair('0', 0)), INT_MIN);
+		// Basically just decides whether to avoid or capture based on
+		// whether trade will be a net positive for bot
+		int bestWeight = INT_MIN;
+		vector<pair<pair<char, int>, pair<char, int>>> bestMoves;
 		
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-			int value = valueOfMove(b, move->first, move->second, 2, this->colour);
-			// Incentivize going to middle early on
-			if (numMoves < 4) {
-				if (((move->second == make_pair('e', 5) || move->second == make_pair('d', 5)) && this->colour == Colour::White)
-				|| ((move->second == make_pair('e', 4) || move->second == make_pair('d', 4)) && this->colour == Colour::Black)) {
-					value++;
+			// Make copy of board for simulating moves
+			Board copy(b.getSize());
+
+			for (int i = 1; i <= copy.getSize(); i++) {
+				for (int j = 'a'; j <= 'h'; j++) {
+					pair<char, int> loc = make_pair(j, i);
+					copy.changeSquare(loc, b.getPiece(loc)->pieceType(), b.getPiece(loc)->getSide());
 				}
 			}
-			if (value > bestMove.second) bestMove = make_pair(*move, value);
+
+			copy.setTurn(b.getTurn());
+
+			int moveWeight = valueOfMove(copy, move->first, move->second, 3, this->colour);
+			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
+			if (b.getPiece(move->first)->pieceType() == PieceType::Pawn) moveWeight++;
+			
+			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
+			if (numMoves < 5) {
+				if (((*move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
+				|| ((*move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
+					moveWeight+=2;
+				}
+			}
+			// If move is equal to previously found best move, add as potential move
+			if (moveWeight == bestWeight) {
+				bestMoves.push_back(*move); 
+			// If found a new best move, clear previous array of potential best moves
+			} else if (moveWeight > bestWeight) {
+				bestWeight = moveWeight;
+				bestMoves.clear();
+				bestMoves.push_back(*move);
+			}
 		}
+		numMoves++;
 
 		// If there is no moves that give any points, just pick the first move from possible moves (if that is empty return no valid moves)
-		if (!possibleMoves.empty()) {
-			bestMove.first = possibleMoves[0];
+		if (bestWeight != INT_MIN) {
+			// Have some randomness in moves so bot isn't so predictable
+			// Also prevents situations were bot vs bot results in infinite loop
+    		srand(static_cast<unsigned int>(time(nullptr)));
+			int index = rand()%bestMoves.size();
 
-			// If promoting, always choose queen
-            if (b.isPromoting(bestMove.first.first, bestMove.first.second)) {
-                b.setPromotionPiece(PieceType::Queen);
-            }
-			
-			return bestMove.first;
+			if (b.isPromoting(bestMoves[index].first, bestMoves[index].second)) {
+				b.setPromotionPiece(PieceType::Queen);
+			}
+
+			return bestMoves[index];
     	} else {
-			// No valid moves
-        	return bestMove.first;
+    	   	// No valid moves, return a '0' instead of a letter from a to h to indicate this 
+        	return make_pair(make_pair('0', 0), make_pair('0', 0));
 		}
 	}
 };
