@@ -221,6 +221,7 @@ int main () {
                     newIss >> c;
                     if (c == "White" || "W" || "w" || "white") board.setTurn(Colour::White);
                     if (c == "Black" || "B" || "b" || "black") board.setTurn(Colour::Black);
+                    board.notifyAllObservers(board.getGrid()[0][0], board.getTurn());
                 } else if (cmd == "done") { // format: done
                     if (board.validSetup()) {  //checks if valid configuration
                         cout << "Exiting setup mode" << endl;
