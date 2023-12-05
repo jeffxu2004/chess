@@ -40,7 +40,14 @@ class LevelThree : public ChessBot {
 		int weight = 2*b.getPiece(end)->getWeight();
 
 		int opponent = 0;
+		PieceType type = b.getPiece(start)->pieceType();
+		
 		if (b.playLegalMove(start, end)) {
+			// Check edge case where move is pawn promotion
+			if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
+			|| (this->colour == Colour::White && type == PieceType::Pawn && end.first == 8)) {
+				type = PieceType::Queen;
+			}
 			// Get points for own move first
 			vector<pair<char, int>> moves = b.getPiece(end)->getMoves(b);
 			for (auto move : moves) {
