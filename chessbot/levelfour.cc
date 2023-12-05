@@ -17,10 +17,6 @@ class LevelFour : public ChessBot {
             if (b.getPiece(move)->pieceType() == PieceType::King) {
                 weight += 2;
             }
-			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-			if (move == make_pair('e', 5) || move == make_pair('d', 5) || move == make_pair('e', 4) || move == make_pair('d', 4)) {
-				weight++;
-			}
         }
 
         return weight;
@@ -85,6 +81,13 @@ public:
 		
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
 			int value = valueOfMove(b, move->first, move->second, 2, this->colour);
+			// Incentivize going to middle early on
+			if (numMoves < 4) {
+				if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
+				|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
+					value++;
+				}
+			}
 			if (value > bestMove.second) bestMove = make_pair(*move, value);
 		}
 
