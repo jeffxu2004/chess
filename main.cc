@@ -73,7 +73,7 @@ int main () {
 
             cout << c.getTd();
             
-            while (true) { // simply call move for cpu turn
+            while (!cin.eof()) { // simply call move for cpu turn
                 cout << "Enter a command:" << endl;
                 string start, end;
                 string revert; //MAKE SURE TO REMOVE
@@ -202,7 +202,7 @@ int main () {
         } else if (cmd == "setup") { //some of the error detection is not done
             cout << "Now in setup mode" << endl;
             cout << c.getTd();
-            while (true) { 
+            while (!cin.eof()) { 
                 cout << "Enter a command:" << endl;
                 getline(cin, input);
                 istringstream newIss {input};

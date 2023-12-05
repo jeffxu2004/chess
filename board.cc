@@ -369,8 +369,12 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     auto subjects = ownKing->getSubjects();
     King *newKing;
 
-    if(grid[row1][col1]->getSide() != turn) return false; //check if moving piece of own colour
-    if(grid[row2][col2]->getSide() == turn) return false; //check if capturing own piece
+    if(grid[row1][col1]->getSide() != turn) {
+        return false; //check if moving piece of own colour
+    }  
+    if(grid[row2][col2]->getSide() == turn){ 
+        return false;
+    } //check if capturing own piece
 
     // checks for promotion, en passant, castling
     promotes = isPromoting(start, end);
@@ -495,11 +499,6 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         }
 
         if (ownSubjectStart) ownKing->notify(grid[row1][col1].get(), this);
-        
-        subjects = ownKing->getSubjects();
-        for(Piece* s : subjects) {
-            if (s->getCoords() == end) ownKing->notify(grid[row2][col2].get(), this);    
-        }
 
         if (thirdCoord.second != -1) {
             subjects = ownKing->getSubjects();
@@ -507,21 +506,27 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
                 if (s->getCoords() == thirdCoord) ownKing->notify(getPiece(thirdCoord), this);  
             }
         }
-
+        
+        subjects = ownKing->getSubjects();
+        for(Piece* s : subjects) {
+            if (s->getCoords() == end) ownKing->notify(grid[row2][col2].get(), this);    
+        }
 
         //notify king observrs for enemy king   
         if (oppSubjectStart) oppKing->notify(grid[row1][col1].get(), this);
-        subjects = oppKing->getSubjects();
 
-        for(Piece* s : subjects) {
-            if (s->getCoords() == end) oppKing->notify(grid[row2][col2].get(), this);    
-        }
         if (thirdCoord.second != -1) {
             subjects = oppKing->getSubjects();        
             for(Piece* s : subjects) {
                 if (s->getCoords() == thirdCoord) oppKing->notify(getPiece(thirdCoord), this); 
             }
         }
+        subjects = oppKing->getSubjects();
+
+        for(Piece* s : subjects) {
+            if (s->getCoords() == end) oppKing->notify(grid[row2][col2].get(), this);    
+        }
+
     }
 
     bool isCheckAfter;
@@ -533,7 +538,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
 
     if (revert || isCheckAfter) { // if reverts or the king is still in check
         if (enpas) {
-            grid[row2][col1] = move(temp); // restore orginal move
+            grid[row2][col2] = move(temp); // restore orginal move
             grid[row1][col1] = move(temp2);
 
             //restores pawn that was taken
