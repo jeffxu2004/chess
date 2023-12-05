@@ -56,8 +56,6 @@ class LevelFour : public ChessBot {
 				}
 			}
 
-			copy.setTurn(b.getTurn());
-
 			int opponent = 0;
 			// Find the opponent move that would yield them the most points
         	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
@@ -102,7 +100,7 @@ public:
 				}
 			}
 
-			copy.setTurn(b.getTurn());
+			copy.setTurn(copy.getTurn());
 
 			int moveWeight = valueOfMove(copy, move->first, move->second, 3, this->colour);
 			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
