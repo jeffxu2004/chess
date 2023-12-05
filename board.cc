@@ -76,6 +76,10 @@ void Board::setTurn(Colour c) {
     turn = c;
 }
 
+void Board::setResult(Result r) {
+    state = r;
+}
+
 void Board::clearBoard() {
     for (int row = 1; row <= size; row++) {
         for (char col = 'a'; col <= 'h'; col++) {
@@ -105,8 +109,7 @@ Board& Board::copyBoard() {
 }
 
 void Board::standardInit() {
-    // Reset game state (for when play again)
-    Result state = ::Result::Continue;
+    setTurn(Colour::White);
 
     // Pawns
     for (char col = 'a'; col <= 'h'; col++) {
