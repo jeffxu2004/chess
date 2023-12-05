@@ -14,31 +14,31 @@ class LevelFour : public ChessBot {
 
 		PieceType type = b.getPiece(start)->pieceType();
 		// Check edge case where move is pawn promotion
-		if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
-		|| (this->colour == Colour::White && type == PieceType::Pawn && end.second == 8)) {
+		if (type == PieceType::Pawn && (end.second == 1 || end.second == b.getSize())) {
 			type = PieceType::Queen;
 		}
 
         // Create a copy of my piece and check if this move will result in the piece checking the king
-		unique_ptr<Piece> copy = PieceCreator::createPiece(type, colour, end);
-        vector<pair<char, int>> moves = copy->getMoves(b);
-		for (auto move : moves) {
-			if (b.getPiece(move)->pieceType() == PieceType::King) {
-				weight += 2;
-				if (numMoves >= 20) {
-					weight += 2;
-				}
-				break;
-			}
-		}
 
 		// Base case
-		if (depth == 0) return weight;
 
-		if (b.playLegalMove(start, end)) {
-			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
+		if (b.playMove(start, end)) {
+			unique_ptr<Piece> copyPiece = PieceCreator::createPiece(type, colour, end);
+			vector<pair<char, int>> moves = copyPiece->getMoves(b);
+			for (auto move : moves) {
+				if (b.getPiece(move)->pieceType() == PieceType::King) {
+					weight += 2;
+					if (numMoves >= 20) {
+						weight += 2;
+					}
+					break;
+				}
+			}
 
-	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(side);
+			// Base case
+			if (depth == 0) return weight;
+
+	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(b.getTurn());
 			
 			// filter moves that will put king in check
         	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ) {
@@ -58,12 +58,12 @@ class LevelFour : public ChessBot {
 				}
 			}
 
-			copy.setTurn(side);
+			copy.setTurn(b.getTurn());
 
 			int opponent = 0;
 			// Find the opponent move that would yield them the most points
         	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-            	int value = valueOfMove(copy, move->first, move->second, depth-1, side);
+            	int value = valueOfMove(copy, move->first, move->second, depth-1, b.getTurn());
             	if (value > opponent) opponent = value;
 	        }
 
@@ -106,7 +106,7 @@ public:
 
 			copy.setTurn(b.getTurn());
 
-			int moveWeight = valueOfMove(copy, move->first, move->second, 3, this->colour);
+			int moveWeight = valueOfMove(copy, move->first, move->second, 7, this->colour);
 			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
 			if (b.getPiece(move->first)->pieceType() == PieceType::Pawn) moveWeight++;
 			
