@@ -46,9 +46,8 @@ int main () {
     double whiteScore = 0;
     string cmd;
     bool first = true;
-    while (first || cin >> cmd) {
-        first = false;
-        cout << "Enter a command: " << endl;
+    cout << "Enter a command: " << endl;
+    while ( cin >> cmd) {
         getline(cin, input);
         istringstream iss{input};
         iss >> cmd;
@@ -78,6 +77,7 @@ int main () {
             while (true) { // simply call move for cpu turn
                 cout << "Enter a command:" << endl;
                 string start, end;
+                string revert; //MAKE SURE TO REMOVE
                 getline(cin, input);
                 istringstream newIss {input};
                 newIss >> cmd >> start >> end;
@@ -107,7 +107,8 @@ int main () {
                     cout << "Invalid Input" << endl;
                     continue;                    
                 }
-
+                newIss >> revert;
+                cout << revert << endl;
                 if(board.getTurn() == Colour::White) {
                     if (!whiteCPU) {
                         if (board.isPromoting(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'))) {
@@ -118,9 +119,14 @@ int main () {
                             if (promotion == "N" || promotion == "n") board.setPromotionPiece(PieceType::Knight);
                             if (promotion == "B" || promotion == "b") board.setPromotionPiece(PieceType::Bishop);
                         }
-                        bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
+                        if (revert == "revert") {
+                            cout << "hello" << endl;
+                        bool b = board.kingIsNotCheck(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));                            
+                        }
+                        else {bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
                         if (!b) {
                             cout << "Not a valid move" << endl;
+                            }
                         }
                     } else {
                         auto move = wBot->getNextMove(board);
@@ -142,10 +148,14 @@ int main () {
                             if (promotion == "N" || promotion == "n") board.setPromotionPiece(PieceType::Knight);
                             if (promotion == "B" || promotion == "b") board.setPromotionPiece(PieceType::Bishop);
                         }
+                        if (revert == "revert") {
+                            cout << "hello" << endl;
+                        bool b = board.kingIsNotCheck(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));                            
+                        } else {
                         bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
                         if (!b) {
                             cout << "Not a valid move" << endl;
-                        }
+                        }}
                     } else {
                         auto move = bBot->getNextMove(board);
                         cout << move << endl;
@@ -229,6 +239,7 @@ int main () {
         } else {
             cout << "Invalid input" << endl;
         }
+        cout << "Enter a command: " << endl;
     }
     cout << "Final Score: " << endl;
     cout << "White: " << whiteScore << endl;
