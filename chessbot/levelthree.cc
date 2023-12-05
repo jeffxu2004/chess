@@ -27,9 +27,18 @@ class LevelThree : public ChessBot {
             if (b.getPiece(move)->pieceType() == PieceType::King) {
                 weight += 2;
 				if (numMoves >= 20) {
-					weight += 3;
+					weight += 2;
 				}
             }
+			
+			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
+			// Do it only for own moves
+			if (numMoves < 6 && colour == this->colour) {
+				if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
+				|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
+					weight++;
+				}
+			}
         }
 
         return weight;
@@ -41,14 +50,6 @@ class LevelThree : public ChessBot {
 	int valueOfMove(Board &b, pair<char, int> start, pair<char, int> end) {
 		// Get weight of own move
 		int weight = weightOfMove(b, start, end, this->colour);
-
-		// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-		if (numMoves < 6) {
-			if (((end == make_pair('e', 5) || end == make_pair('d', 5)) && this->colour == Colour::White)
-			|| ((end == make_pair('e', 4) || end == make_pair('d', 4)) && this->colour == Colour::Black)) {
-				weight++;
-			}
-		}
 
 		int opponent = 0;
 		if (b.playLegalMove(start, end)) {
