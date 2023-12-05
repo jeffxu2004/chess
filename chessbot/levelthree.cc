@@ -94,7 +94,7 @@ public:
 		vector<pair<pair<char, int>, pair<char, int>>> bestMoves;
 		
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-			Board copy = b.copyBoard();
+			Board& copy = b.copyBoard();
 			int moveWeight = valueOfMove(copy, move->first, move->second);
 			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
 			if (b.getPiece(move->first)->pieceType() == PieceType::Pawn) moveWeight++;
