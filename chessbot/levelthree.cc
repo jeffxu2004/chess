@@ -33,15 +33,25 @@ class LevelThree : public ChessBot {
 		// Get weight of own move (double value of move to prevent cases where bot takes losing trade just for a check)
 		int weight = 2*b.getPiece(end)->getWeight();
 
+		if (numMoves < 8) {
+			if (((end == make_pair('e', 5) || end == make_pair('d', 5)) && this->colour == Colour::White)
+			|| ((end == make_pair('e', 4) || end == make_pair('d', 4)) && this->colour == Colour::Black)) {
+				weight++;
+			}
+		}
+
 		int opponent = 0;
 		PieceType type = b.getPiece(start)->pieceType();
 		
 		if (b.playLegalMove(start, end)) {
+			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
+
 			// Check edge case where move is pawn promotion
 			if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
 			|| (this->colour == Colour::White && type == PieceType::Pawn && end.second == 8)) {
 				type = PieceType::Queen;
 			}
+
 			// Get points for own move first
 			vector<pair<char, int>> moves = b.getPiece(end)->getMoves(b);
 			for (auto move : moves) {
@@ -57,7 +67,6 @@ class LevelThree : public ChessBot {
 				}
 			}
 
-			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
 	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(side);
 			
 			// filter moves that will put king in check
