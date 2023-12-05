@@ -29,6 +29,9 @@ class LevelFour : public ChessBot {
 			for (auto move : moves) {
 				if (b.getPiece(move)->pieceType() == PieceType::King) {
 					weight += 2;
+					if (numMoves >= 20) {
+						weight += 3;
+					}
 				}
 			}
 
@@ -57,7 +60,7 @@ class LevelFour : public ChessBot {
 			int opponent = 0;
 			// Find the opponent move that would yield them the most points
         	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-            	int value = valueOfMove(b, move->first, move->second, depth-1, side);
+            	int value = valueOfMove(copy, move->first, move->second, depth-1, side);
             	if (value > opponent) opponent = value;
 	        }
 
@@ -105,7 +108,7 @@ public:
 			if (b.getPiece(move->first)->pieceType() == PieceType::Pawn) moveWeight++;
 			
 			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-			if (numMoves < 5) {
+			if (numMoves < 6) {
 				if (((move->second == make_pair('e', 5) || move->second == make_pair('d', 5)) && this->colour == Colour::White)
 				|| ((move->second == make_pair('e', 4) || move->second == make_pair('d', 4)) && this->colour == Colour::Black)) {
 					moveWeight+=2;
