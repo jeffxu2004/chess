@@ -99,6 +99,7 @@ Board& Board::copyBoard() {
     for (auto &row : newBoard.grid) {
         for (auto &piece : row) {
             piece = PieceCreator::createPiece(piece->pieceType(), piece->getSide(), piece->getCoords());
+            cout<<piece->pieceType();
         }
     }
 
@@ -109,7 +110,7 @@ Board& Board::copyBoard() {
     //         newGrid[row-1][col-'a'] = PieceCreator::createPiece
     //             (grid[row-1][col-'a'].get()->pieceType(), grid[row-1][col-'a'].get()->getSide(), make_pair(col, gridRow));
     //     }
-    // } 
+    // }
 
     return newBoard;
 }
