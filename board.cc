@@ -41,11 +41,9 @@ vector<vector<Piece *>> Board::getGrid() const {
 }
 
 bool Board::checkDraw() {
-    int countw = 0;
-    int countb = 0;
     for(auto &row : grid) {
         for (auto &piece : row) {
-            if (piece->pieceType() != PieceType::King || piece->pieceType() != PieceType::Blank) {
+            if (piece->pieceType() != PieceType::King && piece->pieceType() != PieceType::Blank) {
                 return false;
             }
         }
