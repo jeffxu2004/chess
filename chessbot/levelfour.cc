@@ -106,7 +106,7 @@ public:
 
 			copy.setTurn(b.getTurn());
 
-			int moveWeight = valueOfMove(copy, move->first, move->second, 7, this->colour);
+			int moveWeight = valueOfMove(copy, move->first, move->second, 9, this->colour);
 			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
 			if (b.getPiece(move->first)->pieceType() == PieceType::Pawn) moveWeight++;
 			
