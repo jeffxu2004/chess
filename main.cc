@@ -45,9 +45,8 @@ int main () {
     double blackScore = 0;
     double whiteScore = 0;
     string cmd;
-    bool first = true;
-    cout << "Enter a command: " << endl;
-    while ( cin >> cmd) {
+    while (!cin.eof()) {
+        cout << "Enter a command: " << endl;
         getline(cin, input);
         istringstream iss{input};
         iss >> cmd;
@@ -239,7 +238,7 @@ int main () {
         } else {
             cout << "Invalid input" << endl;
         }
-        cout << "Enter a command: " << endl;
+
     }
     cout << "Final Score: " << endl;
     cout << "White: " << whiteScore << endl;
