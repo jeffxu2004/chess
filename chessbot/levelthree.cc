@@ -68,17 +68,7 @@ class LevelThree : public ChessBot {
 
 			// Find the opponent move that would yield them the most points
         	for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-				Board copy(b.getSize());
-
-				for (int i = 1; i <= copy.getSize(); i++) {
-					for (int j = 'a'; j <= 'h'; j++) {
-						pair<char, int> loc = make_pair(j, i);
-						copy.changeSquare(loc, b.getPiece(loc)->pieceType(), b.getPiece(loc)->getSide());
-					}
-				}
-
-				copy.setTurn(side);
-            	int value = weightOfMove(copy, move->first, move->second, side);
+            	int value = weightOfMove(b, move->first, move->second, side);
             	if (value > opponent) opponent = value;
 	        }
 
