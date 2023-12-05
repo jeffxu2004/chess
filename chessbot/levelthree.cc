@@ -34,8 +34,8 @@ class LevelThree : public ChessBot {
 		int weight = 2*b.getPiece(end)->getWeight();
 
 		if (numMoves < 8) {
-			if (((end == make_pair('e', 5) || end == make_pair('d', 5)) && this->colour == Colour::White)
-			|| ((end == make_pair('e', 4) || end == make_pair('d', 4)) && this->colour == Colour::Black)) {
+			if (end == make_pair('e', 4) || end == make_pair('d', 4)
+			|| end == make_pair('e', 5) || end == make_pair('d', 5)) {
 				weight++;
 			}
 		}
@@ -60,8 +60,7 @@ class LevelThree : public ChessBot {
 				}
 				// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
 				if (numMoves < 8) {
-					if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
-					|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
+					if (move == make_pair('e', 4) || move == make_pair('d', 4) || move == make_pair('e', 5) || move == make_pair('d', 5)) {
 						weight++;
 					}
 				}
