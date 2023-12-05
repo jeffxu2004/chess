@@ -67,7 +67,7 @@ class LevelFour : public ChessBot {
 			}
 
 			cout<<depth<<": weight"<<opponent<<endl;
-			cout<<"Move: "<<b.getPiece(m.first)->pieceType()<<" "<<m.first<<" to "<<b.getPiece(m.second)->pieceType()<<" "<<m.second<<": "<<moveWeight<<endl;
+			cout<<"Move: "<<b.getPiece(m.first)->pieceType()<<" "<<m.first<<" to "<<b.getPiece(m.second)->pieceType()<<" "<<m.second<<endl;
 
 
 			return weight - opponent;
