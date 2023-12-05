@@ -51,32 +51,8 @@ class LevelThree : public ChessBot {
 		}
 
 		int opponent = 0;
-		PieceType type = b.getPiece(start)->pieceType();
-		
 		if (b.playLegalMove(start, end)) {
 			Colour side = (colour == Colour::White)?Colour::Black:Colour::White;
-
-			// Check edge case where move is pawn promotion
-			if ((this->colour == Colour::Black && type == PieceType::Pawn && end.second == 1)
-			|| (this->colour == Colour::White && type == PieceType::Pawn && end.second == 8)) {
-				type = PieceType::Queen;
-			}
-
-			// Get points for own move first
-			unique_ptr<Piece> copy = PieceCreator::createPiece(type, colour, end);
-        	vector<pair<char, int>> moves = copy->getMoves(b);
-			for (auto move : moves) {
-				if (b.getPiece(move)->pieceType() == PieceType::King) {
-					weight += 2;
-				}
-				// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-				if (numMoves < 8) {
-					if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
-					|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
-						weight++;
-					}
-				}
-			}
 
 	        vector<pair<pair<char, int>, pair<char, int>>> possibleMoves = b.getAllMoves(side);
 			
