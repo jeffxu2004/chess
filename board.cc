@@ -428,19 +428,19 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     if (kingMove) { //reupdate observers for king move 
         newKing = dynamic_cast <King*> (grid[row2][col2].get());
         newKing->notify(newKing, this);
+        oppKing->notify(oppKing, this); // fix later
+
     } else {
         for (auto subject:ownSubjects) {
             if (subject->getCoords() == start) ownSubjectStart = true;
             if (subject->getCoords() == end) ownSubjectEnd = true;
             if (subject->getCoords() == thirdCoord) ownSubject3 = true;
-            if (subject->getCoords() == fourthCoord) ownSubject4 = true;
         }
 
         for (auto subject:oppSubjects) {
             if (subject->getCoords() == start) oppSubjectStart = true;
             if (subject->getCoords() == end) oppSubjectEnd = true;
-            if (subject->getCoords() == thirdCoord) oppSubject3 = true; 
-            if (subject->getCoords() == fourthCoord) ownSubject4 = true;      
+            if (subject->getCoords() == thirdCoord) oppSubject3 = true;     
         }
 
         if (ownSubjectStart) {
@@ -473,32 +473,33 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
             oppKing->addSubject(getPiece(thirdCoord));
         }
 
-        if (ownSubject4) {
-            ownKing->dropSubject(temp4.get());
-            ownKing->addSubject(getPiece(fourthCoord));
-        }
-
-        if (oppSubject4) {
-            oppKing->dropSubject(temp4.get());
-            oppKing->addSubject(getPiece(fourthCoord));
-        }
-
         if (ownSubjectStart) ownKing->notify(grid[row1][col1].get(), this);
         
         subjects = ownKing->getSubjects();
         for(Piece* s : subjects) {
-            if (s->getCoords() == end) ownKing->notify(grid[row2][col2].get(), this);
-            if (s->getCoords() == thirdCoord) ownKing->notify(getPiece(thirdCoord), this);
-            if (s->getCoords() == fourthCoord) ownKing->notify(getPiece(fourthCoord), this);       
+            if (s->getCoords() == end) ownKing->notify(grid[row2][col2].get(), this);    
         }
+
+        if (thirdCoord.second == -1) {
+            subjects = ownKing->getSubjects();
+            for(Piece* s : subjects) {
+                if (s->getCoords() == thirdCoord) ownKing->notify(getPiece(thirdCoord), this);  
+            }
+        }
+
 
         //notify king observrs for enemy king   
         if (oppSubjectStart) oppKing->notify(grid[row1][col1].get(), this);
-
         subjects = oppKing->getSubjects();
 
         for(Piece* s : subjects) {
-            if (s->getCoords() == end) oppKing->notify(grid[row2][col2].get(), this);     
+            if (s->getCoords() == end) oppKing->notify(grid[row2][col2].get(), this);    
+        }
+        if (thirdCoord.second == -1) {
+            subjects = oppKing->getSubjects();        
+            for(Piece* s : subjects) {
+                if (s->getCoords() == thirdCoord) oppKing->notify(getPiece(thirdCoord), this); 
+            }
         }
     }
 
@@ -573,6 +574,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
 
     if (enpas) {
         notifyAllObservers(getPiece(thirdCoord), getTurn());
+
     }
     return true; //if reverting the board is not requested and that its a legal move return true
 
