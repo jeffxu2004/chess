@@ -13,6 +13,13 @@ class LevelThree : public ChessBot {
         // Weight is doubled so check and taking center squares aren't as valuable
 		int weight = 2*b.getPiece(dest)->getWeight();
 
+		PieceType type = b.getPiece(start)->pieceType();
+		// Check edge case where move is pawn promotion
+		if ((this->colour == Colour::Black && type == PieceType::Pawn && dest.second == 1)
+		|| (this->colour == Colour::White && type == PieceType::Pawn && dest.second == 8)) {
+			type = PieceType::Queen;
+		}
+		
         // Create a copy of my piece and check if this move will result in the piece checking the king
 		unique_ptr<Piece> copy = PieceCreator::createPiece(b.getPiece(start)->pieceType(), colour, dest);
         vector<pair<char, int>> moves = copy->getMoves(b);
@@ -21,13 +28,6 @@ class LevelThree : public ChessBot {
                 weight += 2;
 				if (numMoves >= 20) {
 					weight += 3;
-				}
-				// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-				if (numMoves < 6) {
-					if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
-					|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
-						weight+=2;
-					}
 				}
             }
         }
@@ -42,6 +42,7 @@ class LevelThree : public ChessBot {
 		// Get weight of own move
 		int weight = weightOfMove(b, start, end, this->colour);
 
+		// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
 		if (numMoves < 6) {
 			if (((end == make_pair('e', 5) || end == make_pair('d', 5)) && this->colour == Colour::White)
 			|| ((end == make_pair('e', 4) || end == make_pair('d', 4)) && this->colour == Colour::Black)) {
