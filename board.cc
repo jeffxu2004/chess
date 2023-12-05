@@ -109,12 +109,7 @@ void Board::clearBoard() {
 
 Board& Board::copyBoard() {
     Board newBoard(8);
-    for (auto &row : newBoard.grid) {
-        for (auto &piece : row) {
-            piece = PieceCreator::createPiece(piece->pieceType(), piece->getSide(), piece->getCoords());
-            cout<<piece->pieceType();
-        }
-    }
+
 
     // auto& newGrid = newBoard.grid;
     // for (int row = 1; row <= size; row++) {

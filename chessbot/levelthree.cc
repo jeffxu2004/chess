@@ -101,7 +101,7 @@ public:
 		vector<pair<pair<char, int>, pair<char, int>>> bestMoves;
 		
 		for (auto move = possibleMoves.begin(); move != possibleMoves.end(); ++move) {
-			Board& copy = b.copyBoard();
+			Board copy = b.copyBoard();
 
 			for (auto i : copy.getGrid()) {
 				for (auto j : i) {
