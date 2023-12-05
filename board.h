@@ -71,6 +71,9 @@ public:
 
 	void changeSquare(char c, pair<char,int> location);
 
+	// creates a logical copy of the board 
+	Board& copyBoard();
+
 	// Takes in a start coordinate which indicates which piece is being moved and moves it to the end coordinate. 
 	// This function returns ture if it is valid move that does not place the king, and plays the move
 	// Otherwise the function returns false and the board remains logically unchanged
