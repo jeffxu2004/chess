@@ -336,7 +336,8 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
     vector<Piece*> oppSubjects; //used to store original observers of black king
     King* ownKing = dynamic_cast<King*> (getKing(turn));
     King* oppKing = dynamic_cast<King*> (getKing(turn == Colour::White ? Colour::Black : Colour::White));
-    bool inCheck = ownKing->inCheck();
+    bool ownInCheck = ownKing->inCheck();
+    bool oppInCheck = oppKing->inCheck();
     unique_ptr<Piece> temp; //used to hold pieces in case revert 
     unique_ptr<Piece> temp2; 
     unique_ptr<Piece> temp3;
@@ -535,7 +536,8 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         }
         ownKing->setSubjects(ownSubjects);
         oppKing->setSubjects(oppSubjects);
-        ownKing->setCheck(inCheck);
+        ownKing->setCheck(ownInCheck);
+        oppKing->setCheck(oppInCheck);
         if (revert) { return !isCheckAfter; }
         else return false;
     }
