@@ -506,7 +506,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
             if (s->getCoords() == end) ownKing->notify(grid[row2][col2].get(), this);    
         }
 
-        if (thirdCoord.second == -1) {
+        if (thirdCoord.second != -1) {
             subjects = ownKing->getSubjects();
             for(Piece* s : subjects) {
                 if (s->getCoords() == thirdCoord) ownKing->notify(getPiece(thirdCoord), this);  
@@ -521,7 +521,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
         for(Piece* s : subjects) {
             if (s->getCoords() == end) oppKing->notify(grid[row2][col2].get(), this);    
         }
-        if (thirdCoord.second == -1) {
+        if (thirdCoord.second != -1) {
             subjects = oppKing->getSubjects();        
             for(Piece* s : subjects) {
                 if (s->getCoords() == thirdCoord) oppKing->notify(getPiece(thirdCoord), this); 
