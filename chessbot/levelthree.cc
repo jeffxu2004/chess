@@ -11,7 +11,7 @@ class LevelThree : public ChessBot {
     // Checks have a weight of two. (If a move takes a piece and checks the enemy king, the weight is summed)
     int weightOfMove(Board &b, pair<char, int> start, pair<char, int> dest, Colour colour) {
         // Weight is doubled so check and taking center squares aren't as valuable
-		int weight = 2*b.getPiece(dest)->getWeight();
+		int weight = 3*b.getPiece(dest)->getWeight();
 
 		PieceType type = b.getPiece(start)->pieceType();
 		// Check edge case where move is pawn promotion
