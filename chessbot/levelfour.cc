@@ -10,7 +10,7 @@ class LevelFour : public ChessBot {
 	// Recursively checks how bot can react, then returns the difference between bot's move and opponents move
 	int valueOfMove(Board &b, pair<char, int> start, pair<char, int> end, int depth, Colour colour) {
 		// Get weight of own move (x10 value of move to prevent cases where bot takes losing trade just for a check)
-		int weight = 10*b.getPiece(end)->getWeight();
+		int weight = 2*b.getPiece(end)->getWeight();
 
 		PieceType type = b.getPiece(start)->pieceType();
 		// Check edge case where move is pawn promotion
@@ -132,8 +132,6 @@ public:
 					moveWeight+=2;
 				}
 			}
-
-			cout<<"Move: "<<b.getPiece(move->first)->pieceType()<<" "<<move->first<<" to "<<b.getPiece(move->second)->pieceType()<<" "<<move->second<<": "<<moveWeight<<endl;
 
 			// If move is equal to previously found best move, add as potential move
 			if (moveWeight == bestWeight) {
