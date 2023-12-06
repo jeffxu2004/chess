@@ -40,7 +40,7 @@ void TextDisplay::update(const Piece* item, Colour turn) {
 
 ostream& operator<<(ostream& out, const TextDisplay& td) {
     int width = td.gridSize;
-    cout << td.turn << "'s turn" << endl;
+    out << td.turn << "'s turn" << endl;
     // print top border
     out << "  ";
     for (int i=0; i<width+2; ++i) {

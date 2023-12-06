@@ -82,7 +82,7 @@ int main () {
                 newIss >> cmd >> start >> end;
 
                 if (cmd == "resign") {
-                    cout << "lmfao you lost hahahaha" << endl;
+                    cout << "gg" << endl;
                     string side = board.getTurn() == Colour::White ? "Black" : "White";
                     cout << side << " wins!" << endl;  
                     if (board.getTurn() == Colour::White) whiteScore++;
@@ -119,13 +119,13 @@ int main () {
                             if (promotion == "B" || promotion == "b") board.setPromotionPiece(PieceType::Bishop);
                         }
                         if (revert == "revert") {
-                            cout << "hello" << endl;
                             bool b = board.kingIsNotCheck(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));                            
                         }
-                        else {bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
-                        if (!b) {
-                            cout << "Not a valid move" << endl;
-                            }
+                        else {
+                            bool b = board.playMove(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));
+                            if (!b) {
+                                cout << "Not a valid move" << endl;
+                                }
                         }
                     } else {
                         auto move = wBot->getNextMove(board);

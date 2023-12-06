@@ -77,9 +77,6 @@ public:
 
 	void changeSquare(char c, pair<char,int> location);
 
-	// creates a logical copy of the board 
-	Board& copyBoard();
-
 	// Takes in a start coordinate which indicates which piece is being moved and moves it to the end coordinate. 
 	// This function returns ture if it is valid move that does not place the king, and plays the move
 	// Otherwise the function returns false and the board remains logically unchanged
@@ -90,10 +87,6 @@ public:
 	// This function calls the getMoves() function in piece to get a vector<pair> and checks
 	// whether dest is in the vector. This function does not check for checks
 	bool isPlayableMove(Piece *piece, pair<char, int> dest);
-
-	// playMove is overloarded for pawn promotion. If the pawn is promoting, the desired piece that
-	// it promotes into is passed into the function as an additional parameter as well as the colour.
-	void playMove(pair<char, int> start, pair<char, int> end, PieceType type, Colour side);
 
 	// returns a list of possible moves that colour c is able to make in the current poistion
 	// where the first pair is where the piece is moving from, and the second pair is where the piece is moving to
@@ -120,12 +113,10 @@ public:
 
 	// returns true if the current move is enpassent 
 	bool isEnPas(pair<char, int> start, pair<char, int> end);
-
 	
     void attach(Observer* obs);
 
     void detach(Observer* obs);
-
 
 	// notifies ALL observers
 	void notifyAllObservers(const Piece* p, Colour turn) const;

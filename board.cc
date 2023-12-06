@@ -105,22 +105,6 @@ void Board::clearBoard() {
     }
 }
 
-Board& Board::copyBoard() {
-    Board newBoard(8);
-
-
-    // auto& newGrid = newBoard.grid;
-    // for (int row = 1; row <= size; row++) {
-    //     for (char col = 'a'; col <= 'h'; col++) {
-    //         int gridRow = 8 - row + 1;
-    //         newGrid[row-1][col-'a'] = PieceCreator::createPiece
-    //             (grid[row-1][col-'a'].get()->pieceType(), grid[row-1][col-'a'].get()->getSide(), make_pair(col, gridRow));
-    //     }
-    // }
-
-    return newBoard;
-}
-
 void Board::standardInit() {
     setTurn(Colour::White);
 
@@ -493,12 +477,7 @@ bool Board::checkLegalMove(pair<char, int> start, pair<char, int> end, bool reve
 
     }
 
-    bool isCheckAfter;
-    if (kingMove) {
-        isCheckAfter = newKing->inCheck();
-    } else {
-        isCheckAfter = ownKing->inCheck(); // determines if the king is still in check AFTER the move is played
-    }
+    bool isCheckAfter = kingMove ? newKing->inCheck() : ownKing->inCheck();
 
     if (revert || isCheckAfter) { // if reverts or the king is still in check
         if (enpas) {
