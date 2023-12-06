@@ -118,7 +118,7 @@ int main () {
                             if (promotion == "N" || promotion == "n") board.setPromotionPiece(PieceType::Knight);
                             if (promotion == "B" || promotion == "b") board.setPromotionPiece(PieceType::Bishop);
                         }
-                        if (revert == "revert") {
+                        if (revert == "revert") { // feature for testing, left in
                             bool b = board.kingIsNotCheck(make_pair(start[0],start[1] - '0'), make_pair(end[0] , end[1] - '0'));                            
                         }
                         else {
