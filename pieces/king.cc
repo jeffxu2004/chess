@@ -29,6 +29,7 @@ vector<pair<char, int>> King::getMoves(const Board& b) const{
 	
 	vector<Piece*> subjects = getSubjects();
 
+	// check if the king can castle by determining if the king is obsering an un-moved rook
 	if (!hasMoved() && !inCheck()) {
 		if (getSide() == Colour::White){
 			for (Piece* piece:subjects) {
@@ -83,6 +84,9 @@ void King::notify(const Piece* item, const Board* b) {
 	char kingCol = int(getCoords().first - 'a');
 	int kingRow = 8 - getCoords().second;
 
+	// set the possible squares that a knight could check the king from
+	// here, we don't care about whether it is out of bounds or not because
+	// it will be enforced later
 	vector<pair<int,int>> knightSquares = {
 		make_pair(kingCol-1, kingRow-2),
 		make_pair(kingCol-1, kingRow+2),
@@ -99,12 +103,17 @@ void King::notify(const Piece* item, const Board* b) {
 	int row = 8 - piece->getCoords().second;
 	int col = int(piece->getCoords().first - 'a');
 
-	if (piece->pieceType() == PieceType::Blank) { // if the square is calling notify because a piece moved away from it
+	// if the square is calling notify because a piece moved away from it
+	if (piece->pieceType() == PieceType::Blank) { 
+		// if the blank square is a knight square, then the king does not have
+		// do anything to its list of observers
 		for (auto coord:knightSquares) {
-			if (coord.first == int(piece->getCoords().first-'a') && coord.second == 8-piece->getCoords().second) {
+			if (coord.first == int(piece->getCoords().first-'a') && 
+				coord.second == 8-piece->getCoords().second) {
 				return;
 			}
 		}
+		
 		// if the piece is in the same column then add pieces to subject until 
 		// the next non-blank piece is reached 
 		if (col == kingCol) {
@@ -332,7 +341,7 @@ void King::notify(const Piece* item, const Board* b) {
 			++inc;
 		}
 
-		inc = 1;
+		inc = 1; 
 
 		while (kingRow+inc <= 7) {
 			Piece *down = grid[kingRow+inc][kingCol];
@@ -416,6 +425,7 @@ void King::notify(const Piece* item, const Board* b) {
 			subject->getSide() != getSide()) {
 			int pieceCol = int(subject->getCoords().first-'a');
 			int pieceRow = 8 - subject->getCoords().second;
+
 			if ((subject->pieceType() == PieceType::Rook || 
 				subject->pieceType() == PieceType::Queen) &&
 				(pieceCol == kingCol || pieceRow == kingRow)) {
