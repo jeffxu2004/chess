@@ -23,23 +23,23 @@ class LevelThree : public ChessBot {
         // Create a copy of my piece and check if this move will result in the piece checking the king
 		unique_ptr<Piece> copy = PieceCreator::createPiece(type, colour, dest);
         vector<pair<char, int>> moves = copy->getMoves(b);
-        // for (auto move : moves) {
-        //     if (b.getPiece(move)->pieceType() == PieceType::King) {
-        //         weight += 2;
-		// 		if (numMoves >= 20) {
-		// 			weight += 2;
-		// 		}
-        //     }
+        for (auto move : moves) {
+            if (b.getPiece(move)->pieceType() == PieceType::King) {
+                weight += 2;
+				if (numMoves >= 20) {
+					weight += 2;
+				}
+            }
 			
-		// 	// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
-		// 	// Do it only for own moves
-		// 	if (numMoves < 8 && colour == this->colour) {
-		// 		if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
-		// 		|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
-		// 			weight+=2;
-		// 		}
-		// 	}
-        // }
+			// Bot prefers taking control of center (aids in early game so it doesn't make too many random moves)
+			// Do it only for own moves
+			if (numMoves < 8 && colour == this->colour) {
+				if (((move == make_pair('e', 5) || move == make_pair('d', 5)) && this->colour == Colour::White)
+				|| ((move == make_pair('e', 4) || move == make_pair('d', 4)) && this->colour == Colour::Black)) {
+					weight+=2;
+				}
+			}
+        }
 
         return weight;
     }
@@ -114,7 +114,6 @@ public:
 
 			int moveWeight = valueOfMove(copy, move->first, move->second);
 			cout << "WEIGHT: " << moveWeight << endl;
-			cout << "Move: " << *move << endl;
 			// Add one point if pawn to incentivize usage of pawn over other pieces (espeically for capturing
 			if (b.getPiece(move->first)->pieceType() == PieceType::Pawn) moveWeight++;
 
