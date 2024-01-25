@@ -1,3 +1,2 @@
-# cs246-chess
-CS246 Final Project
-among us 
+# chess
+A chess app that allows you to play with either another play or a bot.
